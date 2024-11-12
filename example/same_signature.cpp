@@ -4,23 +4,25 @@
 
 struct Addition
 {
-    using args = std::tuple<>;
+    using args = std::tuple<int, int>;
+    using return_type = int;
+};
+
+struct Multiplication
+{
+    using args = std::tuple<int, int>;
     using return_type = int;
 };
 
 int main()
 {
-    // boost::any a = boost::any{std::tuple<>{}};
-    // std::cout << sizeof(std::tuple<>{}) << std::endl;
-    // std::cout << sizeof(a) << std::endl;
-    // auto t = boost::any_cast<std::tuple<>>(a);
     EventDispatcher ed;
-    ed.Attach<Addition>([]()
-                        { return 5; });
-    // ed.Attach<Multiplication>([](int a, int b)
-    //                           { return a * b; });
+    ed.Attach<Addition>([](int a, int b)
+                        { return a + b; });
+    ed.Attach<Multiplication>([](int a, int b)
+                              { return a * b; });
     // Print 12
-    // std::cout << ed.Call<Multiplication>(3, 4) << std::endl;
+    std::cout << ed.Call<Multiplication>(3, 4) << std::endl;
     // Print 5
-    std::cout << ed.Call<Addition>() << std::endl;
+    std::cout << ed.Call<Addition>(2, 3) << std::endl;
 }

@@ -1,5 +1,5 @@
 # Define the list of executable names
-set(EXAMPLES same_signature)
+set(EXAMPLES hello_world same_signature)
 
 # Loop through each item in the list
 foreach(EXAMPLE ${EXAMPLES})

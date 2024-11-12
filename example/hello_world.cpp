@@ -14,5 +14,5 @@ int main()
     EventDispatcher ed;
     ed.Attach<HelloWorld>([]()
                           { std::cout << "Hello world" << std::endl; });
-    // ed.Call<HelloWorld>()
+    ed.Call<HelloWorld>();
 }
