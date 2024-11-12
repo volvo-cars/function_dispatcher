@@ -1,11 +1,11 @@
-#include <iostream>
+#pragma once
+
 #include <boost/any.hpp>
 #include <functional>
 #include <boost/ref.hpp>
 #include <tuple>
 #include <vector>
-#include <string>
-#include <map>
+#include <unordered_map>
 #include <typeindex>
 
 class EventDispatcher
@@ -43,7 +43,7 @@ private:
   {
     using args_t = std::tuple<Args...>;
     static_assert(std::is_same<typename FuncSignature::args_t, args_t>::value, "Wrong arguments");
-    return boost::any_cast<typename FuncSignature::return_t>(callbacks[typeid(FuncSignature)](args_t{std::forward<Args>(args)...}));
+    return boost::any_cast<typename FuncSignature::return_t &&>(callbacks[typeid(FuncSignature)](args_t{std::forward<Args>(args)...}));
   }
 
   template <typename FuncSignature, typename... Args>
@@ -63,7 +63,7 @@ private:
                       typename std::result_of<Func(std::tuple_element_t<I, typename FuncSignature::args_t>...)>::type>::value,
                   "Wrong return type");
     using args_t = typename FuncSignature::args_t;
-    return boost::any{func(std::get<I>(boost::any_cast<args_t>(std::move(args)))...)};
+    return boost::any{func(std::get<I>(boost::any_cast<args_t &&>(std::move(args)))...)};
   }
 
   template <typename FuncSignature, typename Func, std::size_t... I>
@@ -75,10 +75,9 @@ private:
                       typename std::result_of<Func(std::tuple_element_t<I, typename FuncSignature::args_t>...)>::type>::value,
                   "Wrong return type");
     using args_t = typename FuncSignature::args_t;
-    func(std::get<I>(boost::any_cast<args_t>(std::move(args)))...);
+    func(std::get<I>(boost::any_cast<args_t &&>(std::move(args)))...);
   }
 
-  // TODO unordered map ?
-  std::map<std::type_index, std::function<boost::any(boost::any)>> callbacks;
-  std::map<std::type_index, std::function<void(boost::any)>> callbacks_void;
+  std::unordered_map<std::type_index, std::function<boost::any(boost::any)>> callbacks;
+  std::unordered_map<std::type_index, std::function<void(boost::any)>> callbacks_void;
 };
