@@ -1,5 +1,5 @@
 # Define the list of executable names
-set(EXAMPLES hello_world same_signature complex_type)
+set(EXAMPLES hello_world same_signature complex_type two_objects)
 if(NOT CMAKE_BUILD_TYPE)
   set(CMAKE_BUILD_TYPE Release)
 endif()
