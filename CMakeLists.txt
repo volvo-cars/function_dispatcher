@@ -17,6 +17,8 @@ target_include_directories(
 )
 
 find_package(Boost REQUIRED CONFIG)
+target_link_libraries(event_dispatcher INTERFACE Boost::any)
+add_subdirectory(example)
 
 # install(TARGETS event_dispatcher EXPORT event_dispatcher_targets FILE_SET public_headers)
 # install(EXPORT event_dispatcher_targets DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/event_dispatcher)
