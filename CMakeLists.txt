@@ -4,7 +4,7 @@ project(event_dispatcher VERSION 0.1.0)
 set(CMAKE_CXX_STANDARD 14)
 include(cmake/dependencies.cmake)
 
-option(${PROJECT_NAME}_example "Build examples" OFF)
+option(${PROJECT_NAME}_example "Build examples" ON)
 option(${PROJECT_NAME}_benchmark "Build benchmark" ON)
 
 add_library(${PROJECT_NAME} INTERFACE)

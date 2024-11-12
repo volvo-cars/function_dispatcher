@@ -1,5 +1,6 @@
 #include <benchmark/benchmark.h>
 #include "event_dispatcher.hpp"
+#include "event_dispatcher_2.hpp"
 
 namespace bm = benchmark;
 
@@ -45,7 +46,6 @@ static void CallAdditionDirectly(benchmark::State &state)
 {
     std::vector<Derive *> objects;
     objects.push_back(new Derive());
-    objects.push_back(new Derive());
 
     for (auto _ : state)
     {
@@ -61,7 +61,6 @@ static void CallAdditionVirtual(benchmark::State &state)
     // Disable inlining
     std::vector<Base *> objects;
     objects.push_back(new Derive());
-    objects.push_back(new Derive_2());
 
     for (auto _ : state)
     {
@@ -86,6 +85,20 @@ static void CallAdditionEventDispatcher(benchmark::State &state)
     for (auto _ : state)
     {
         bm::DoNotOptimize(ed.Call<Addition>(2, 3));
+    }
+}
+
+int AdditionCall(int a, int b)
+{
+    return a + b;
+}
+
+static void CallAdditionEventDispatcher2(benchmark::State &state)
+{
+    EventDispatcher2 ed;
+    ed.Attach<Addition>(&AdditionCall);
+    for (auto _ : state)
+    {
         bm::DoNotOptimize(ed.Call<Addition>(2, 3));
     }
 }
@@ -94,14 +107,10 @@ static void CallManipulateStringDirectly(benchmark::State &state)
 {
     std::vector<Derive *> objects;
     objects.push_back(new Derive());
-    objects.push_back(new Derive());
 
     for (auto _ : state)
     {
-        for (Derive *base : objects)
-        {
-            bm::DoNotOptimize(base->ManipulateString(std::string("Hello this is a long string, really long string. Let's make sure it is too long to be optinized away")));
-        }
+        bm::DoNotOptimize(objects[0]->ManipulateString(std::string("Hello this is a long string, really long string. Let's make sure it is too long to be optinized away")));
     }
 }
 
@@ -110,14 +119,10 @@ static void CallManipulateStringVirtual(benchmark::State &state)
     // Disable inlining
     std::vector<Base *> objects;
     objects.push_back(new Derive());
-    objects.push_back(new Derive_2());
 
     for (auto _ : state)
     {
-        for (Base *base : objects)
-        {
-            bm::DoNotOptimize(base->ManipulateString(std::string("Hello this is a long string, really long string. Let's make sure it is too long to be optinized away")));
-        }
+        bm::DoNotOptimize(objects[0]->ManipulateString(std::string("Hello this is a long string, really long string. Let's make sure it is too long to be optinized away")));
     }
 }
 
@@ -139,21 +144,33 @@ static void CallManipulateStringEventDispatcher(benchmark::State &state)
     }
 }
 
+std::string ManipulateStringCall(std::string message)
+{
+    message.append(" planet");
+    return message;
+}
+
+static void CallManipulateStringEventDispatcher2(benchmark::State &state)
+{
+    EventDispatcher2 ed;
+    ed.Attach<ManipulateString>(&ManipulateStringCall);
+    for (auto _ : state)
+    {
+        bm::DoNotOptimize(ed.Call<ManipulateString>(std::string{"Hello this is a long string, really long string. Let's make sure it is too long to be optinized away"}));
+    }
+}
+
 static void CallManipulateStringRefVirtual(benchmark::State &state)
 {
     // Disable inlining
     std::vector<Base *> objects;
     objects.push_back(new Derive());
-    objects.push_back(new Derive_2());
     const std::string a{"Hello this is a long string, really long string. Let's make sure it is too long to be optinized away"};
 
     for (auto _ : state)
     {
-        for (Base *base : objects)
-        {
 
-            base->ManipulateStringRef(a);
-        }
+        objects[0]->ManipulateStringRef(a);
     }
 }
 
@@ -161,15 +178,11 @@ static void CallManipulateStringRefDirectly(benchmark::State &state)
 {
     std::vector<Derive *> objects;
     objects.push_back(new Derive());
-    objects.push_back(new Derive());
     const std::string a{"Hello this is a long string, really long string. Let's make sure it is too long to be optinized away"};
 
     for (auto _ : state)
     {
-        for (Derive *base : objects)
-        {
-            base->ManipulateStringRef(a);
-        }
+        objects[0]->ManipulateStringRef(a);
     }
 }
 
@@ -179,15 +192,29 @@ struct ManipulateStringRef
     using return_t = void;
 };
 
+void ManipulateStringRefCall(std::reference_wrapper<const std::string> a)
+{
+    bm::DoNotOptimize(a.get().size());
+}
+
 static void CallManipulateStringRefEventDispatcher(benchmark::State &state)
 {
     EventDispatcher ed;
-    ed.Attach<ManipulateStringRef>([](std::reference_wrapper<const std::string> a)
-                                   { volatile auto i = a.get().size(); });
+    ed.Attach<ManipulateStringRef>(&ManipulateStringRefCall);
     const std::string a{"Hello this is a long string, really long string. Let's make sure it is too long to be optinized away"};
     for (auto _ : state)
     {
         ed.Call<ManipulateStringRef>(std::ref(a));
+    }
+}
+
+static void CallManipulateStringRefEventDispatcher2(benchmark::State &state)
+{
+    EventDispatcher2 ed;
+    ed.Attach<ManipulateStringRef>(&ManipulateStringRefCall);
+    const std::string a{"Hello this is a long string, really long string. Let's make sure it is too long to be optinized away"};
+    for (auto _ : state)
+    {
         ed.Call<ManipulateStringRef>(std::ref(a));
     }
 }
@@ -195,10 +222,13 @@ static void CallManipulateStringRefEventDispatcher(benchmark::State &state)
 BENCHMARK(CallAdditionDirectly);
 BENCHMARK(CallAdditionVirtual);
 BENCHMARK(CallAdditionEventDispatcher);
+BENCHMARK(CallAdditionEventDispatcher2);
 BENCHMARK(CallManipulateStringDirectly);
 BENCHMARK(CallManipulateStringVirtual);
 BENCHMARK(CallManipulateStringEventDispatcher);
+BENCHMARK(CallManipulateStringEventDispatcher2);
 BENCHMARK(CallManipulateStringRefDirectly);
 BENCHMARK(CallManipulateStringRefVirtual);
 BENCHMARK(CallManipulateStringRefEventDispatcher);
+BENCHMARK(CallManipulateStringRefEventDispatcher2);
 BENCHMARK_MAIN();

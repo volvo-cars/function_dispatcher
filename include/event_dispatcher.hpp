@@ -2,7 +2,6 @@
 
 #include <boost/any.hpp>
 #include <functional>
-#include <boost/ref.hpp>
 #include <tuple>
 #include <vector>
 #include <unordered_map>
