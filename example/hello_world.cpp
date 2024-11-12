@@ -5,8 +5,8 @@
 
 struct HelloWorld
 {
-    using args = std::tuple<>;
-    using return_type = void;
+    using args_t = std::tuple<>;
+    using return_t = void;
 };
 
 int main()

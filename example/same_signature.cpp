@@ -4,14 +4,14 @@
 
 struct Addition
 {
-    using args = std::tuple<int, int>;
-    using return_type = int;
+    using args_t = std::tuple<int, int>;
+    using return_t = int;
 };
 
 struct Multiplication
 {
-    using args = std::tuple<int, int>;
-    using return_type = int;
+    using args_t = std::tuple<int, int>;
+    using return_t = int;
 };
 
 int main()
