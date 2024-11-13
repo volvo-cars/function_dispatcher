@@ -1,4 +1,4 @@
-#include "event_dispatcher_2.hpp"
+#include "event_dispatcher.hpp"
 
 #include <iostream>
 #include <string>
@@ -9,14 +9,10 @@ struct HelloWorld
     using return_t = void;
 };
 
-void SayHello()
-{
-    std::cout << "Hello world" << std::endl;
-}
-
 int main()
 {
-    EventDispatcher2 ed;
-    ed.Attach<HelloWorld>(&SayHello);
+    EventDispatcher ed;
+    ed.Attach<HelloWorld>([]()
+                          { std::cout << "Hello world" << std::endl; });
     ed.Call<HelloWorld>();
 }

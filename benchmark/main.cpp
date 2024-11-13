@@ -1,6 +1,6 @@
 #include <benchmark/benchmark.h>
 #include "event_dispatcher.hpp"
-#include "event_dispatcher_2.hpp"
+#include "function_dispatcher.hpp"
 
 namespace bm = benchmark;
 
@@ -79,12 +79,12 @@ struct Addition
 
 static void CallAdditionEventDispatcher(benchmark::State &state)
 {
-    EventDispatcher ed;
-    ed.Attach<Addition>([](int a, int b)
+    EventDispatcher fd;
+    fd.Attach<Addition>([](int a, int b)
                         { return a + b; });
     for (auto _ : state)
     {
-        bm::DoNotOptimize(ed.Call<Addition>(2, 3));
+        bm::DoNotOptimize(fd.Call<Addition>(2, 3));
     }
 }
 
@@ -93,13 +93,13 @@ int AdditionCall(int a, int b)
     return a + b;
 }
 
-static void CallAdditionEventDispatcher2(benchmark::State &state)
+static void CallAdditionFunctionDispatcher(benchmark::State &state)
 {
-    EventDispatcher2 ed;
-    ed.Attach<Addition>(&AdditionCall);
+    FunctionDispatcher fd;
+    fd.Attach<Addition>(&AdditionCall);
     for (auto _ : state)
     {
-        bm::DoNotOptimize(ed.Call<Addition>(2, 3));
+        bm::DoNotOptimize(fd.Call<Addition>(2, 3));
     }
 }
 
@@ -134,13 +134,13 @@ struct ManipulateString
 
 static void CallManipulateStringEventDispatcher(benchmark::State &state)
 {
-    EventDispatcher ed;
-    ed.Attach<ManipulateString>([](std::string a)
+    EventDispatcher fd;
+    fd.Attach<ManipulateString>([](std::string a)
                                 {a.append(" planet");
         return a; });
     for (auto _ : state)
     {
-        bm::DoNotOptimize(ed.Call<ManipulateString>(std::string{"Hello this is a long string, really long string. Let's make sure it is too long to be optinized away"}));
+        bm::DoNotOptimize(fd.Call<ManipulateString>(std::string{"Hello this is a long string, really long string. Let's make sure it is too long to be optinized away"}));
     }
 }
 
@@ -150,13 +150,13 @@ std::string ManipulateStringCall(std::string message)
     return message;
 }
 
-static void CallManipulateStringEventDispatcher2(benchmark::State &state)
+static void CallManipulateStringFunctionDispatcher(benchmark::State &state)
 {
-    EventDispatcher2 ed;
-    ed.Attach<ManipulateString>(&ManipulateStringCall);
+    FunctionDispatcher fd;
+    fd.Attach<ManipulateString>(&ManipulateStringCall);
     for (auto _ : state)
     {
-        bm::DoNotOptimize(ed.Call<ManipulateString>(std::string{"Hello this is a long string, really long string. Let's make sure it is too long to be optinized away"}));
+        bm::DoNotOptimize(fd.Call<ManipulateString>(std::string{"Hello this is a long string, really long string. Let's make sure it is too long to be optinized away"}));
     }
 }
 
@@ -199,36 +199,36 @@ void ManipulateStringRefCall(std::reference_wrapper<const std::string> a)
 
 static void CallManipulateStringRefEventDispatcher(benchmark::State &state)
 {
-    EventDispatcher ed;
-    ed.Attach<ManipulateStringRef>(&ManipulateStringRefCall);
+    EventDispatcher fd;
+    fd.Attach<ManipulateStringRef>(&ManipulateStringRefCall);
     const std::string a{"Hello this is a long string, really long string. Let's make sure it is too long to be optinized away"};
     for (auto _ : state)
     {
-        ed.Call<ManipulateStringRef>(std::ref(a));
+        fd.Call<ManipulateStringRef>(std::ref(a));
     }
 }
 
-static void CallManipulateStringRefEventDispatcher2(benchmark::State &state)
+static void CallManipulateStringRefFunctionDispatcher(benchmark::State &state)
 {
-    EventDispatcher2 ed;
-    ed.Attach<ManipulateStringRef>(&ManipulateStringRefCall);
+    FunctionDispatcher fd;
+    fd.Attach<ManipulateStringRef>(&ManipulateStringRefCall);
     const std::string a{"Hello this is a long string, really long string. Let's make sure it is too long to be optinized away"};
     for (auto _ : state)
     {
-        ed.Call<ManipulateStringRef>(std::ref(a));
+        fd.Call<ManipulateStringRef>(std::ref(a));
     }
 }
 
 BENCHMARK(CallAdditionDirectly);
 BENCHMARK(CallAdditionVirtual);
+BENCHMARK(CallAdditionFunctionDispatcher);
 BENCHMARK(CallAdditionEventDispatcher);
-BENCHMARK(CallAdditionEventDispatcher2);
 BENCHMARK(CallManipulateStringDirectly);
 BENCHMARK(CallManipulateStringVirtual);
+BENCHMARK(CallManipulateStringFunctionDispatcher);
 BENCHMARK(CallManipulateStringEventDispatcher);
-BENCHMARK(CallManipulateStringEventDispatcher2);
 BENCHMARK(CallManipulateStringRefDirectly);
 BENCHMARK(CallManipulateStringRefVirtual);
+BENCHMARK(CallManipulateStringRefFunctionDispatcher);
 BENCHMARK(CallManipulateStringRefEventDispatcher);
-BENCHMARK(CallManipulateStringRefEventDispatcher2);
 BENCHMARK_MAIN();

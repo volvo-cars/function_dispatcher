@@ -7,7 +7,7 @@
 #include <unordered_map>
 #include <typeindex>
 
-class EventDispatcher2
+class FunctionDispatcher
 {
 public:
     template <typename FuncSignature, typename Func>
