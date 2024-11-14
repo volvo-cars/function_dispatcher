@@ -1,7 +1,7 @@
 #include <memory>
 #include <iostream>
 
-#include "event_dispatcher.hpp"
+#include "function_dispatcher.hpp"
 
 struct Ping
 {
@@ -24,7 +24,7 @@ struct PingPong
 class ObjectA
 {
 public:
-    ObjectA(std::shared_ptr<EventDispatcher> ed) : ed_(std::move(ed))
+    ObjectA(std::shared_ptr<FunctionDispatcher> ed) : ed_(std::move(ed))
     {
         ed_->Attach<Ping>([this]()
                           { SayPing(); });
@@ -36,13 +36,13 @@ public:
     }
 
 private:
-    std::shared_ptr<EventDispatcher> ed_;
+    std::shared_ptr<FunctionDispatcher> ed_;
 };
 
 class ObjectB
 {
 public:
-    ObjectB(std::shared_ptr<EventDispatcher> ed) : ed_(std::move(ed))
+    ObjectB(std::shared_ptr<FunctionDispatcher> ed) : ed_(std::move(ed))
     {
         ed_->Attach<Pong>([this]()
                           { SayPong(); });
@@ -54,13 +54,13 @@ public:
     }
 
 private:
-    std::shared_ptr<EventDispatcher> ed_;
+    std::shared_ptr<FunctionDispatcher> ed_;
 };
 
 class ObjectC
 {
 public:
-    ObjectC(std::shared_ptr<EventDispatcher> ed) : ed_(std::move(ed))
+    ObjectC(std::shared_ptr<FunctionDispatcher> ed) : ed_(std::move(ed))
     {
         ed_->Attach<PingPong>([this](int times)
                               { SayPingPong(times); });
@@ -76,12 +76,12 @@ public:
     }
 
 private:
-    std::shared_ptr<EventDispatcher> ed_;
+    std::shared_ptr<FunctionDispatcher> ed_;
 };
 
 int main()
 {
-    auto ed = std::make_shared<EventDispatcher>();
+    auto ed = std::make_shared<FunctionDispatcher>();
     ObjectA object_a{ed};
     ObjectB object_b{ed};
     ObjectC object_c{ed};

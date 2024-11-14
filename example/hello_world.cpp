@@ -1,4 +1,4 @@
-#include "event_dispatcher.hpp"
+#include "function_dispatcher.hpp"
 
 #include <iostream>
 #include <string>
@@ -11,8 +11,8 @@ struct HelloWorld
 
 int main()
 {
-    EventDispatcher ed;
-    ed.Attach<HelloWorld>([]()
+    FunctionDispatcher fd;
+    fd.Attach<HelloWorld>([]()
                           { std::cout << "Hello world" << std::endl; });
-    ed.Call<HelloWorld>();
+    fd.Call<HelloWorld>();
 }

@@ -1,4 +1,4 @@
-#include "event_dispatcher.hpp"
+#include "function_dispatcher.hpp"
 
 #include <string>
 #include <iostream>
@@ -41,16 +41,16 @@ struct MoveComplexType
 
 int main()
 {
-    EventDispatcher ed;
-    ed.Attach<SayThing>([](
+    FunctionDispatcher fd;
+    fd.Attach<SayThing>([](
                             std::reference_wrapper<const Message> message)
                         { std::cout << message.get().message << std::endl; });
     const Message message{"Hello world"};
-    ed.Call<SayThing>(std::ref(message));
-    ed.Attach<MoveComplexType>([](
+    fd.Call<SayThing>(std::ref(message));
+    fd.Attach<MoveComplexType>([](
                                    Message message, std::string message_to_add)
                                { message.message.append(message_to_add);
                                std::cout << "Returning message" << std::endl;
                                return message; });
-    std::cout << ed.Call<MoveComplexType>(Message{"Hello "}, std::string{"world"}).message << std::endl;
+    std::cout << fd.Call<MoveComplexType>(Message{"Hello "}, std::string{"world"}).message << std::endl;
 }
