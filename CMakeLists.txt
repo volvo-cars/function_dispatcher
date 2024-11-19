@@ -12,9 +12,6 @@ target_sources(${PROJECT_NAME} INTERFACE FILE_SET public_headers TYPE HEADERS
   BASE_DIRS include
   FILES include/${PROJECT_NAME}.hpp)
 
-add_compile_options(-fsanitize=undefined)
-add_link_options(-fsanitize=undefined)
-
 include(GNUInstallDirs)
 target_include_directories(
 	${PROJECT_NAME} INTERFACE
