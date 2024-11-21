@@ -1,5 +1,5 @@
 #include <benchmark/benchmark.h>
-#include "function_dispatcher.hpp"
+#include "dispatcher.hpp"
 
 namespace bm = benchmark;
 
@@ -78,12 +78,11 @@ struct Addition
 
 static void CallAdditionFunctionDispatcher(benchmark::State &state)
 {
-    FunctionDispatcher fd;
-    fd.Attach<Addition>([](int a, int b)
-                        { return a + b; });
+    dispatcher::attach<Addition>([](int a, int b)
+                                 { return a + b; });
     for (auto _ : state)
     {
-        bm::DoNotOptimize(fd.Call<Addition>(2, 3));
+        bm::DoNotOptimize(dispatcher::call<Addition>(2, 3));
     }
 }
 
@@ -118,13 +117,12 @@ struct ManipulateString
 
 static void CallManipulateStringFunctionDispatcher(benchmark::State &state)
 {
-    FunctionDispatcher fd;
-    fd.Attach<ManipulateString>([](std::string a)
-                                {a.append(" planet");
+    dispatcher::attach<ManipulateString>([](std::string a)
+                                         {a.append(" planet");
         return a; });
     for (auto _ : state)
     {
-        bm::DoNotOptimize(fd.Call<ManipulateString>(std::string{"Hello this is a long string, really long string. Let's make sure it is too long to be optinized away"}));
+        bm::DoNotOptimize(dispatcher::call<ManipulateString>(std::string{"Hello this is a long string, really long string. Let's make sure it is too long to be optinized away"}));
     }
 }
 
@@ -156,19 +154,18 @@ static void CallManipulateStringRefDirectly(benchmark::State &state)
 
 struct ManipulateStringRef
 {
-    using args_t = std::tuple<std::reference_wrapper<const std::string>>;
+    using args_t = std::tuple<const std::string &>;
     using return_t = void;
 };
 
 static void CallManipulateStringRefFunctionDispatcher(benchmark::State &state)
 {
-    FunctionDispatcher fd;
-    fd.Attach<ManipulateStringRef>([](std::reference_wrapper<const std::string> message)
-                                   { bm::DoNotOptimize(message.get().size()); });
+    dispatcher::attach<ManipulateStringRef>([](const std::string &message)
+                                            { bm::DoNotOptimize(message.size()); });
     const std::string a{"Hello this is a long string, really long string. Let's make sure it is too long to be optinized away"};
     for (auto _ : state)
     {
-        fd.Call<ManipulateStringRef>(std::ref(a));
+        dispatcher::call<ManipulateStringRef>(a);
     }
 }
 

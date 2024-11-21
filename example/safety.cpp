@@ -1,7 +1,7 @@
 #include <iostream>
-#include <vector>
+#include <string>
 
-#include "function_dispatcher.hpp"
+#include "dispatcher.hpp"
 
 struct Addition
 {
@@ -11,20 +11,19 @@ struct Addition
 
 int main()
 {
-    FunctionDispatcher fd;
     // Missing handler will throw a std::bad_function_call exception
     try
     {
-        fd.Call<Addition>(4.0f, 3.5f);
+        dispatcher::call<Addition>(4.0f, 3.5f);
     }
     catch (const std::bad_function_call &e)
     {
         std::cout << e.what() << std::endl;
     }
     // Will not compile due when the Attach function signature does not correspond
-    // fd.Attach<Addition>([](float a, float b) -> std::string
-    //                     { return std::string{"jzhfkjhfjkh"}; });
+    // dispatcher::attach<Addition>([](float a, float b) -> std::string
+    //                                   { return std::string{"Hello world"}; });
 
     // Will not compile when the Call does not have the correct arguments
-    // std::cout << fd.Call<Addition>(4.0f, std::string{"Hello"}) << std::endl;
+    // std::cout << dispatcher::call<Addition>(4.0f, std::string{"Hello"}) << std::endl;
 }

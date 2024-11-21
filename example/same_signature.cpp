@@ -1,5 +1,5 @@
 #include <iostream>
-#include "function_dispatcher.hpp"
+#include "dispatcher.hpp"
 
 struct Addition
 {
@@ -15,13 +15,12 @@ struct Multiplication
 
 int main()
 {
-    FunctionDispatcher fd;
-    fd.Attach<Addition>([](int a, int b)
-                        { return a + b; });
-    fd.Attach<Multiplication>([](int a, int b)
-                              { return a * b; });
+    dispatcher::attach<Addition>([](int a, int b)
+                                 { return a + b; });
+    dispatcher::attach<Multiplication>([](int a, int b)
+                                       { return a * b; });
     // Print 12
-    std::cout << fd.Call<Multiplication>(3, 4) << std::endl;
+    std::cout << dispatcher::call<Multiplication>(3, 4) << std::endl;
     // Print 5
-    std::cout << fd.Call<Addition>(2, 3) << std::endl;
+    std::cout << dispatcher::call<Addition>(2, 3) << std::endl;
 }

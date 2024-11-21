@@ -13,6 +13,6 @@ FetchContent_Declare(
 )
 FetchContent_MakeAvailable(benchmark)
 
-add_executable(${PROJECT_NAME}_benchmark main.cpp)
+add_executable(${PROJECT_NAME}_benchmark benchmark.cpp)
 target_link_libraries(${PROJECT_NAME}_benchmark PRIVATE benchmark::benchmark ${PROJECT_NAME})
 

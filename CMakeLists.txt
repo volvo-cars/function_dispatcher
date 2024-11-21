@@ -1,11 +1,10 @@
 cmake_minimum_required(VERSION 3.24)
 
-project(event_dispatcher VERSION 0.1.0) 
-set(CMAKE_CXX_STANDARD 14)
+project(function_dispatcher VERSION 0.1.0) 
+set(CMAKE_CXX_STANDARD 17)
 
 option(${PROJECT_NAME}_example "Build examples" ON)
 option(${PROJECT_NAME}_benchmark "Build benchmark" ON)
-option(${PROJECT_NAME}_install "Install library" ON)
 
 add_library(${PROJECT_NAME} INTERFACE)
 target_sources(${PROJECT_NAME} INTERFACE FILE_SET public_headers TYPE HEADERS 
@@ -25,8 +24,4 @@ endif()
 
 if(${PROJECT_NAME}_benchmark)
 	add_subdirectory(benchmark)
-endif()
-
-if(${PROJECT_NAME}_install)
-	include(cmake/install.cmake)
 endif()

@@ -1,4 +1,4 @@
-#include "function_dispatcher.hpp"
+#include "dispatcher.hpp"
 
 #include <string>
 #include <iostream>
@@ -27,12 +27,6 @@ struct Message
     std::string message = "";
 };
 
-struct SayThing
-{
-    using args_t = std::tuple<std::reference_wrapper<const Message>>;
-    using return_t = void;
-};
-
 struct MoveComplexType
 {
     using args_t = std::tuple<Message, std::string>;
@@ -41,16 +35,10 @@ struct MoveComplexType
 
 int main()
 {
-    FunctionDispatcher fd;
-    fd.Attach<SayThing>([](
-                            std::reference_wrapper<const Message> message)
-                        { std::cout << message.get().message << std::endl; });
-    const Message message{"Hello world"};
-    fd.Call<SayThing>(std::ref(message));
-    fd.Attach<MoveComplexType>([](
-                                   Message message, std::string message_to_add)
-                               { message.message.append(message_to_add);
+    dispatcher::attach<MoveComplexType>([](
+                                            Message message, std::string message_to_add)
+                                        { message.message.append(message_to_add);
                                std::cout << "Returning message" << std::endl;
                                return message; });
-    std::cout << fd.Call<MoveComplexType>(Message{"Hello "}, std::string{"world"}).message << std::endl;
+    std::cout << dispatcher::call<MoveComplexType>(Message{"Hello "}, std::string{"world"}).message << std::endl;
 }
