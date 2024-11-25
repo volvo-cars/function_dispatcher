@@ -6,13 +6,11 @@
 struct SayHello
 {
     using args_t = std::tuple<const std::string &>;
-    using return_t = void;
 };
 
 struct ModifyString
 {
     using args_t = std::tuple<std::string &>;
-    using return_t = void;
 };
 
 int main()
