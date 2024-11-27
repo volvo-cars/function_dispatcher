@@ -104,7 +104,7 @@ namespace dispatcher
 
         using func_type = typename FunctionFromTuple<return_t, args_t>::type;
 
-        static inline func_type function;
+        static func_type function;
     };
 
     template <typename FuncSignature, typename Callable>
@@ -124,6 +124,10 @@ namespace dispatcher
     {
         return FunctionDispatcher<FuncSignature>::call(std::forward<Args>(args)...);
     }
+
+#define DEFINE_FUNCTION_DISPATCHER(FuncSignature) \
+    template <>                                   \
+    typename FunctionDispatcher<FuncSignature>::func_type FunctionDispatcher<FuncSignature>::function = nullptr;
 
     // ========================================= Event loop ========================================= //
 
@@ -185,6 +189,19 @@ namespace dispatcher
         return event_loop;
     }
 
+    template <typename F, typename Tuple, std::size_t... Is>
+    void call_with_tuple(F &&f, Tuple &&t, std::index_sequence<Is...>)
+    {
+        f(std::get<Is>(std::forward<Tuple>(t))...);
+    }
+
+    template <typename F, typename Tuple>
+    void call_with_tuple(F &&f, Tuple &&t)
+    {
+        constexpr auto size = std::tuple_size<std::decay_t<Tuple>>::value;
+        call_with_tuple(std::forward<F>(f), std::forward<Tuple>(t), std::make_index_sequence<size>{});
+    }
+
     template <typename FuncSignature, typename Network>
     struct EventDispatcher
     {
@@ -197,18 +214,17 @@ namespace dispatcher
         template <typename... Args>
         static void publish(Args &&...args)
         {
+            auto argsTuple = std::make_tuple(std::forward<Args>(args)...);
             getEventLoop<Network>().Post(
-                [args = std::forward<Args>(args)...]() mutable
-                {
-                    EventDispatcher::signal(std::forward<Args>(args)...);
-                });
+                [argsTuple = std::move(argsTuple)]() mutable
+                { call_with_tuple(signal, std::move(argsTuple)); });
         }
 
         using args_t = typename args_t_or_default<FuncSignature, has_args_t<FuncSignature>::value>::type;
 
         using signal_type = typename SignalFromTuple<args_t>::type;
 
-        static inline signal_type signal;
+        static signal_type signal;
     };
 
     template <typename FuncSignature, typename Network = Global, typename Callable>
@@ -222,5 +238,15 @@ namespace dispatcher
     {
         EventDispatcher<FuncSignature, Network>::publish(std::forward<Args>(args)...);
     }
+
+#define DEFINE_EVENT_DISPATCHER(FuncSignature)                                                                    \
+    template <>                                                                                                   \
+    typename EventDispatcher<FuncSignature, Global>::signal_type EventDispatcher<FuncSignature, Global>::signal = \
+        typename SignalFromTuple<args_t>::type{};
+
+#define DEFINE_EVENT_DISPATCHER_NETWORK(FuncSignature, Network)                                                     \
+    template <>                                                                                                     \
+    typename EventDispatcher<FuncSignature, Network>::signal_type EventDispatcher<FuncSignature, Network>::signal = \
+        typename SignalFromTuple<args_t>::type{};
 
 } // namespace dispatcher

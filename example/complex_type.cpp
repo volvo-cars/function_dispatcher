@@ -33,6 +33,8 @@ struct MoveComplexType
     using return_t = Message;
 };
 
+// Perfect forwarding all the way
+
 int main()
 {
     dispatcher::attach<MoveComplexType>([](

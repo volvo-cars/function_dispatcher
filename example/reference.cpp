@@ -3,6 +3,8 @@
 #include <string>
 #include <iostream>
 
+// You can call functions and event with references, they will be perfectly forwarded
+
 struct SayHello
 {
     using args_t = std::tuple<const std::string &>;

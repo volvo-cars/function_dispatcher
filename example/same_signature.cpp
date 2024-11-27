@@ -1,6 +1,8 @@
 #include <iostream>
 #include "dispatcher.hpp"
 
+// You can have different events with the same signature
+
 struct Addition
 {
     using args_t = std::tuple<int, int>;

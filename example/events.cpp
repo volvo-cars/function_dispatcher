@@ -4,7 +4,6 @@
 
 struct HelloWorld
 {
-    using args_t = std::tuple<>;
 };
 
 int main()
