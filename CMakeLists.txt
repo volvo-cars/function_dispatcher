@@ -6,6 +6,39 @@ set(CMAKE_CXX_STANDARD 17)
 option(${PROJECT_NAME}_example "Build examples" ON)
 option(${PROJECT_NAME}_benchmark "Build benchmark" ON)
 
+include(FetchContent)
+
+find_package(Boost 
+  1.83.0
+  QUIET
+  COMPONENTS 
+	asio
+    signals2
+)
+
+if(NOT Boost_FOUND)
+  set(FETCHCONTENT_QUIET OFF) 
+  FetchContent_Declare(
+    Boost
+    GIT_REPOSITORY https://github.com/boostorg/boost.git
+    GIT_PROGRESS TRUE
+    GIT_SHALLOW TRUE
+	GIT_TAG boost-1.83.0
+	OVERRIDE_FIND_PACKAGE
+  )
+  FetchContent_MakeAvailable(Boost)
+  
+  find_package(Boost 
+  1.83.0
+  REQUIRED
+  COMPONENTS 
+	asio
+    signals2
+)
+else()
+  message(STATUS "Using installed Boost: ${Boost_DIR}")
+endif()
+
 add_library(${PROJECT_NAME} INTERFACE)
 target_sources(${PROJECT_NAME} INTERFACE FILE_SET public_headers TYPE HEADERS 
   BASE_DIRS include
@@ -17,6 +50,7 @@ target_include_directories(
 	$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
 	$<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>
 )
+target_link_libraries(${PROJECT_NAME} INTERFACE Boost::signals2 Boost::asio)
 
 if(${PROJECT_NAME}_example)
 	add_subdirectory(example)

@@ -1,8 +1,6 @@
 #pragma once
 
-#include <boost/any.hpp>
 #include <boost/asio.hpp>
-#include <boost/hana/functional/apply.hpp>
 #include <boost/signals2.hpp>
 #include <functional>
 #include <tuple>
@@ -198,9 +196,10 @@ namespace dispatcher
         static void publish(Args &&...args)
         {
             getEventLoop<Network>().Post(
-                [args = std::forward<Args>(args)...]() mutable
+                [args = std::make_tuple(std::forward<Args>(args)...)]() mutable
                 {
-                    EventDispatcher::signal(std::forward<Args>(args)...);
+                    std::apply([](auto &&...unpackedArgs)
+                               { EventDispatcher::signal(std::forward<decltype(unpackedArgs)>(unpackedArgs)...); }, std::move(args));
                 });
         }
 

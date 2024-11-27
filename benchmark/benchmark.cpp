@@ -155,7 +155,6 @@ static void CallManipulateStringRefDirectly(benchmark::State &state)
 struct ManipulateStringRef
 {
     using args_t = std::tuple<const std::string &>;
-    using return_t = void;
 };
 
 static void CallManipulateStringRefFunctionDispatcher(benchmark::State &state)
@@ -169,6 +168,17 @@ static void CallManipulateStringRefFunctionDispatcher(benchmark::State &state)
     }
 }
 
+static void CallManipulateStringRefFunctionDispatcherEvent(benchmark::State &state)
+{
+    dispatcher::subscribe<ManipulateStringRef>([](const std::string &message)
+                                               { bm::DoNotOptimize(message.size()); });
+    const std::string a{"Hello this is a long string, really long string. Let's make sure it is too long to be optinized away"};
+    for (auto _ : state)
+    {
+        dispatcher::publish<ManipulateStringRef>(a);
+    }
+}
+
 BENCHMARK(CallAdditionDirectly);
 BENCHMARK(CallAdditionVirtual);
 BENCHMARK(CallAdditionFunctionDispatcher);
@@ -178,4 +188,5 @@ BENCHMARK(CallManipulateStringFunctionDispatcher);
 BENCHMARK(CallManipulateStringRefDirectly);
 BENCHMARK(CallManipulateStringRefVirtual);
 BENCHMARK(CallManipulateStringRefFunctionDispatcher);
+BENCHMARK(CallManipulateStringRefFunctionDispatcherEvent);
 BENCHMARK_MAIN();
