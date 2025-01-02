@@ -9,6 +9,8 @@ struct Addition
     using return_t = float;
 };
 
+DEFINE_FUNCTION_DISPATCHER(Addition)
+
 int main()
 {
     // Missing handler will throw a std::bad_function_call exception

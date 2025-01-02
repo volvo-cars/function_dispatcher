@@ -6,6 +6,8 @@ struct HelloWorld
 {
 };
 
+DEFINE_FUNCTION_DISPATCHER(HelloWorld)
+
 // If you really need to, you can detach from an event
 
 int main()

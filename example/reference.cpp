@@ -10,10 +10,14 @@ struct SayHello
     using args_t = std::tuple<const std::string &>;
 };
 
+DEFINE_FUNCTION_DISPATCHER(SayHello)
+
 struct ModifyString
 {
     using args_t = std::tuple<std::string &>;
 };
+
+DEFINE_FUNCTION_DISPATCHER(ModifyString)
 
 int main()
 {

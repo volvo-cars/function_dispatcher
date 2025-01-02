@@ -33,6 +33,8 @@ struct MoveComplexType
     using return_t = Message;
 };
 
+DEFINE_FUNCTION_DISPATCHER(MoveComplexType)
+
 // Perfect forwarding all the way
 
 int main()

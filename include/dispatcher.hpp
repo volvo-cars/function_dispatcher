@@ -102,7 +102,7 @@ namespace dispatcher
 
         using func_type = typename FunctionFromTuple<return_t, args_t>::type;
 
-        static inline func_type function;
+        static func_type function;
     };
 
     template <typename FuncSignature, typename Callable>
@@ -122,6 +122,10 @@ namespace dispatcher
     {
         return FunctionDispatcher<FuncSignature>::call(std::forward<Args>(args)...);
     }
+#define DEFINE_FUNCTION_DISPATCHER(FuncSignature)                     \
+    template <>                                                       \
+    typename dispatcher::FunctionDispatcher<FuncSignature>::func_type \
+        dispatcher::FunctionDispatcher<FuncSignature>::function = nullptr;
 
     // ========================================= Event loop ========================================= //
 
@@ -163,6 +167,11 @@ namespace dispatcher
             io_context_.reset();
         }
 
+        boost::asio::io_context &GetIOContext()
+        {
+            return io_context_;
+        }
+
     private:
         boost::asio::io_context io_context_;
         boost::asio::executor_work_guard<decltype(io_context_.get_executor())> work_guard_;
@@ -172,15 +181,28 @@ namespace dispatcher
     // ========================================= Event dispatcher ========================================= //
 
     // Default network
-    struct Global
+    struct Default
     {
     };
 
-    template <typename Network>
+    template <typename Network = Default>
     EventLoop<Network> &getEventLoop()
     {
         static EventLoop<Network> event_loop;
         return event_loop;
+    }
+
+    template <typename F, typename Tuple, std::size_t... Is>
+    void call_with_tuple(F &&f, Tuple &&t, std::index_sequence<Is...>)
+    {
+        f(std::get<Is>(std::forward<Tuple>(t))...);
+    }
+
+    template <typename F, typename Tuple>
+    void call_with_tuple(F &&f, Tuple &&t)
+    {
+        constexpr auto size = std::tuple_size<std::decay_t<Tuple>>::value;
+        call_with_tuple(std::forward<F>(f), std::forward<Tuple>(t), std::make_index_sequence<size>{});
     }
 
     template <typename FuncSignature, typename Network>
@@ -195,31 +217,70 @@ namespace dispatcher
         template <typename... Args>
         static void publish(Args &&...args)
         {
+            auto argsTuple = std::make_tuple(std::forward<Args>(args)...);
             getEventLoop<Network>().Post(
-                [args = std::make_tuple(std::forward<Args>(args)...)]() mutable
-                {
-                    std::apply([](auto &&...unpackedArgs)
-                               { EventDispatcher::signal(std::forward<decltype(unpackedArgs)>(unpackedArgs)...); }, std::move(args));
-                });
+                [argsTuple = std::move(argsTuple)]() mutable
+                { call_with_tuple(signal, std::move(argsTuple)); });
         }
 
         using args_t = typename args_t_or_default<FuncSignature, has_args_t<FuncSignature>::value>::type;
 
         using signal_type = typename SignalFromTuple<args_t>::type;
 
-        static inline signal_type signal;
+        static signal_type signal;
     };
 
-    template <typename FuncSignature, typename Network = Global, typename Callable>
-    void subscribe(Callable &&callable)
+    template <typename FuncSignature, typename Network = Default, typename Callable>
+    boost::signals2::connection subscribe(Callable &&callable)
     {
-        EventDispatcher<FuncSignature, Network>::template subscribe(std::forward<Callable>(callable));
+        return EventDispatcher<FuncSignature, Network>::template subscribe(std::forward<Callable>(callable));
     }
 
-    template <typename FuncSignature, typename Network = Global, typename... Args>
+    template <typename FuncSignature, typename Network = Default, typename... Args>
     void publish(Args &&...args)
     {
         EventDispatcher<FuncSignature, Network>::publish(std::forward<Args>(args)...);
     }
+
+#define DEFINE_EVENT_DISPATCHER(FuncSignature)                                            \
+    template <>                                                                           \
+    typename dispatcher::EventDispatcher<FuncSignature, dispatcher::Default>::signal_type \
+        dispatcher::EventDispatcher<FuncSignature, dispatcher::Default>::signal =         \
+            typename dispatcher::SignalFromTuple<args_t>::type{};
+
+#define DEFINE_EVENT_DISPATCHER_NETWORK(FuncSignature, Network)               \
+    template <>                                                               \
+    typename dispatcher::EventDispatcher<FuncSignature, Network>::signal_type \
+        dispatcher::EventDispatcher<FuncSignature, Network>::signal = typename SignalFromTuple<args_t>::type{};
+
+    // ========================================= Timer ========================================= //
+
+    template <typename Network = Default>
+    class Timer
+    {
+    public:
+        Timer() : timer_(getEventLoop<Network>().GetIOContext())
+        {
+        }
+        void Cancel()
+        {
+            timer_.cancel();
+        }
+        std::chrono::steady_clock::time_point GetExpiry() const
+        {
+            return timer_.expiry();
+        }
+        template <typename Callback, typename Duration>
+        void DoIn(Callback &&callback, Duration &&duration)
+        {
+            timer_.expires_from_now(std::forward<Duration>(duration));
+            timer_.async_wait(std::forward<Callback>(callback));
+        }
+
+    private:
+        boost::asio::steady_timer timer_;
+    };
+
+    using DefaultTimer = Timer<Default>;
 
 } // namespace dispatcher

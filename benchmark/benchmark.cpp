@@ -76,6 +76,8 @@ struct Addition
     using return_t = int;
 };
 
+DEFINE_FUNCTION_DISPATCHER(Addition)
+
 static void CallAdditionFunctionDispatcher(benchmark::State &state)
 {
     dispatcher::attach<Addition>([](int a, int b)
@@ -114,6 +116,8 @@ struct ManipulateString
     using args_t = std::tuple<std::string>;
     using return_t = std::string;
 };
+
+DEFINE_FUNCTION_DISPATCHER(ManipulateString)
 
 static void CallManipulateStringFunctionDispatcher(benchmark::State &state)
 {
@@ -156,6 +160,9 @@ struct ManipulateStringRef
 {
     using args_t = std::tuple<const std::string &>;
 };
+
+DEFINE_EVENT_DISPATCHER(ManipulateStringRef)
+DEFINE_FUNCTION_DISPATCHER(ManipulateStringRef)
 
 static void CallManipulateStringRefFunctionDispatcher(benchmark::State &state)
 {

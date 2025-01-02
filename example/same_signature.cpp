@@ -9,11 +9,15 @@ struct Addition
     using return_t = int;
 };
 
+DEFINE_FUNCTION_DISPATCHER(Addition)
+
 struct Multiplication
 {
     using args_t = std::tuple<int, int>;
     using return_t = int;
 };
+
+DEFINE_FUNCTION_DISPATCHER(Multiplication)
 
 int main()
 {

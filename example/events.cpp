@@ -9,9 +9,13 @@ struct AnEvent
     using args_t = std::tuple<int, int>;
 };
 
+DEFINE_EVENT_DISPATCHER(AnEvent)
+
 struct OtherNetwork
 {
 };
+
+DEFINE_EVENT_DISPATCHER_NETWORK(AnEvent, OtherNetwork)
 
 int main()
 {
