@@ -1,5 +1,6 @@
 #include "dispatcher_test.hpp"
 
+#include <gmock/gmock.h>
 #include <gtest/gtest.h>
 
 #include <tuple>
@@ -15,11 +16,10 @@ class MyTest : public dispatcher::Test {};
 
 TEST_F(MyTest, a)
 {
+    // dispatcher::InSequence sequence;
+    DISPATCHER_EXPECT_CALL(Addition, 3.0f, 1).WillOnce([](float, int) { return 5; });
     DISPATCHER_EXPECT_CALL(Addition, 1.0f, 1).WillOnce([](float, int) { return 1; });
-    DISPATCHER_ON_CALL(Addition).WillByDefault([](float, int) { return 2; });
 
     std::cout << dispatcher::call<Addition>(1.0f, 1) << std::endl;
-    DISPATCHER_VERIFY_AND_CLEAR_EXPECTATIONS(Addition);
-    DISPATCHER_EXPECT_CALL(Addition, 1.0f, 1).Times(0);
-    std::cout << dispatcher::call<Addition>(1.0f, 1) << std::endl;
+    std::cout << dispatcher::call<Addition>(3.0f, 1) << std::endl;
 }

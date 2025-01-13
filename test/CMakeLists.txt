@@ -6,7 +6,7 @@ FetchContent_Declare(
     GIT_TAG release-1.10.0
 )
 FetchContent_MakeAvailable(googletest)
-target_link_libraries(${PROJECT_NAME}_test gtest gtest_main ${PROJECT_NAME})
+target_link_libraries(${PROJECT_NAME}_test gtest gtest_main gmock ${PROJECT_NAME})
 
 include(GoogleTest)
 gtest_discover_tests(${PROJECT_NAME}_test TEST_PREFIX ${PROJECT_NAME}_test.)

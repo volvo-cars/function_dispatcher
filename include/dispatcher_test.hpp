@@ -12,7 +12,37 @@
 
 namespace dispatcher {
 
-namespace details {
+namespace internal {
+
+struct Sequence {
+    int next_expected_call = 0;
+    int current_call_to_expect = 0;
+};
+
+thread_local std::shared_ptr<internal::Sequence> thread_local_sequence = nullptr;
+
+int get_next_expected_call()
+{
+    if (thread_local_sequence != nullptr) {
+        return thread_local_sequence->next_expected_call++;
+    }
+    return -1;
+}
+
+int get_current_call_to_expect()
+{
+    if (thread_local_sequence != nullptr) {
+        return thread_local_sequence->current_call_to_expect;
+    }
+    return -1;
+}
+
+void increase_current_call_to_expect()
+{
+    if (thread_local_sequence != nullptr) {
+        thread_local_sequence->current_call_to_expect++;
+    }
+}
 
 struct AnythingMatcher {
     template <typename T>
@@ -61,12 +91,16 @@ struct Expectation {
     template <typename ReturnFunction, typename Matcher>
     Expectation(const char *_file, int _line, ReturnFunction &&_return_function, Matcher &&_matcher,
                 int _expected_calls_left)
-        : file(_file),
+        : sequence_(thread_local_sequence),
+          file(_file),
           line(_line),
           return_function(std::forward<ReturnFunction>(_return_function)),
           matchers(std::forward<Matcher>(_matcher)),
           expected_calls_left(_expected_calls_left)
     {
+        if (sequence_ != nullptr) {
+            rank_in_sequence = get_next_expected_call();
+        }
     }
 
     template <typename... Args>
@@ -75,7 +109,19 @@ struct Expectation {
         if (expected_calls_left == 0) {
             return false;
         }
-        return call_tuple(matchers, std::make_index_sequence<tuple_size>{}, args...);
+
+        if (!call_tuple(matchers, std::make_index_sequence<tuple_size>{}, args...)) {
+            return false;
+        }
+        if (rank_in_sequence != -1 && sequence_ != nullptr) {
+            if (rank_in_sequence != get_current_call_to_expect()) {
+                std::cout << "Expectation constructed at " << file << ":" << line << " expected call out of sequence"
+                          << std::endl;
+                return false;
+            }
+            increase_current_call_to_expect();
+        }
+        return true;
     }
 
     template <typename... Args>
@@ -99,9 +145,11 @@ struct Expectation {
     matchers_tuple matchers;
     static constexpr auto tuple_size = std::tuple_size<std::decay_t<matchers_tuple>>::value;
     int expected_calls_left;
-    typename FunctionDispatcher<FuncSignature>::func_type return_function;
+    int rank_in_sequence = -1;
+    std::shared_ptr<internal::Sequence> sequence_;
     const char *file;
     int line;
+    typename FunctionDispatcher<FuncSignature>::func_type return_function;
 };
 
 class ExpecterBase {
@@ -206,8 +254,8 @@ class Expecter : public ExpecterBase {
     };
 };
 
-#define GET_EXPECTER(FuncSignature)                               \
-    dynamic_cast<dispatcher::details::Expecter<FuncSignature> *>( \
+#define GET_EXPECTER(FuncSignature)                                \
+    dynamic_cast<dispatcher::internal::Expecter<FuncSignature> *>( \
         expecter_container_->expecters_[typeid(FuncSignature)].get())
 
 struct ExpecterContainer {
@@ -288,25 +336,37 @@ struct DefaultExpectationBuilder {
     ExpecterContainer *expecter_container_;
 };
 
-}  // namespace details
+}  // namespace internal
 
-const details::AnythingMatcher _ = {};
+class InSequence {
+  public:
+    InSequence()
+    {
+        internal::thread_local_sequence = std::make_shared<internal::Sequence>();
+    }
+    ~InSequence()
+    {
+        internal::thread_local_sequence.reset();
+    }
+};
+
+const internal::AnythingMatcher _ = {};
 
 class Test : public testing::Test {
   protected:
-    std::unique_ptr<details::ExpecterContainer> expecter_container_ = std::make_unique<details::ExpecterContainer>();
+    std::unique_ptr<internal::ExpecterContainer> expecter_container_ = std::make_unique<internal::ExpecterContainer>();
 };
 
 #define DISPATCHER_EXPECT_CALL(FuncSignature, args...)      \
-    dispatcher::details::ExpectationBuilder<FuncSignature>  \
+    dispatcher::internal::ExpectationBuilder<FuncSignature> \
     {                                                       \
         expecter_container_.get(), __FILE__, __LINE__, args \
     }
 
-#define DISPATCHER_ON_CALL(FuncSignature)                         \
-    dispatcher::details::DefaultExpectationBuilder<FuncSignature> \
-    {                                                             \
-        expecter_container_.get()                                 \
+#define DISPATCHER_ON_CALL(FuncSignature)                          \
+    dispatcher::internal::DefaultExpectationBuilder<FuncSignature> \
+    {                                                              \
+        expecter_container_.get()                                  \
     }
 
 #define DISPATCHER_VERIFY_AND_CLEAR_EXPECTATIONS(FuncSignature) GET_EXPECTER(FuncSignature)->clean_expectations()
