@@ -10,16 +10,26 @@ struct Addition {
     using return_t = int;
 };
 
+struct RandomEvent {
+    using args_t = std::tuple<bool>;
+};
+
+struct RandomEventBis {
+    using args_t = std::tuple<>;
+};
+
 DEFINE_FUNCTION_DISPATCHER(Addition)
+DEFINE_EVENT_DISPATCHER(RandomEvent)
+DEFINE_EVENT_DISPATCHER(RandomEventBis)
 
 class MyTest : public dispatcher::Test {};
 
 TEST_F(MyTest, a)
 {
-    // dispatcher::InSequence sequence;
-    DISPATCHER_EXPECT_CALL(Addition, 3.0f, 1).WillOnce([](float, int) { return 5; });
-    DISPATCHER_EXPECT_CALL(Addition, 1.0f, 1).WillOnce([](float, int) { return 1; });
+    dispatcher::InSequence sequence;
+    DISPATCHER_EXPECT_EVENT(RandomEvent, true);
+    DISPATCHER_EXPECT_EVENT(RandomEventBis);
 
-    std::cout << dispatcher::call<Addition>(1.0f, 1) << std::endl;
-    std::cout << dispatcher::call<Addition>(3.0f, 1) << std::endl;
+    dispatcher::publish<RandomEvent>(true);
+    dispatcher::publish<RandomEventBis>();
 }
