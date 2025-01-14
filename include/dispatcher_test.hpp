@@ -24,9 +24,16 @@ thread_local std::shared_ptr<internal::Sequence> thread_local_sequence = nullptr
 int get_next_expected_call()
 {
     if (thread_local_sequence != nullptr) {
-        return thread_local_sequence->next_expected_call++;
+        return thread_local_sequence->next_expected_call;
     }
     return -1;
+}
+
+void advance_next_expected_call(int advance)
+{
+    if (thread_local_sequence != nullptr) {
+        thread_local_sequence->next_expected_call += advance;
+    }
 }
 
 int get_current_call_to_expect()
@@ -100,6 +107,7 @@ struct Expectation {
     {
         if (sequence_ != nullptr) {
             rank_in_sequence = get_next_expected_call();
+            advance_next_expected_call(expected_calls_left);
         }
     }
 
@@ -124,23 +132,17 @@ struct Expectation {
         return true;
     }
 
-    void event_published()
-    {
-        expected_calls_left--;
-    }
-
     template <typename... Args>
     typename FunctionDispatcher<FuncSignature>::return_t get_return_value(Args &&...args)
     {
         expected_calls_left--;
+        rank_in_sequence++;
         return return_function(std::forward<Args>(args)...);
     }
 
     bool expected_more_calls() const
     {
         if (expected_calls_left != 0) {
-            std::cout << "Expectation constructed at " << file << ":" << line << " expected " << expected_calls_left
-                      << " more calls" << std::endl;
             return true;
         }
         return false;
@@ -283,18 +285,17 @@ class EventExpecter : public ExpecterBase {
     void subscribe()
     {
         dispatcher::subscribe<FuncSignature>([this](Args &&...args) {
-            for (const auto &should_not_be_called : should_not_be_published_) {
-                if (call_tuple(std::get<2>(should_not_be_called),
+            for (const auto &should_not_be_published : should_not_be_published_) {
+                if (call_tuple(std::get<2>(should_not_be_published),
                                std::make_index_sequence<Expectation<FuncSignature>::tuple_size>{}, args...)) {
-                    // TODO is this enough ?
-                    GTEST_MESSAGE_AT_(std::get<0>(should_not_be_called), std::get<1>(should_not_be_called),
-                                      "Unexpected call", ::testing::TestPartResult::kNonFatalFailure);
+                    GTEST_MESSAGE_AT_(std::get<0>(should_not_be_published), std::get<1>(should_not_be_published),
+                                      "Event was not expected", ::testing::TestPartResult::kNonFatalFailure);
                 }
             }
 
             for (auto &expectation : remaining_expectation_) {
                 if (expectation.validate(args...)) {
-                    expectation.event_published();
+                    expectation.get_return_value(std::forward<Args>(args)...);
                     break;
                 }
             }
@@ -423,6 +424,12 @@ class CallExpectationBuilder {
 
 template <typename FuncSignature>
 struct DefaultExpectationBuilder {
+    DefaultExpectationBuilder(ExpecterContainer *expected_container) : expecter_container_(expected_container)
+    {
+        if (expecter_container_->expecters_.find(typeid(FuncSignature)) == expecter_container_->expecters_.end()) {
+            expecter_container_->expecters_[typeid(FuncSignature)] = std::make_unique<CallExpecter<FuncSignature>>();
+        }
+    }
     template <typename Callback>
     void WillByDefault(Callback &&callback)
     {
@@ -467,6 +474,16 @@ class EventExpectationBuilder {
         return *this;
     }
 
+    template <typename Callback>
+    EventExpectationBuilder &WillRepeatedly(Callback &&callback)
+    {
+        GET_EVENT_EXPECTER(FuncSignature)
+            ->add_expectation(
+                Expectation<FuncSignature>{file_, line_, std::forward<Callback>(callback), matchers_, times_to_match_});
+        times_to_match_ = 0;
+        return *this;
+    }
+
   private:
     typename Expectation<FuncSignature>::matchers_tuple matchers_;
     int times_to_match_ = 1;
@@ -495,9 +512,8 @@ class Test : public testing::Test {
   protected:
     void TearDown() override
     {
-        getEventLoop().Stop();
+        dispatcher::getEventLoop<dispatcher::Default>().Stop();
     }
-
     std::unique_ptr<internal::ExpecterContainer> expecter_container_ = std::make_unique<internal::ExpecterContainer>();
 };
 
@@ -506,6 +522,12 @@ class Test : public testing::Test {
     {                                                            \
         expecter_container_.get(), __FILE__, __LINE__, args      \
     }
+
+#define DISPATCHER_ENABLE_MANUAL_EVENT_DISPATCHING()                       \
+    dispatcher::getEventLoop<dispatcher::Default>().GetIOContext().stop(); \
+    dispatcher::getEventLoop<dispatcher::Default>().GetIOContext().restart();
+
+#define DISPATCHER_WAIT_FOR_EVENT() dispatcher::getEventLoop<dispatcher::Default>().GetIOContext().run_one()
 
 #define DISPATCHER_EXPECT_CALL(FuncSignature, args...)          \
     dispatcher::internal::CallExpectationBuilder<FuncSignature> \

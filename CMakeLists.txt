@@ -62,5 +62,6 @@ if(${PROJECT_NAME}_benchmark)
 endif()
 
 if(${PROJECT_NAME}_test)
+  enable_testing()
   add_subdirectory(test)
 endif()

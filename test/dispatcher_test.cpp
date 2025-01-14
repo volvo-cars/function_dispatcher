@@ -3,6 +3,7 @@
 #include <gmock/gmock.h>
 #include <gtest/gtest.h>
 
+#include <string>
 #include <tuple>
 
 struct Addition {
@@ -10,26 +11,101 @@ struct Addition {
     using return_t = int;
 };
 
-struct RandomEvent {
-    using args_t = std::tuple<bool>;
+struct Multiplication {
+    using args_t = std::tuple<float, float>;
+    using return_t = float;
 };
 
-struct RandomEventBis {
+struct SomeEvent {
+    using args_t = std::tuple<bool, const std::string&>;
+};
+
+struct AnotherEvent {
     using args_t = std::tuple<>;
 };
 
 DEFINE_FUNCTION_DISPATCHER(Addition)
-DEFINE_EVENT_DISPATCHER(RandomEvent)
-DEFINE_EVENT_DISPATCHER(RandomEventBis)
+DEFINE_FUNCTION_DISPATCHER(Multiplication)
+DEFINE_EVENT_DISPATCHER(SomeEvent)
+DEFINE_EVENT_DISPATCHER(AnotherEvent)
 
-class MyTest : public dispatcher::Test {};
+class ExampleTest : public dispatcher::Test {};
 
-TEST_F(MyTest, a)
+TEST_F(ExampleTest, ExpectingEventUnordered)
+{
+    DISPATCHER_EXPECT_EVENT(SomeEvent, dispatcher::_, "Hello")
+        .Times(2)
+        .WillRepeatedly([](bool should_print, auto message) {
+            if (should_print) {
+                std::cout << message << std::endl;
+            }
+        });
+    DISPATCHER_EXPECT_EVENT(SomeEvent, false, "World").Times(0);
+    DISPATCHER_EXPECT_EVENT(AnotherEvent);
+
+    dispatcher::publish<AnotherEvent>();
+    dispatcher::publish<SomeEvent>(true, "Hello");
+    dispatcher::publish<SomeEvent>(false, "Hello");
+}
+
+TEST_F(ExampleTest, ExpectingEventOrdered)
+{
+    DISPATCHER_ENABLE_MANUAL_EVENT_DISPATCHING();
+    dispatcher::InSequence sequence;
+    DISPATCHER_EXPECT_EVENT(SomeEvent, true, "Hello");
+    DISPATCHER_EXPECT_EVENT(AnotherEvent).Times(2);
+    DISPATCHER_EXPECT_EVENT(SomeEvent, false, "Hello");
+
+    dispatcher::publish<SomeEvent>(true, "Hello");
+    DISPATCHER_WAIT_FOR_EVENT();
+    dispatcher::publish<AnotherEvent>();
+    DISPATCHER_WAIT_FOR_EVENT();
+    dispatcher::publish<AnotherEvent>();
+    DISPATCHER_WAIT_FOR_EVENT();
+    dispatcher::publish<SomeEvent>(false, "Hello");
+    DISPATCHER_WAIT_FOR_EVENT();
+}
+
+TEST_F(ExampleTest, ExpectingCallUnordered)
+{
+    DISPATCHER_ON_CALL(Addition).WillByDefault([](auto...) { return 3; });
+    DISPATCHER_EXPECT_CALL(Addition, 2, 3).Times(2).WillRepeatedly([](auto a, auto b) { return a + b; });
+    DISPATCHER_EXPECT_CALL(Addition, 1, 2).Times(0);
+    DISPATCHER_EXPECT_CALL(Addition, 1, 3).WillOnce([](auto...) { return 10; });
+    DISPATCHER_EXPECT_CALL(Addition, 4, 3);
+
+    EXPECT_EQ(dispatcher::call<Addition>(2, 3), 5);
+    EXPECT_EQ(dispatcher::call<Addition>(1, 3), 10);
+    EXPECT_EQ(dispatcher::call<Addition>(2, 3), 5);
+    EXPECT_EQ(dispatcher::call<Addition>(4, 3), 0);
+    EXPECT_EQ(dispatcher::call<Addition>(0, 5), 3);
+}
+
+TEST_F(ExampleTest, ExpectingCallOrdered)
 {
     dispatcher::InSequence sequence;
-    DISPATCHER_EXPECT_EVENT(RandomEvent, true);
-    DISPATCHER_EXPECT_EVENT(RandomEventBis);
+    DISPATCHER_EXPECT_CALL(Addition, 2, 5);
+    DISPATCHER_EXPECT_CALL(Addition, 1, 3).Times(2);
+    DISPATCHER_EXPECT_CALL(Addition, 4, 3).Times(0);
+    DISPATCHER_EXPECT_CALL(Addition, 2, 5);
 
-    dispatcher::publish<RandomEvent>(true);
-    dispatcher::publish<RandomEventBis>();
+    dispatcher::call<Addition>(2, 5);
+    dispatcher::call<Addition>(1, 3);
+    dispatcher::call<Addition>(1, 3);
+    dispatcher::call<Addition>(2, 5);
+}
+
+TEST_F(ExampleTest, ExpectingCallAndEventOrdered)
+{
+    using dispatcher::_;
+    DISPATCHER_ENABLE_MANUAL_EVENT_DISPATCHING();
+    dispatcher::InSequence sequence;
+    DISPATCHER_EXPECT_CALL(Addition, _, _).WillOnce([](auto a, auto b) { return a + b; });
+    DISPATCHER_EXPECT_EVENT(SomeEvent, _, _);
+    DISPATCHER_EXPECT_CALL(Multiplication, _, _).WillOnce([](auto a, auto b) { return a * b; });
+
+    EXPECT_EQ(dispatcher::call<Addition>(2, 5), 7);
+    dispatcher::publish<SomeEvent>(false, "Hello world");
+    DISPATCHER_WAIT_FOR_EVENT();
+    EXPECT_EQ(dispatcher::call<Multiplication>(5, 5), 25);
 }
