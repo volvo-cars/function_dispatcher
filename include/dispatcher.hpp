@@ -1,246 +1,226 @@
 #pragma once
 
 #include <boost/asio.hpp>
+#include <boost/date_time/posix_time/posix_time.hpp>
+#include <boost/optional.hpp>
 #include <boost/signals2.hpp>
 #include <functional>
+#include <thread>
 #include <tuple>
 #include <type_traits>
 #include <utility>
 #include <vector>
 
-namespace dispatcher
-{
-    template <typename ReturnType, typename Tuple>
-    struct FunctionFromTuple;
+namespace dispatcher {
+template <typename ReturnType, typename Tuple>
+struct FunctionFromTuple;
 
-    template <typename ReturnType, typename... Args>
-    struct FunctionFromTuple<ReturnType, std::tuple<Args...>>
+template <typename ReturnType, typename... Args>
+struct FunctionFromTuple<ReturnType, std::tuple<Args...>> {
+    using type = std::function<ReturnType(Args...)>;
+};
+
+template <typename Tuple>
+struct SignalFromTuple;
+
+template <typename... Args>
+struct SignalFromTuple<std::tuple<Args...>> {
+    using type = boost::signals2::signal<void(Args...)>;
+};
+
+template <typename...>
+using void_t = void;
+
+template <typename FuncSignature, typename = void>
+struct has_return_t : std::false_type {};
+
+template <typename FuncSignature>
+struct has_return_t<FuncSignature, void_t<typename FuncSignature::return_t>> : std::true_type {};
+
+template <typename FuncSignature, bool HasReturnT>
+struct return_t_or_default {
+    using type = void;
+};
+
+template <typename FuncSignature>
+struct return_t_or_default<FuncSignature, true> {
+    using type = typename FuncSignature::return_t;
+};
+
+template <typename FuncSignature, typename = void>
+struct has_args_t : std::false_type {};
+
+template <typename FuncSignature>
+struct has_args_t<FuncSignature, void_t<typename FuncSignature::args_t>> : std::true_type {};
+
+template <typename FuncSignature, bool HasReturnT>
+struct args_t_or_default {
+    using type = std::tuple<>;
+};
+
+template <typename FuncSignature>
+struct args_t_or_default<FuncSignature, true> {
+    using type = typename FuncSignature::args_t;
+};
+
+// ========================================= Function dispatcher ========================================= //
+
+template <typename FuncSignature>
+struct FunctionDispatcher {
+    template <typename Callable>
+    static void attach(Callable &&callable)
     {
-        using type = std::function<ReturnType(Args...)>;
-    };
+        FunctionDispatcher::function = callable;
+    }
 
-    template <typename Tuple>
-    struct SignalFromTuple;
+    static void detach()
+    {
+        FunctionDispatcher::function = nullptr;
+    }
 
     template <typename... Args>
-    struct SignalFromTuple<std::tuple<Args...>>
+    static auto call(Args &&...args)
     {
-        using type = boost::signals2::signal<void(Args...)>;
-    };
-
-    template <typename...>
-    using void_t = void;
-
-    template <typename FuncSignature, typename = void>
-    struct has_return_t : std::false_type
-    {
-    };
-
-    template <typename FuncSignature>
-    struct has_return_t<FuncSignature, void_t<typename FuncSignature::return_t>> : std::true_type
-    {
-    };
-
-    template <typename FuncSignature, bool HasReturnT>
-    struct return_t_or_default
-    {
-        using type = void;
-    };
-
-    template <typename FuncSignature>
-    struct return_t_or_default<FuncSignature, true>
-    {
-        using type = typename FuncSignature::return_t;
-    };
-
-    template <typename FuncSignature, typename = void>
-    struct has_args_t : std::false_type
-    {
-    };
-
-    template <typename FuncSignature>
-    struct has_args_t<FuncSignature, void_t<typename FuncSignature::args_t>> : std::true_type
-    {
-    };
-
-    template <typename FuncSignature, bool HasReturnT>
-    struct args_t_or_default
-    {
-        using type = std::tuple<>;
-    };
-
-    template <typename FuncSignature>
-    struct args_t_or_default<FuncSignature, true>
-    {
-        using type = typename FuncSignature::args_t;
-    };
-
-    // ========================================= Function dispatcher ========================================= //
-
-    template <typename FuncSignature>
-    struct FunctionDispatcher
-    {
-        template <typename Callable>
-        static void attach(Callable &&callable)
-        {
-            FunctionDispatcher::function = callable;
-        }
-
-        static void detach()
-        {
-            FunctionDispatcher::function = nullptr;
-        }
-
-        template <typename... Args>
-        static auto call(Args &&...args)
-        {
-            return FunctionDispatcher::function(std::forward<Args>(args)...);
-        }
-
-        using return_t = typename return_t_or_default<FuncSignature, has_return_t<FuncSignature>::value>::type;
-        using args_t = typename args_t_or_default<FuncSignature, has_args_t<FuncSignature>::value>::type;
-
-        using func_type = typename FunctionFromTuple<return_t, args_t>::type;
-
-        static func_type function;
-    };
-
-    template <typename FuncSignature, typename Callable>
-    void attach(Callable &&callable)
-    {
-        FunctionDispatcher<FuncSignature>::template attach<Callable>(std::forward<Callable>(callable));
+        return FunctionDispatcher::function(std::forward<Args>(args)...);
     }
 
-    template <typename FuncSignature>
-    void detach()
-    {
-        FunctionDispatcher<FuncSignature>::detach();
-    }
+    using return_t = typename return_t_or_default<FuncSignature, has_return_t<FuncSignature>::value>::type;
+    using args_t = typename args_t_or_default<FuncSignature, has_args_t<FuncSignature>::value>::type;
 
-    template <typename FuncSignature, typename... Args>
-    auto call(Args &&...args)
-    {
-        return FunctionDispatcher<FuncSignature>::call(std::forward<Args>(args)...);
-    }
+    using func_type = typename FunctionFromTuple<return_t, args_t>::type;
+
+    static func_type function;
+};
+
+template <typename FuncSignature, typename Callable>
+void attach(Callable &&callable)
+{
+    FunctionDispatcher<FuncSignature>::template attach<Callable>(std::forward<Callable>(callable));
+}
+
+template <typename FuncSignature>
+void detach()
+{
+    FunctionDispatcher<FuncSignature>::detach();
+}
+
+template <typename FuncSignature, typename... Args>
+auto call(Args &&...args)
+{
+    return FunctionDispatcher<FuncSignature>::call(std::forward<Args>(args)...);
+}
 #define DEFINE_FUNCTION_DISPATCHER(FuncSignature)                     \
     template <>                                                       \
     typename dispatcher::FunctionDispatcher<FuncSignature>::func_type \
         dispatcher::FunctionDispatcher<FuncSignature>::function = nullptr;
 
-    // ========================================= Event loop ========================================= //
+// ========================================= Event loop ========================================= //
 
-    template <typename Network>
-    class EventLoop
+template <typename Network>
+class EventLoop {
+  public:
+    EventLoop() : work_guard_{boost::asio::make_work_guard(io_context_)}
     {
-    public:
-        EventLoop() : work_guard_{boost::asio::make_work_guard(io_context_)}
-        {
-            work_thread_ = std::thread{[this]()
-                                       { io_context_.run(); }};
-        }
-        ~EventLoop()
-        {
-            Stop();
-        }
+        work_thread_ = std::thread{[this]() { io_context_.run(); }};
+    }
+    ~EventLoop()
+    {
+        Stop();
+    }
 
-        EventLoop(const EventLoop &) = delete;
-        EventLoop(EventLoop &&) = delete;
-        EventLoop &operator=(const EventLoop &) = delete;
-        EventLoop &operator=(EventLoop &&) = delete;
+    EventLoop(const EventLoop &) = delete;
+    EventLoop(EventLoop &&) = delete;
+    EventLoop &operator=(const EventLoop &) = delete;
+    EventLoop &operator=(EventLoop &&) = delete;
 
-        template <typename T>
-        void Post(T &&arg)
-        {
-            boost::asio::post(io_context_, std::forward<T>(arg));
-        }
+    template <typename T>
+    void Post(T &&arg)
+    {
+        boost::asio::post(io_context_, std::forward<T>(arg));
+    }
 
-        void Stop()
-        {
-            Post([this]()
-                 {
+    void Stop()
+    {
+        Post([this]() {
             work_guard_.reset();
-            io_context_.stop(); });
-            if (work_thread_.joinable())
-            {
-                work_thread_.join();
-            }
-            io_context_.reset();
+            io_context_.stop();
+        });
+        if (work_thread_.joinable()) {
+            work_thread_.join();
         }
-
-        boost::asio::io_context &GetIOContext()
-        {
-            return io_context_;
-        }
-
-    private:
-        boost::asio::io_context io_context_;
-        boost::asio::executor_work_guard<decltype(io_context_.get_executor())> work_guard_;
-        std::thread work_thread_;
-    };
-
-    // ========================================= Event dispatcher ========================================= //
-
-    // Default network
-    struct Default
-    {
-    };
-
-    template <typename Network = Default>
-    EventLoop<Network> &getEventLoop()
-    {
-        static EventLoop<Network> event_loop;
-        return event_loop;
+        io_context_.reset();
     }
 
-    template <typename F, typename Tuple, std::size_t... Is>
-    void call_with_tuple(F &&f, Tuple &&t, std::index_sequence<Is...>)
+    boost::asio::io_context &GetIOContext()
     {
-        f(std::get<Is>(std::forward<Tuple>(t))...);
+        return io_context_;
     }
 
-    template <typename F, typename Tuple>
-    void call_with_tuple(F &&f, Tuple &&t)
+  private:
+    boost::asio::io_context io_context_;
+    boost::asio::executor_work_guard<decltype(io_context_.get_executor())> work_guard_;
+    std::thread work_thread_;
+};
+
+// ========================================= Event dispatcher ========================================= //
+
+// Default network
+struct Default {};
+
+template <typename Network = Default>
+EventLoop<Network> &getEventLoop()
+{
+    static EventLoop<Network> event_loop;
+    return event_loop;
+}
+
+template <typename F, typename Tuple, std::size_t... Is>
+void call_with_tuple(F &&f, Tuple &&t, std::index_sequence<Is...>)
+{
+    f(std::get<Is>(std::forward<Tuple>(t))...);
+}
+
+template <typename F, typename Tuple>
+void call_with_tuple(F &&f, Tuple &&t)
+{
+    constexpr auto size = std::tuple_size<std::decay_t<Tuple>>::value;
+    call_with_tuple(std::forward<F>(f), std::forward<Tuple>(t), std::make_index_sequence<size>{});
+}
+
+template <typename FuncSignature, typename Network>
+struct EventDispatcher {
+    template <typename Callable>
+    static boost::signals2::connection subscribe(Callable &&callable)
     {
-        constexpr auto size = std::tuple_size<std::decay_t<Tuple>>::value;
-        call_with_tuple(std::forward<F>(f), std::forward<Tuple>(t), std::make_index_sequence<size>{});
+        return EventDispatcher::signal.connect(std::forward<Callable>(callable));
     }
 
-    template <typename FuncSignature, typename Network>
-    struct EventDispatcher
+    template <typename... Args>
+    static void publish(Args &&...args)
     {
-        template <typename Callable>
-        static boost::signals2::connection subscribe(Callable &&callable)
-        {
-            return EventDispatcher::signal.connect(std::forward<Callable>(callable));
-        }
-
-        template <typename... Args>
-        static void publish(Args &&...args)
-        {
-            auto argsTuple = std::make_tuple(std::forward<Args>(args)...);
-            getEventLoop<Network>().Post(
-                [argsTuple = std::move(argsTuple)]() mutable
-                { call_with_tuple(signal, std::move(argsTuple)); });
-        }
-
-        using args_t = typename args_t_or_default<FuncSignature, has_args_t<FuncSignature>::value>::type;
-
-        using signal_type = typename SignalFromTuple<args_t>::type;
-
-        static signal_type signal;
-    };
-
-    template <typename FuncSignature, typename Network = Default, typename Callable>
-    boost::signals2::connection subscribe(Callable &&callable)
-    {
-        return EventDispatcher<FuncSignature, Network>::template subscribe(std::forward<Callable>(callable));
+        auto argsTuple = std::make_tuple(std::forward<Args>(args)...);
+        getEventLoop<Network>().Post(
+            [argsTuple = std::move(argsTuple)]() mutable { call_with_tuple(signal, std::move(argsTuple)); });
     }
 
-    template <typename FuncSignature, typename Network = Default, typename... Args>
-    void publish(Args &&...args)
-    {
-        EventDispatcher<FuncSignature, Network>::publish(std::forward<Args>(args)...);
-    }
+    using args_t = typename args_t_or_default<FuncSignature, has_args_t<FuncSignature>::value>::type;
+
+    using signal_type = typename SignalFromTuple<args_t>::type;
+
+    static signal_type signal;
+};
+
+template <typename FuncSignature, typename Network = Default, typename Callable>
+boost::signals2::connection subscribe(Callable &&callable)
+{
+    return EventDispatcher<FuncSignature, Network>::template subscribe(std::forward<Callable>(callable));
+}
+
+template <typename FuncSignature, typename Network = Default, typename... Args>
+void publish(Args &&...args)
+{
+    EventDispatcher<FuncSignature, Network>::publish(std::forward<Args>(args)...);
+}
 
 #define DEFINE_EVENT_DISPATCHER(FuncSignature)                                            \
     template <>                                                                           \
@@ -253,34 +233,100 @@ namespace dispatcher
     typename dispatcher::EventDispatcher<FuncSignature, Network>::signal_type \
         dispatcher::EventDispatcher<FuncSignature, Network>::signal = typename SignalFromTuple<args_t>::type{};
 
-    // ========================================= Timer ========================================= //
+// ========================================= Timer ========================================= //
 
-    template <typename Network = Default>
-    class Timer
+static boost::optional<boost::asio::deadline_timer::traits_type::time_type> now_;
+
+// This clock can be settable in unit test
+struct MockableClock {
+    typedef boost::asio::deadline_timer::traits_type source_traits;
+
+  public:
+    typedef source_traits::time_type time_type;
+    typedef source_traits::duration_type duration_type;
+
+    static time_type now()
     {
-    public:
-        Timer() : timer_(getEventLoop<Network>().GetIOContext())
-        {
-        }
-        void Cancel()
-        {
-            timer_.cancel();
-        }
-        std::chrono::steady_clock::time_point GetExpiry() const
-        {
-            return timer_.expiry();
-        }
-        template <typename Callback, typename Duration>
-        void DoIn(Callback &&callback, Duration &&duration)
-        {
-            timer_.expires_from_now(std::forward<Duration>(duration));
-            timer_.async_wait(std::forward<Callback>(callback));
+        if (now_) {
+            return *now_;
         }
 
-    private:
-        boost::asio::steady_timer timer_;
-    };
+        return chrono_to_ptime(std::chrono::system_clock::now());
+    }
 
-    using DefaultTimer = Timer<Default>;
+    // To be used in testing only
 
-} // namespace dispatcher
+    static void set_now(time_type t)
+    {
+        now_ = t;
+        std::this_thread::sleep_for(std::chrono::milliseconds{2});
+    }
+
+    static void advance_time(duration_type d)
+    {
+        if (!now_) {
+            set_now(chrono_to_ptime(std::chrono::system_clock::now()));
+        }
+        *now_ = add(*now_, d);
+        std::this_thread::sleep_for(std::chrono::milliseconds{2});
+    }
+
+    static time_type add(time_type t, duration_type d)
+    {
+        return source_traits::add(t, d);
+    }
+    static duration_type subtract(time_type t1, time_type t2)
+    {
+        return source_traits::subtract(t1, t2);
+    }
+    static bool less_than(time_type t1, time_type t2)
+    {
+        return source_traits::less_than(t1, t2);
+    }
+
+    // This function is called by asio to determine how often to check
+    // if the timer is ready to fire. By manipulating this function, we
+    // can make sure asio detects changes to now_ in a timely fashion.
+    static boost::posix_time::time_duration to_posix_duration(duration_type d)
+    {
+        return d < boost::posix_time::milliseconds(1) ? d : boost::posix_time::milliseconds(1);
+    }
+
+    static boost::posix_time::ptime chrono_to_ptime(const std::chrono::system_clock::time_point &tp)
+    {
+        auto duration = tp.time_since_epoch();
+        auto seconds = std::chrono::duration_cast<std::chrono::seconds>(duration);
+        auto microseconds = std::chrono::duration_cast<std::chrono::microseconds>(duration - seconds);
+        return boost::posix_time::from_time_t(seconds.count()) + boost::posix_time::microseconds(microseconds.count());
+    }
+};
+
+template <typename Network = Default>
+class Timer {
+  public:
+    Timer() : timer_(getEventLoop<Network>().GetIOContext())
+    {
+    }
+    void Cancel()
+    {
+        timer_.cancel();
+    }
+
+    template <typename Callback, typename Duration>
+    void DoIn(Callback &&callback, Duration &&duration)
+    {
+        timer_.expires_from_now(std::forward<Duration>(duration));
+        timer_.async_wait([callback = std::forward<Callback>(callback)](const boost::system::error_code &ec) {
+            if (ec != boost::asio::error::operation_aborted) {
+                callback();
+            }
+        });
+    }
+
+  private:
+    boost::asio::basic_deadline_timer<boost::posix_time::ptime, MockableClock> timer_;
+};
+
+using DefaultTimer = Timer<Default>;
+
+}  // namespace dispatcher

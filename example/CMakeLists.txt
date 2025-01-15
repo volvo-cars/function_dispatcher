@@ -1,4 +1,4 @@
-set(EXAMPLES same_signature complex_type safety reference events detaching)
+set(EXAMPLES same_signature complex_type safety reference events detaching timer)
 
 foreach(EXAMPLE ${EXAMPLES})
     add_executable(${EXAMPLE} ${EXAMPLE}.cpp)

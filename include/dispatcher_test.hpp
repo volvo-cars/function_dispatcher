@@ -528,6 +528,9 @@ class Test : public testing::Test {
     dispatcher::getEventLoop<dispatcher::Default>().GetIOContext().restart();
 
 #define DISPATCHER_WAIT_FOR_EVENT() dispatcher::getEventLoop<dispatcher::Default>().GetIOContext().run_one()
+#define DISPATCHER_POLL_FOR_EVENTS() dispatcher::getEventLoop<dispatcher::Default>().GetIOContext().poll()
+
+#define DISPATCHER_ADVANCE_TIME(duration) dispatcher::MockableClock::advance_time(duration)
 
 #define DISPATCHER_EXPECT_CALL(FuncSignature, args...)          \
     dispatcher::internal::CallExpectationBuilder<FuncSignature> \

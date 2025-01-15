@@ -4,6 +4,7 @@
 #include <gtest/gtest.h>
 
 #include <string>
+#include <thread>
 #include <tuple>
 
 struct Addition {
@@ -108,4 +109,12 @@ TEST_F(ExampleTest, ExpectingCallAndEventOrdered)
     dispatcher::publish<SomeEvent>(false, "Hello world");
     DISPATCHER_WAIT_FOR_EVENT();
     EXPECT_EQ(dispatcher::call<Multiplication>(5, 5), 25);
+}
+
+TEST_F(ExampleTest, TimerTest)
+{
+    dispatcher::DefaultTimer timer;
+    DISPATCHER_EXPECT_EVENT(AnotherEvent);
+    timer.DoIn([] { dispatcher::publish<AnotherEvent>(); }, boost::posix_time::seconds{1});
+    DISPATCHER_ADVANCE_TIME(boost::posix_time::seconds{2});
 }
