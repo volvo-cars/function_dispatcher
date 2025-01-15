@@ -52,7 +52,9 @@ TEST_F(ExampleTest, ExpectingEventUnordered)
 TEST_F(ExampleTest, ExpectingEventOrdered)
 {
     DISPATCHER_ENABLE_MANUAL_EVENT_DISPATCHING();
+
     dispatcher::InSequence sequence;
+
     DISPATCHER_EXPECT_EVENT(SomeEvent, true, "Hello");
     DISPATCHER_EXPECT_EVENT(AnotherEvent).Times(2);
     DISPATCHER_EXPECT_EVENT(SomeEvent, false, "Hello");
@@ -85,6 +87,7 @@ TEST_F(ExampleTest, ExpectingCallUnordered)
 TEST_F(ExampleTest, ExpectingCallOrdered)
 {
     dispatcher::InSequence sequence;
+
     DISPATCHER_EXPECT_CALL(Addition, 2, 5);
     DISPATCHER_EXPECT_CALL(Addition, 1, 3).Times(2);
     DISPATCHER_EXPECT_CALL(Addition, 4, 3).Times(0);
@@ -99,8 +102,11 @@ TEST_F(ExampleTest, ExpectingCallOrdered)
 TEST_F(ExampleTest, ExpectingCallAndEventOrdered)
 {
     using dispatcher::_;
+
     DISPATCHER_ENABLE_MANUAL_EVENT_DISPATCHING();
+
     dispatcher::InSequence sequence;
+
     DISPATCHER_EXPECT_CALL(Addition, _, _).WillOnce([](auto a, auto b) { return a + b; });
     DISPATCHER_EXPECT_EVENT(SomeEvent, _, _);
     DISPATCHER_EXPECT_CALL(Multiplication, _, _).WillOnce([](auto a, auto b) { return a * b; });

@@ -16,40 +16,10 @@ namespace internal {
 
 struct Sequence {
     int next_expected_call = 0;
-    int current_call_to_expect = 0;
+    std::atomic<int> current_call_to_expect;
 };
 
 thread_local std::shared_ptr<internal::Sequence> thread_local_sequence = nullptr;
-
-int get_next_expected_call()
-{
-    if (thread_local_sequence != nullptr) {
-        return thread_local_sequence->next_expected_call;
-    }
-    return -1;
-}
-
-void advance_next_expected_call(int advance)
-{
-    if (thread_local_sequence != nullptr) {
-        thread_local_sequence->next_expected_call += advance;
-    }
-}
-
-int get_current_call_to_expect()
-{
-    if (thread_local_sequence != nullptr) {
-        return thread_local_sequence->current_call_to_expect;
-    }
-    return -1;
-}
-
-void increase_current_call_to_expect()
-{
-    if (thread_local_sequence != nullptr) {
-        thread_local_sequence->current_call_to_expect++;
-    }
-}
 
 struct AnythingMatcher {
     template <typename T>
@@ -106,8 +76,8 @@ struct Expectation {
           expected_calls_left(_expected_calls_left)
     {
         if (sequence_ != nullptr) {
-            rank_in_sequence = get_next_expected_call();
-            advance_next_expected_call(expected_calls_left);
+            rank_in_sequence = sequence_->next_expected_call;
+            sequence_->next_expected_call += expected_calls_left;
         }
     }
 
@@ -122,12 +92,13 @@ struct Expectation {
             return false;
         }
         if (rank_in_sequence != -1 && sequence_ != nullptr) {
-            if (rank_in_sequence != get_current_call_to_expect()) {
-                std::cout << "Expectation constructed at " << file << ":" << line << " expected call out of sequence"
-                          << std::endl;
+            if (rank_in_sequence != sequence_->current_call_to_expect) {
+                std::cout << "Expectation constructed at " << file << ":" << line
+                          << " expected call out of sequence. Rank in sequence : " << rank_in_sequence
+                          << " while current call to expect is : " << sequence_->current_call_to_expect << std::endl;
                 return false;
             }
-            increase_current_call_to_expect();
+            sequence_->current_call_to_expect++;
         }
         return true;
     }
@@ -270,7 +241,7 @@ class EventExpecter : public ExpecterBase {
   public:
     EventExpecter()
     {
-        ArgsFromTuple<typename FuncSignature::args_t>{}.subscribe(*this);
+        ArgsFromTuple<typename EventDispatcher<FuncSignature>::args_t>{}.subscribe(*this);
     }
     EventExpecter(const EventExpecter &) = delete;
     EventExpecter &operator=(const EventExpecter &) = delete;
