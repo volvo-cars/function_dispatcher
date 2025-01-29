@@ -80,6 +80,48 @@ struct Expectation {
             sequence_->next_expected_call += expected_calls_left;
         }
     }
+    Expectation(const Expectation &) = delete;
+    Expectation &operator=(const Expectation &) = delete;
+
+    Expectation(Expectation &&other) noexcept
+        : sequence_(std::move(other.sequence_)),
+          file(other.file),
+          line(other.line),
+          return_function(std::move(other.return_function)),
+          matchers(std::move(other.matchers)),
+          expected_calls_left(other.expected_calls_left),
+          rank_in_sequence(other.rank_in_sequence)
+    {
+        other.file = nullptr;
+        other.line = 0;
+        other.expected_calls_left = 0;
+        other.rank_in_sequence = -1;
+    }
+
+    Expectation &operator=(Expectation &&other) noexcept
+    {
+        if (this != &other) {
+            sequence_ = std::move(other.sequence_);
+            file = other.file;
+            line = other.line;
+            return_function = std::move(other.return_function);
+            matchers = std::move(other.matchers);
+            expected_calls_left = other.expected_calls_left;
+            rank_in_sequence = other.rank_in_sequence;
+
+            other.file = nullptr;
+            other.line = 0;
+            other.expected_calls_left = 0;
+            other.rank_in_sequence = -1;
+        }
+        return *this;
+    }
+    ~Expectation()
+    {
+        if (expected_calls_left != 0) {
+            std::cout << "Expectation constructed at " << file << ":" << line << " was not fulfilled" << std::endl;
+        }
+    }
 
     template <typename... Args>
     bool validate(const Args &...args)
@@ -140,16 +182,12 @@ class CallExpecter : public ExpecterBase {
   public:
     CallExpecter()
     {
-        ArgsFromTuple<typename FuncSignature::args_t>{}.attach(*this);
+        ArgsFromTuple<typename FunctionDispatcher<FuncSignature>::args_t>{}.attach(*this);
     }
     CallExpecter(const CallExpecter &) = delete;
     CallExpecter &operator=(const CallExpecter &) = delete;
     CallExpecter(CallExpecter &&) = default;
     CallExpecter &operator=(CallExpecter &&) = default;
-    ~CallExpecter()
-    {
-        clean_expectations();
-    }
 
     template <typename... Args>
     void attach()
@@ -173,19 +211,8 @@ class CallExpecter : public ExpecterBase {
                           << std::endl;
                 return default_behavior.get()(std::forward<Args>(args)...);
             }
-            throw std::bad_function_call();
+            throw NoHandler<FuncSignature>{};
         });
-    }
-
-    void validate() const
-    {
-        bool still_expecting_calls = false;
-        for (const auto &expectation : remaining_expectation_) {
-            if (expectation.expected_more_calls()) {
-                still_expecting_calls = true;
-            }
-        }
-        EXPECT_FALSE(still_expecting_calls);
     }
 
     void add_expectation(Expectation<FuncSignature> expectation)
@@ -207,7 +234,6 @@ class CallExpecter : public ExpecterBase {
 
     void clean_expectations()
     {
-        validate();
         remaining_expectation_.clear();
         should_not_be_called_.clear();
     }
@@ -247,10 +273,6 @@ class EventExpecter : public ExpecterBase {
     EventExpecter &operator=(const EventExpecter &) = delete;
     EventExpecter(EventExpecter &&) = default;
     EventExpecter &operator=(EventExpecter &&) = default;
-    ~EventExpecter()
-    {
-        clean_expectations();
-    }
 
     template <typename... Args>
     void subscribe()
@@ -273,17 +295,6 @@ class EventExpecter : public ExpecterBase {
         });
     }
 
-    void validate() const
-    {
-        bool still_expecting_calls = false;
-        for (const auto &expectation : remaining_expectation_) {
-            if (expectation.expected_more_calls()) {
-                still_expecting_calls = true;
-            }
-        }
-        EXPECT_FALSE(still_expecting_calls);
-    }
-
     void add_expectation(Expectation<FuncSignature> expectation)
     {
         remaining_expectation_.push_back(std::move(expectation));
@@ -297,7 +308,6 @@ class EventExpecter : public ExpecterBase {
 
     void clean_expectations()
     {
-        validate();
         remaining_expectation_.clear();
         should_not_be_published_.clear();
     }
@@ -329,6 +339,33 @@ struct ExpecterContainer {
     std::map<std::type_index, std::unique_ptr<ExpecterBase>> expecters_;
 };
 
+// Function for void return type
+template <typename FuncSignature>
+typename std::enable_if<std::is_void<typename FunctionDispatcher<FuncSignature>::return_t>::value>::type return_value()
+{
+    return;
+}
+
+// Function for non-void return type that is default constructible
+template <typename FuncSignature>
+typename std::enable_if<!std::is_void<typename FunctionDispatcher<FuncSignature>::return_t>::value &&
+                            std::is_default_constructible<typename FunctionDispatcher<FuncSignature>::return_t>::value,
+                        typename FunctionDispatcher<FuncSignature>::return_t>::type
+return_value()
+{
+    return typename FunctionDispatcher<FuncSignature>::return_t{};
+}
+
+// Function for non-void return type that is not default constructible
+template <typename FuncSignature>
+typename std::enable_if<!std::is_void<typename FunctionDispatcher<FuncSignature>::return_t>::value &&
+                            !std::is_default_constructible<typename FunctionDispatcher<FuncSignature>::return_t>::value,
+                        typename FunctionDispatcher<FuncSignature>::return_t>::type
+return_value()
+{
+    throw std::runtime_error("Return type is not default constructible");
+}
+
 template <typename FuncSignature>
 class CallExpectationBuilder {
   public:
@@ -352,8 +389,7 @@ class CallExpectationBuilder {
         if (times_to_match_ > 0) {
             GET_CALL_EXPECTER(FuncSignature)
                 ->add_expectation(Expectation<FuncSignature>{
-                    file_, line_, [](auto...) { return typename FunctionDispatcher<FuncSignature>::return_t{}; },
-                    matchers_, times_to_match_});
+                    file_, line_, [](auto...) { return return_value<FuncSignature>(); }, matchers_, times_to_match_});
         }
     }
 
@@ -446,6 +482,15 @@ class EventExpectationBuilder {
     }
 
     template <typename Callback>
+    EventExpectationBuilder &WillOnce(Callback &&callback)
+    {
+        GET_EVENT_EXPECTER(FuncSignature)
+            ->add_expectation(Expectation<FuncSignature>{file_, line_, std::forward<Callback>(callback), matchers_, 1});
+        times_to_match_ = 0;
+        return *this;
+    }
+
+    template <typename Callback>
     EventExpectationBuilder &WillRepeatedly(Callback &&callback)
     {
         GET_EVENT_EXPECTER(FuncSignature)
@@ -493,13 +538,6 @@ class Test : public testing::Test {
     {                                                            \
         expecter_container_.get(), __FILE__, __LINE__, args      \
     }
-
-#define DISPATCHER_ENABLE_MANUAL_EVENT_DISPATCHING()                       \
-    dispatcher::getEventLoop<dispatcher::Default>().GetIOContext().stop(); \
-    dispatcher::getEventLoop<dispatcher::Default>().GetIOContext().restart();
-
-#define DISPATCHER_WAIT_FOR_EVENT() dispatcher::getEventLoop<dispatcher::Default>().GetIOContext().run_one()
-#define DISPATCHER_POLL_FOR_EVENTS() dispatcher::getEventLoop<dispatcher::Default>().GetIOContext().poll()
 
 #define DISPATCHER_ADVANCE_TIME(duration) dispatcher::MockableClock::advance_time(duration)
 

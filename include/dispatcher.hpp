@@ -66,11 +66,30 @@ struct args_t_or_default<FuncSignature, true> {
 // ========================================= Function dispatcher ========================================= //
 
 template <typename FuncSignature>
+class NoHandler : public std::exception {
+  public:
+    NoHandler()
+    {
+        std::ostringstream oss;
+        oss << typeid(FuncSignature).name() << " called but no handler was attached";
+        message_ = oss.str();
+    }
+
+    const char *what() const noexcept override
+    {
+        return message_.c_str();
+    }
+
+  private:
+    std::string message_;
+};
+
+template <typename FuncSignature>
 struct FunctionDispatcher {
     template <typename Callable>
     static void attach(Callable &&callable)
     {
-        FunctionDispatcher::function = callable;
+        FunctionDispatcher::function = std::forward<Callable>(callable);
     }
 
     static void detach()
@@ -81,6 +100,9 @@ struct FunctionDispatcher {
     template <typename... Args>
     static auto call(Args &&...args)
     {
+        if (function == nullptr) {
+            throw NoHandler<FuncSignature>{};
+        }
         return FunctionDispatcher::function(std::forward<Args>(args)...);
     }
 
@@ -95,18 +117,27 @@ struct FunctionDispatcher {
 template <typename FuncSignature, typename Callable>
 void attach(Callable &&callable)
 {
+#ifdef DISPATCHER_DEBUG
+    std::cout << "Attaching to " << typeid(FuncSignature).name() << std::endl;
+#endif
     FunctionDispatcher<FuncSignature>::template attach<Callable>(std::forward<Callable>(callable));
 }
 
 template <typename FuncSignature>
 void detach()
 {
+#ifdef DISPATCHER_DEBUG
+    std::cout << "Detaching from " << typeid(FuncSignature).name() << std::endl;
+#endif
     FunctionDispatcher<FuncSignature>::detach();
 }
 
 template <typename FuncSignature, typename... Args>
 auto call(Args &&...args)
 {
+#ifdef DISPATCHER_DEBUG
+    std::cout << "Calling" << typeid(FuncSignature).name() << std::endl;
+#endif
     return FunctionDispatcher<FuncSignature>::call(std::forward<Args>(args)...);
 }
 #define DEFINE_FUNCTION_DISPATCHER(FuncSignature)                     \
@@ -141,14 +172,21 @@ class EventLoop {
 
     void Stop()
     {
-        Post([this]() {
-            work_guard_.reset();
-            io_context_.stop();
-        });
+        Post([this]() { work_guard_.reset(); });
+        std::thread stop_thread{[this] {
+            std::unique_lock<std::mutex> lock(mutex_);
+            if (!cv_.wait_for(lock, std::chrono::seconds{2}, [this] { return true; })) {
+                Post([this] { io_context_.stop(); });
+            }
+        }};
+
         if (work_thread_.joinable()) {
             work_thread_.join();
         }
-        io_context_.reset();
+        cv_.notify_one();
+        if (stop_thread.joinable()) {
+            stop_thread.join();
+        }
     }
 
     boost::asio::io_context &GetIOContext()
@@ -160,6 +198,8 @@ class EventLoop {
     boost::asio::io_context io_context_;
     boost::asio::executor_work_guard<decltype(io_context_.get_executor())> work_guard_;
     std::thread work_thread_;
+    std::mutex mutex_;
+    std::condition_variable cv_;
 };
 
 // ========================================= Event dispatcher ========================================= //
@@ -187,7 +227,7 @@ void call_with_tuple(F &&f, Tuple &&t)
     call_with_tuple(std::forward<F>(f), std::forward<Tuple>(t), std::make_index_sequence<size>{});
 }
 
-template <typename FuncSignature, typename Network>
+template <typename FuncSignature, typename Network = Default>
 struct EventDispatcher {
     template <typename Callable>
     static boost::signals2::connection subscribe(Callable &&callable)
@@ -199,8 +239,16 @@ struct EventDispatcher {
     static void publish(Args &&...args)
     {
         auto argsTuple = std::make_tuple(std::forward<Args>(args)...);
-        getEventLoop<Network>().Post(
-            [argsTuple = std::move(argsTuple)]() mutable { call_with_tuple(signal, std::move(argsTuple)); });
+#ifdef DISPATCHER_DEBUG
+        std::cout << typeid(FuncSignature).name() << " has " << signal.num_slots() << " connections " << std::endl;
+#endif
+        getEventLoop<Network>().Post([argsTuple = std::move(argsTuple)]() mutable {
+
+#ifdef DISPATCHER_DEBUG
+            std::cout << "Calling with tuple of  " << typeid(FuncSignature).name() << std::endl;
+#endif
+            call_with_tuple(signal, std::move(argsTuple));
+        });
     }
 
     using args_t = typename args_t_or_default<FuncSignature, has_args_t<FuncSignature>::value>::type;
@@ -213,12 +261,18 @@ struct EventDispatcher {
 template <typename FuncSignature, typename Network = Default, typename Callable>
 boost::signals2::connection subscribe(Callable &&callable)
 {
+#ifdef DISPATCHER_DEBUG
+    std::cout << "Subscribing to " << typeid(FuncSignature).name() << std::endl;
+#endif
     return EventDispatcher<FuncSignature, Network>::template subscribe(std::forward<Callable>(callable));
 }
 
 template <typename FuncSignature, typename Network = Default, typename... Args>
 void publish(Args &&...args)
 {
+#ifdef DISPATCHER_DEBUG
+    std::cout << "Publishing " << typeid(FuncSignature).name() << std::endl;
+#endif
     EventDispatcher<FuncSignature, Network>::publish(std::forward<Args>(args)...);
 }
 
