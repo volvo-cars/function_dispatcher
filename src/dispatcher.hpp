@@ -68,20 +68,10 @@ struct args_t_or_default<FuncSignature, true> {
 template <typename FuncSignature>
 class NoHandler : public std::exception {
   public:
-    NoHandler()
-    {
-        std::ostringstream oss;
-        oss << typeid(FuncSignature).name() << " called but no handler was attached";
-        message_ = oss.str();
-    }
-
     const char *what() const noexcept override
     {
-        return message_.c_str();
+        return "Function was called but no handler was attached";
     }
-
-  private:
-    std::string message_;
 };
 
 template <typename FuncSignature>
@@ -172,12 +162,16 @@ class EventLoop {
 
     void Stop()
     {
+        if (!work_guard_.owns_work()) {
+            return;
+        }
+
         Post([this]() { work_guard_.reset(); });
         std::thread stop_thread{[this] {
             std::unique_lock<std::mutex> lock(mutex_);
-            if (!cv_.wait_for(lock, std::chrono::seconds{2}, [this] { return true; })) {
-                Post([this] { io_context_.stop(); });
-            }
+
+            cv_.wait_for(lock, std::chrono::seconds{2}, [this] { return true; });
+            io_context_.stop();
         }};
 
         if (work_thread_.joinable()) {
@@ -289,7 +283,7 @@ void publish(Args &&...args)
 
 // ========================================= Timer ========================================= //
 
-static boost::optional<boost::asio::deadline_timer::traits_type::time_type> now_;
+extern boost::optional<boost::asio::deadline_timer::traits_type::time_type> now_;
 
 // This clock can be settable in unit test
 struct MockableClock {
@@ -310,19 +304,22 @@ struct MockableClock {
 
     // To be used in testing only
 
-    static void set_now(time_type t)
+    static void set_now(time_type t = chrono_to_ptime(std::chrono::system_clock::now()))
     {
-        now_ = t;
-        std::this_thread::sleep_for(std::chrono::milliseconds{2});
+        getEventLoop().Post([t] { now_ = t; });
     }
 
-    static void advance_time(duration_type d)
+    template <typename Duration>
+    static void advance_time(Duration &&d)
     {
-        if (!now_) {
-            set_now(chrono_to_ptime(std::chrono::system_clock::now()));
-        }
-        *now_ = add(*now_, d);
-        std::this_thread::sleep_for(std::chrono::milliseconds{2});
+        getEventLoop().Post([d] {
+            if (!now_) {
+                set_now();
+            }
+            *now_ =
+                add(*now_,
+                    boost::posix_time::milliseconds(std::chrono::duration_cast<std::chrono::milliseconds>(d).count()));
+        });
     }
 
     static time_type add(time_type t, duration_type d)
@@ -367,14 +364,29 @@ class Timer {
     }
 
     template <typename Callback, typename Duration>
-    void DoIn(Callback &&callback, Duration &&duration)
+    void DoIn(Callback &&callback, Duration duration)
     {
-        timer_.expires_from_now(std::forward<Duration>(duration));
+        timer_.expires_from_now(
+            boost::posix_time::milliseconds(std::chrono::duration_cast<std::chrono::milliseconds>(duration).count()));
         timer_.async_wait([callback = std::forward<Callback>(callback)](const boost::system::error_code &ec) {
             if (ec != boost::asio::error::operation_aborted) {
                 callback();
             }
         });
+    }
+
+    template <typename Callback, typename Duration>
+    void DoEvery(Callback &&callback, Duration duration)
+    {
+        timer_.expires_from_now(
+            boost::posix_time::milliseconds(std::chrono::duration_cast<std::chrono::milliseconds>(duration).count()));
+        timer_.async_wait(
+            [this, callback = std::forward<Callback>(callback), duration](const boost::system::error_code &ec) {
+                if (ec != boost::asio::error::operation_aborted) {
+                    callback();
+                    DoEvery(callback, duration);
+                }
+            });
     }
 
   private:

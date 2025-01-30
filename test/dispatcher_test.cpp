@@ -51,8 +51,6 @@ TEST_F(ExampleTest, ExpectingEventUnordered)
 
 TEST_F(ExampleTest, ExpectingEventOrdered)
 {
-    DISPATCHER_ENABLE_MANUAL_EVENT_DISPATCHING();
-
     dispatcher::InSequence sequence;
 
     DISPATCHER_EXPECT_EVENT(SomeEvent, true, "Hello");
@@ -60,13 +58,9 @@ TEST_F(ExampleTest, ExpectingEventOrdered)
     DISPATCHER_EXPECT_EVENT(SomeEvent, false, "Hello");
 
     dispatcher::publish<SomeEvent>(true, "Hello");
-    DISPATCHER_WAIT_FOR_EVENT();
     dispatcher::publish<AnotherEvent>();
-    DISPATCHER_WAIT_FOR_EVENT();
     dispatcher::publish<AnotherEvent>();
-    DISPATCHER_WAIT_FOR_EVENT();
     dispatcher::publish<SomeEvent>(false, "Hello");
-    DISPATCHER_WAIT_FOR_EVENT();
 }
 
 TEST_F(ExampleTest, ExpectingCallUnordered)
@@ -103,24 +97,34 @@ TEST_F(ExampleTest, ExpectingCallAndEventOrdered)
 {
     using dispatcher::_;
 
-    DISPATCHER_ENABLE_MANUAL_EVENT_DISPATCHING();
-
     dispatcher::InSequence sequence;
 
     DISPATCHER_EXPECT_CALL(Addition, _, _).WillOnce([](auto a, auto b) { return a + b; });
-    DISPATCHER_EXPECT_EVENT(SomeEvent, _, _);
+    DISPATCHER_EXPECT_EVENT(SomeEvent, _, _).WillOnce([](auto...) {
+        EXPECT_EQ(dispatcher::call<Multiplication>(5, 5), 25);
+    });
     DISPATCHER_EXPECT_CALL(Multiplication, _, _).WillOnce([](auto a, auto b) { return a * b; });
 
     EXPECT_EQ(dispatcher::call<Addition>(2, 5), 7);
     dispatcher::publish<SomeEvent>(false, "Hello world");
-    DISPATCHER_WAIT_FOR_EVENT();
-    EXPECT_EQ(dispatcher::call<Multiplication>(5, 5), 25);
 }
 
 TEST_F(ExampleTest, TimerTest)
 {
+    DISPATCHER_ENABLE_MANUAL_TIME();
     dispatcher::DefaultTimer timer;
     DISPATCHER_EXPECT_EVENT(AnotherEvent);
-    timer.DoIn([] { dispatcher::publish<AnotherEvent>(); }, boost::posix_time::seconds{1});
-    DISPATCHER_ADVANCE_TIME(boost::posix_time::seconds{2});
+    timer.DoIn([] { dispatcher::publish<AnotherEvent>(); }, std::chrono::seconds{1});
+    DISPATCHER_ADVANCE_TIME(std::chrono::seconds{2});
+}
+
+TEST_F(ExampleTest, RecurrentTimerTest)
+{
+    DISPATCHER_ENABLE_MANUAL_TIME();
+    dispatcher::DefaultTimer timer;
+    DISPATCHER_EXPECT_EVENT(AnotherEvent).Times(3);
+    timer.DoEvery([] { dispatcher::publish<AnotherEvent>(); }, std::chrono::seconds{1});
+    DISPATCHER_ADVANCE_TIME(std::chrono::milliseconds{1010});
+    DISPATCHER_ADVANCE_TIME(std::chrono::milliseconds{1010});
+    DISPATCHER_ADVANCE_TIME(std::chrono::milliseconds{1010});
 }

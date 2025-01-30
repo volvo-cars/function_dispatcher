@@ -119,7 +119,9 @@ struct Expectation {
     ~Expectation()
     {
         if (expected_calls_left != 0) {
-            std::cout << "Expectation constructed at " << file << ":" << line << " was not fulfilled" << std::endl;
+            std::ostringstream oss;
+            oss << "Still expecting " << expected_calls_left << " calls";
+            GTEST_MESSAGE_AT_(file, line, oss.str().c_str(), ::testing::TestPartResult::kNonFatalFailure);
         }
     }
 
@@ -528,6 +530,8 @@ class Test : public testing::Test {
   protected:
     void TearDown() override
     {
+        // TODO (wait for all events to be processed, then stop the event loop. Need probably a cv
+        std::this_thread::sleep_for(std::chrono::milliseconds(10));
         dispatcher::getEventLoop<dispatcher::Default>().Stop();
     }
     std::unique_ptr<internal::ExpecterContainer> expecter_container_ = std::make_unique<internal::ExpecterContainer>();
@@ -539,6 +543,7 @@ class Test : public testing::Test {
         expecter_container_.get(), __FILE__, __LINE__, args      \
     }
 
+#define DISPATCHER_ENABLE_MANUAL_TIME() dispatcher::MockableClock::set_now()
 #define DISPATCHER_ADVANCE_TIME(duration) dispatcher::MockableClock::advance_time(duration)
 
 #define DISPATCHER_EXPECT_CALL(FuncSignature, args...)          \
