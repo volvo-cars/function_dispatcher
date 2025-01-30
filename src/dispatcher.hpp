@@ -306,20 +306,18 @@ struct MockableClock {
 
     static void set_now(time_type t = chrono_to_ptime(std::chrono::system_clock::now()))
     {
-        getEventLoop().Post([t] { now_ = t; });
+        now_ = t;
     }
 
     template <typename Duration>
     static void advance_time(Duration &&d)
     {
-        getEventLoop().Post([d] {
-            if (!now_) {
-                set_now();
-            }
-            *now_ =
-                add(*now_,
+        if (!now_) {
+            return;
+        }
+        *now_ = add(*now_,
                     boost::posix_time::milliseconds(std::chrono::duration_cast<std::chrono::milliseconds>(d).count()));
-        });
+        std::this_thread::sleep_for(std::chrono::microseconds(1100));
     }
 
     static time_type add(time_type t, duration_type d)

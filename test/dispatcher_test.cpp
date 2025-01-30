@@ -115,7 +115,7 @@ TEST_F(ExampleTest, TimerTest)
     dispatcher::DefaultTimer timer;
     DISPATCHER_EXPECT_EVENT(AnotherEvent);
     timer.DoIn([] { dispatcher::publish<AnotherEvent>(); }, std::chrono::seconds{1});
-    DISPATCHER_ADVANCE_TIME(std::chrono::seconds{2});
+    DISPATCHER_ADVANCE_TIME(std::chrono::seconds{1});
 }
 
 TEST_F(ExampleTest, RecurrentTimerTest)
@@ -124,7 +124,7 @@ TEST_F(ExampleTest, RecurrentTimerTest)
     dispatcher::DefaultTimer timer;
     DISPATCHER_EXPECT_EVENT(AnotherEvent).Times(3);
     timer.DoEvery([] { dispatcher::publish<AnotherEvent>(); }, std::chrono::seconds{1});
-    DISPATCHER_ADVANCE_TIME(std::chrono::milliseconds{1010});
-    DISPATCHER_ADVANCE_TIME(std::chrono::milliseconds{1010});
-    DISPATCHER_ADVANCE_TIME(std::chrono::milliseconds{1010});
+    DISPATCHER_ADVANCE_TIME(std::chrono::seconds{1});
+    DISPATCHER_ADVANCE_TIME(std::chrono::seconds{1});
+    DISPATCHER_ADVANCE_TIME(std::chrono::seconds{1});
 }

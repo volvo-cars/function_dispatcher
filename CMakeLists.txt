@@ -55,5 +55,6 @@ endif()
 
 if(${PROJECT_NAME}_test)
   enable_testing()
+  set(CMAKE_BUILD_TYPE Debug)
   add_subdirectory(test)
 endif()
