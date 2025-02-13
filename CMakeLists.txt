@@ -35,15 +35,24 @@ if(NOT Boost_FOUND)
     COMPONENTS
     asio
     signals2
+    fiber
   )
 else()
   message(STATUS "Using installed Boost: ${Boost_DIR}")
 endif()
 
-add_library(${PROJECT_NAME} src/dispatcher.cpp)
-target_include_directories(${PROJECT_NAME} PUBLIC src)
+add_library(${PROJECT_NAME} INTERFACE)
+target_sources(${PROJECT_NAME} INTERFACE FILE_SET public_headers TYPE HEADERS
+  BASE_DIRS include
+  FILES include/${PROJECT_NAME}.hpp)
 
-target_link_libraries(${PROJECT_NAME} Boost::signals2 Boost::asio)
+include(GNUInstallDirs)
+target_include_directories(
+  ${PROJECT_NAME} INTERFACE
+  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+  $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>
+)
+target_link_libraries(${PROJECT_NAME} INTERFACE Boost::signals2 Boost::asio Boost::fiber)
 
 if(${PROJECT_NAME}_example)
   add_subdirectory(example)
@@ -55,6 +64,5 @@ endif()
 
 if(${PROJECT_NAME}_test)
   enable_testing()
-  set(CMAKE_BUILD_TYPE Debug)
   add_subdirectory(test)
 endif()

@@ -2,6 +2,7 @@
 
 #include <boost/asio.hpp>
 #include <boost/date_time/posix_time/posix_time.hpp>
+#include <boost/fiber/fiber.hpp>
 #include <boost/optional.hpp>
 #include <boost/signals2.hpp>
 #include <functional>
@@ -74,66 +75,58 @@ class NoHandler : public std::exception {
     }
 };
 
+template <typename FuncSignature, typename func_type>
+func_type &GetFunction()
+{
+    static func_type function;
+    return function;
+}
+
 template <typename FuncSignature>
 struct FunctionDispatcher {
     template <typename Callable>
     static void attach(Callable &&callable)
     {
-        FunctionDispatcher::function = std::forward<Callable>(callable);
+        GetFunction<FuncSignature, func_type>() = std::forward<Callable>(callable);
     }
 
     static void detach()
     {
-        FunctionDispatcher::function = nullptr;
+        GetFunction<FuncSignature, func_type>() = nullptr;
     }
 
     template <typename... Args>
     static auto call(Args &&...args)
     {
-        if (function == nullptr) {
+        if (GetFunction<FuncSignature, func_type>() == nullptr) {
             throw NoHandler<FuncSignature>{};
         }
-        return FunctionDispatcher::function(std::forward<Args>(args)...);
+        return GetFunction<FuncSignature, func_type>()(std::forward<Args>(args)...);
     }
 
     using return_t = typename return_t_or_default<FuncSignature, has_return_t<FuncSignature>::value>::type;
     using args_t = typename args_t_or_default<FuncSignature, has_args_t<FuncSignature>::value>::type;
 
     using func_type = typename FunctionFromTuple<return_t, args_t>::type;
-
-    static func_type function;
 };
 
 template <typename FuncSignature, typename Callable>
 void attach(Callable &&callable)
 {
-#ifdef DISPATCHER_DEBUG
-    std::cout << "Attaching to " << typeid(FuncSignature).name() << std::endl;
-#endif
     FunctionDispatcher<FuncSignature>::template attach<Callable>(std::forward<Callable>(callable));
 }
 
 template <typename FuncSignature>
 void detach()
 {
-#ifdef DISPATCHER_DEBUG
-    std::cout << "Detaching from " << typeid(FuncSignature).name() << std::endl;
-#endif
     FunctionDispatcher<FuncSignature>::detach();
 }
 
 template <typename FuncSignature, typename... Args>
 auto call(Args &&...args)
 {
-#ifdef DISPATCHER_DEBUG
-    std::cout << "Calling" << typeid(FuncSignature).name() << std::endl;
-#endif
     return FunctionDispatcher<FuncSignature>::call(std::forward<Args>(args)...);
 }
-#define DEFINE_FUNCTION_DISPATCHER(FuncSignature)                     \
-    template <>                                                       \
-    typename dispatcher::FunctionDispatcher<FuncSignature>::func_type \
-        dispatcher::FunctionDispatcher<FuncSignature>::function = nullptr;
 
 // ========================================= Event loop ========================================= //
 
@@ -155,9 +148,11 @@ class EventLoop {
     EventLoop &operator=(EventLoop &&) = delete;
 
     template <typename T>
-    void Post(T &&arg)
+    void Post(T &&task)
     {
-        boost::asio::post(io_context_, std::forward<T>(arg));
+        boost::asio::post(io_context_, [task = std::forward<T>(task)]() mutable {
+            boost::fibers::fiber(boost::fibers::launch::dispatch, std::forward<T>(task)).detach();
+        });
     }
 
     void Stop()
@@ -170,7 +165,7 @@ class EventLoop {
         std::thread stop_thread{[this] {
             std::unique_lock<std::mutex> lock(mutex_);
 
-            cv_.wait_for(lock, std::chrono::seconds{2}, [this] { return true; });
+            cv_.wait_for(lock, std::chrono::seconds{1}, [this] { return true; });
             io_context_.stop();
         }};
 
@@ -221,69 +216,56 @@ void call_with_tuple(F &&f, Tuple &&t)
     call_with_tuple(std::forward<F>(f), std::forward<Tuple>(t), std::make_index_sequence<size>{});
 }
 
+template <typename FuncSignature, typename Network, typename signal_type>
+signal_type &GetSignal()
+{
+    static signal_type signal;
+    return signal;
+}
+
 template <typename FuncSignature, typename Network = Default>
 struct EventDispatcher {
     template <typename Callable>
     static boost::signals2::connection subscribe(Callable &&callable)
     {
-        return EventDispatcher::signal.connect(std::forward<Callable>(callable));
+        return GetSignal<FuncSignature, Network, signal_type>().connect(std::forward<Callable>(callable));
     }
 
     template <typename... Args>
     static void publish(Args &&...args)
     {
         auto argsTuple = std::make_tuple(std::forward<Args>(args)...);
-#ifdef DISPATCHER_DEBUG
-        std::cout << typeid(FuncSignature).name() << " has " << signal.num_slots() << " connections " << std::endl;
-#endif
         getEventLoop<Network>().Post([argsTuple = std::move(argsTuple)]() mutable {
-
-#ifdef DISPATCHER_DEBUG
-            std::cout << "Calling with tuple of  " << typeid(FuncSignature).name() << std::endl;
-#endif
-            call_with_tuple(signal, std::move(argsTuple));
+            call_with_tuple(GetSignal<FuncSignature, Network, signal_type>(), std::move(argsTuple));
         });
     }
 
     using args_t = typename args_t_or_default<FuncSignature, has_args_t<FuncSignature>::value>::type;
 
     using signal_type = typename SignalFromTuple<args_t>::type;
-
-    static signal_type signal;
 };
 
 template <typename FuncSignature, typename Network = Default, typename Callable>
 boost::signals2::connection subscribe(Callable &&callable)
 {
-#ifdef DISPATCHER_DEBUG
-    std::cout << "Subscribing to " << typeid(FuncSignature).name() << std::endl;
-#endif
     return EventDispatcher<FuncSignature, Network>::template subscribe(std::forward<Callable>(callable));
 }
 
 template <typename FuncSignature, typename Network = Default, typename... Args>
 void publish(Args &&...args)
 {
-#ifdef DISPATCHER_DEBUG
-    std::cout << "Publishing " << typeid(FuncSignature).name() << std::endl;
-#endif
     EventDispatcher<FuncSignature, Network>::publish(std::forward<Args>(args)...);
 }
-
-#define DEFINE_EVENT_DISPATCHER(FuncSignature)                                            \
-    template <>                                                                           \
-    typename dispatcher::EventDispatcher<FuncSignature, dispatcher::Default>::signal_type \
-        dispatcher::EventDispatcher<FuncSignature, dispatcher::Default>::signal =         \
-            typename dispatcher::SignalFromTuple<args_t>::type{};
-
-#define DEFINE_EVENT_DISPATCHER_NETWORK(FuncSignature, Network)               \
-    template <>                                                               \
-    typename dispatcher::EventDispatcher<FuncSignature, Network>::signal_type \
-        dispatcher::EventDispatcher<FuncSignature, Network>::signal = typename SignalFromTuple<args_t>::type{};
-
 // ========================================= Timer ========================================= //
 
-extern boost::optional<boost::asio::deadline_timer::traits_type::time_type> now_;
+// template trick so all translation units share the same now. Since this should only be used in unit tests, inline
+// would have also probably worked.
+template <typename v = void>
+boost::optional<boost::asio::deadline_timer::traits_type::time_type> &Now()
+{
+    static boost::optional<boost::asio::deadline_timer::traits_type::time_type> now;
+    return now;
+}
 
 // This clock can be settable in unit test
 struct MockableClock {
@@ -295,8 +277,8 @@ struct MockableClock {
 
     static time_type now()
     {
-        if (now_) {
-            return *now_;
+        if (Now()) {
+            return *Now();
         }
 
         return chrono_to_ptime(std::chrono::system_clock::now());
@@ -306,17 +288,17 @@ struct MockableClock {
 
     static void set_now(time_type t = chrono_to_ptime(std::chrono::system_clock::now()))
     {
-        now_ = t;
+        Now() = t;
     }
 
     template <typename Duration>
     static void advance_time(Duration &&d)
     {
-        if (!now_) {
+        if (!Now()) {
             return;
         }
-        *now_ = add(*now_,
-                    boost::posix_time::milliseconds(std::chrono::duration_cast<std::chrono::milliseconds>(d).count()));
+        *Now() = add(*Now(),
+                     boost::posix_time::milliseconds(std::chrono::duration_cast<std::chrono::milliseconds>(d).count()));
         std::this_thread::sleep_for(std::chrono::microseconds(1100));
     }
 
@@ -333,11 +315,11 @@ struct MockableClock {
         return source_traits::less_than(t1, t2);
     }
 
-    // This function is called by asio to determine how often to check
-    // if the timer is ready to fire. By manipulating this function, we
-    // can make sure asio detects changes to now_ in a timely fashion.
     static boost::posix_time::time_duration to_posix_duration(duration_type d)
     {
+        if (!Now()) {
+            return d;
+        }
         return d < boost::posix_time::milliseconds(1) ? d : boost::posix_time::milliseconds(1);
     }
 
@@ -361,28 +343,28 @@ class Timer {
         timer_.cancel();
     }
 
-    template <typename Callback, typename Duration>
-    void DoIn(Callback &&callback, Duration duration)
+    template <typename Duration, typename Callback>
+    void DoIn(Duration duration, Callback &&callback)
     {
         timer_.expires_from_now(
             boost::posix_time::milliseconds(std::chrono::duration_cast<std::chrono::milliseconds>(duration).count()));
-        timer_.async_wait([callback = std::forward<Callback>(callback)](const boost::system::error_code &ec) {
+        timer_.async_wait([callback = std::forward<Callback>(callback)](const boost::system::error_code &ec) mutable {
             if (ec != boost::asio::error::operation_aborted) {
-                callback();
+                getEventLoop<Network>().Post(std::forward<Callback>(callback));
             }
         });
     }
 
-    template <typename Callback, typename Duration>
-    void DoEvery(Callback &&callback, Duration duration)
+    template <typename Duration, typename Callback>
+    void DoEvery(Duration duration, Callback &&callback)
     {
         timer_.expires_from_now(
             boost::posix_time::milliseconds(std::chrono::duration_cast<std::chrono::milliseconds>(duration).count()));
         timer_.async_wait(
-            [this, callback = std::forward<Callback>(callback), duration](const boost::system::error_code &ec) {
+            [this, callback = std::forward<Callback>(callback), duration](const boost::system::error_code &ec) mutable {
                 if (ec != boost::asio::error::operation_aborted) {
-                    callback();
-                    DoEvery(callback, duration);
+                    getEventLoop<Network>().Post(callback);
+                    DoEvery(duration, std::forward<Callback>(callback));
                 }
             });
     }

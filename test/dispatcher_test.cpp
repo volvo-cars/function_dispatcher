@@ -25,11 +25,6 @@ struct AnotherEvent {
     using args_t = std::tuple<>;
 };
 
-DEFINE_FUNCTION_DISPATCHER(Addition)
-DEFINE_FUNCTION_DISPATCHER(Multiplication)
-DEFINE_EVENT_DISPATCHER(SomeEvent)
-DEFINE_EVENT_DISPATCHER(AnotherEvent)
-
 class ExampleTest : public dispatcher::Test {};
 
 TEST_F(ExampleTest, ExpectingEventUnordered)
@@ -114,7 +109,7 @@ TEST_F(ExampleTest, TimerTest)
     DISPATCHER_ENABLE_MANUAL_TIME();
     dispatcher::DefaultTimer timer;
     DISPATCHER_EXPECT_EVENT(AnotherEvent);
-    timer.DoIn([] { dispatcher::publish<AnotherEvent>(); }, std::chrono::seconds{1});
+    timer.DoIn(std::chrono::seconds{1}, [] { dispatcher::publish<AnotherEvent>(); });
     DISPATCHER_ADVANCE_TIME(std::chrono::seconds{1});
 }
 
@@ -123,7 +118,7 @@ TEST_F(ExampleTest, RecurrentTimerTest)
     DISPATCHER_ENABLE_MANUAL_TIME();
     dispatcher::DefaultTimer timer;
     DISPATCHER_EXPECT_EVENT(AnotherEvent).Times(3);
-    timer.DoEvery([] { dispatcher::publish<AnotherEvent>(); }, std::chrono::seconds{1});
+    timer.DoEvery(std::chrono::seconds{1}, [] { dispatcher::publish<AnotherEvent>(); });
     DISPATCHER_ADVANCE_TIME(std::chrono::seconds{1});
     DISPATCHER_ADVANCE_TIME(std::chrono::seconds{1});
     DISPATCHER_ADVANCE_TIME(std::chrono::seconds{1});

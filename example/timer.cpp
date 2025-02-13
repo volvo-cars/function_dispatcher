@@ -1,17 +1,23 @@
+#include <boost/fiber/future.hpp>
 #include <iostream>
 #include <thread>
 
 #include "dispatcher.hpp"
 
-int main()
+bool TestWait()
+{
+    boost::fibers::promise<bool> hello;
+    auto future = hello.get_future();
+    future.wait_for(std::chrono::seconds(2));
+    return true;
+}
+
+int main(int argc, char** argv)
 {
     dispatcher::DefaultTimer timer;
-    timer.DoEvery([] { std::cout << "Hello" << std::endl; }, std::chrono::seconds{1});
-    dispatcher::DefaultTimer timer_2;
-    timer_2.DoIn([] { std::cout << "Wirld" << std::endl; }, std::chrono::seconds{2});
-    dispatcher::DefaultTimer timer_3;
-    timer_3.DoIn([] { std::cout << "World" << std::endl; }, std::chrono::seconds{3});
-
-    timer_2.Cancel();
-    std::this_thread::sleep_for(std::chrono::seconds{4});
+    timer.DoEvery(std::chrono::milliseconds(500), [] {
+        bool b = TestWait();
+        std::cout << "Value of b : " << std::to_string(b) << std::endl;
+    });
+    std::this_thread::sleep_for(std::chrono::seconds{10});
 }

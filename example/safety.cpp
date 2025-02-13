@@ -3,23 +3,17 @@
 
 #include "dispatcher.hpp"
 
-struct Addition
-{
+struct Addition {
     using args_t = std::tuple<float, float>;
     using return_t = float;
 };
 
-DEFINE_FUNCTION_DISPATCHER(Addition)
-
 int main()
 {
-    // Missing handler will throw a std::bad_function_call exception
-    try
-    {
+    // Missing handler will throw a NoHandler exception
+    try {
         dispatcher::call<Addition>(4.0f, 3.5f);
-    }
-    catch (const std::bad_function_call &e)
-    {
+    } catch (const dispatcher::NoHandler<Addition> &e) {
         std::cout << e.what() << std::endl;
     }
     // Will not compile due when the Attach function signature does not correspond

@@ -1,27 +1,19 @@
-#include "dispatcher.hpp"
-
 #include <iostream>
 
-struct HelloWorld
-{
-};
+#include "dispatcher.hpp"
 
-DEFINE_FUNCTION_DISPATCHER(HelloWorld)
+struct HelloWorld {};
 
 // If you really need to, you can detach from an event
 
 int main()
 {
-    dispatcher::attach<HelloWorld>([]()
-                                   { std::cout << "Hello world" << std::endl; });
+    dispatcher::attach<HelloWorld>([]() { std::cout << "Hello world" << std::endl; });
     dispatcher::call<HelloWorld>();
     dispatcher::detach<HelloWorld>();
-    try
-    {
+    try {
         dispatcher::call<HelloWorld>();
-    }
-    catch (const std::bad_function_call &)
-    {
+    } catch (const dispatcher::NoHandler<HelloWorld> &) {
         std::cout << "The function has been detached" << std::endl;
     }
 }
