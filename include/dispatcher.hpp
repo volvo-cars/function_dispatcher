@@ -133,9 +133,20 @@ auto call(Args &&...args)
 template <typename Network>
 class EventLoop {
   public:
-    EventLoop() : work_guard_{boost::asio::make_work_guard(io_context_)}
+    EventLoop(size_t fiber_pool_size) : work_guard_{boost::asio::make_work_guard(io_context_)}
     {
-        work_thread_ = std::thread{[this]() { io_context_.run(); }};
+        work_thread_ = std::thread{[fiber_pool_size, this] {
+            std::vector<boost::fibers::fiber> fibers;
+            fibers.reserve(fiber_pool_size);
+            for (size_t i = 0; i < fiber_pool_size; i++) {
+                fibers.emplace_back(boost::fibers::launch::dispatch, [this] { io_context_.run(); });
+            }
+            for (auto &fiber : fibers) {
+                if (fiber.joinable()) {
+                    fiber.join();
+                }
+            }
+        }};
     }
     ~EventLoop()
     {
@@ -150,9 +161,7 @@ class EventLoop {
     template <typename T>
     void Post(T &&task)
     {
-        boost::asio::post(io_context_, [task = std::forward<T>(task)]() mutable {
-            boost::fibers::fiber(boost::fibers::launch::dispatch, std::forward<T>(task)).detach();
-        });
+        boost::asio::post(io_context_, std::forward<T>(task));
     }
 
     void Stop()
@@ -161,20 +170,11 @@ class EventLoop {
             return;
         }
 
-        Post([this]() { work_guard_.reset(); });
-        std::thread stop_thread{[this] {
-            std::unique_lock<std::mutex> lock(mutex_);
-
-            cv_.wait_for(lock, std::chrono::seconds{1}, [this] { return true; });
-            io_context_.stop();
-        }};
+        work_guard_.reset();
+        io_context_.stop();
 
         if (work_thread_.joinable()) {
             work_thread_.join();
-        }
-        cv_.notify_one();
-        if (stop_thread.joinable()) {
-            stop_thread.join();
         }
     }
 
@@ -186,9 +186,8 @@ class EventLoop {
   private:
     boost::asio::io_context io_context_;
     boost::asio::executor_work_guard<decltype(io_context_.get_executor())> work_guard_;
+    std::vector<boost::fibers::fiber> work_fibers_;
     std::thread work_thread_;
-    std::mutex mutex_;
-    std::condition_variable cv_;
 };
 
 // ========================================= Event dispatcher ========================================= //
@@ -197,9 +196,9 @@ class EventLoop {
 struct Default {};
 
 template <typename Network = Default>
-EventLoop<Network> &getEventLoop()
+EventLoop<Network> &getEventLoop(size_t fiber_pool_size = 10)
 {
-    static EventLoop<Network> event_loop;
+    static EventLoop<Network> event_loop{fiber_pool_size};
     return event_loop;
 }
 
@@ -256,6 +255,13 @@ void publish(Args &&...args)
 {
     EventDispatcher<FuncSignature, Network>::publish(std::forward<Args>(args)...);
 }
+
+template <typename Network = Default, typename T>
+void post(T &&task)
+{
+    getEventLoop<Network>().Post(std::forward<T>(task));
+}
+
 // ========================================= Timer ========================================= //
 
 // template trick so all translation units share the same now. Since this should only be used in unit tests, inline
