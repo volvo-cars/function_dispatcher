@@ -1,4 +1,3 @@
-enable_testing()
 add_executable(${PROJECT_NAME}_test dispatcher_test.cpp)
 
 FetchContent_Declare(

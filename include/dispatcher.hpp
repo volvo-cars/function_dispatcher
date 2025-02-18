@@ -2,10 +2,11 @@
 
 #include <boost/asio.hpp>
 #include <boost/date_time/posix_time/posix_time.hpp>
-#include <boost/fiber/fiber.hpp>
+#include <boost/fiber/all.hpp>
 #include <boost/optional.hpp>
 #include <boost/signals2.hpp>
 #include <functional>
+#include <queue>
 #include <thread>
 #include <tuple>
 #include <type_traits>
@@ -13,12 +14,21 @@
 #include <vector>
 
 namespace dispatcher {
+
 template <typename ReturnType, typename Tuple>
 struct FunctionFromTuple;
 
 template <typename ReturnType, typename... Args>
 struct FunctionFromTuple<ReturnType, std::tuple<Args...>> {
     using type = std::function<ReturnType(Args...)>;
+};
+
+template <typename ReturnType, typename Tuple>
+struct ReturnTypeFromCallable;
+
+template <typename Callable, typename... Args>
+struct ReturnTypeFromCallable<Callable, std::tuple<Args...>> {
+    using type = typename std::result_of<Callable(Args...)>::type;
 };
 
 template <typename Tuple>
@@ -113,6 +123,11 @@ struct FunctionDispatcher {
 template <typename FuncSignature, typename Callable>
 void attach(Callable &&callable)
 {
+    static_assert(
+        std::is_same<
+            typename FunctionDispatcher<FuncSignature>::return_t,
+            typename ReturnTypeFromCallable<Callable, typename FunctionDispatcher<FuncSignature>::args_t>::type>::value,
+        "The return values of the callable is not matching the function signature");
     FunctionDispatcher<FuncSignature>::template attach<Callable>(std::forward<Callable>(callable));
 }
 
@@ -130,23 +145,85 @@ auto call(Args &&...args)
 
 // ========================================= Event loop ========================================= //
 
+class MemoryPool {
+  public:
+    MemoryPool(std::size_t size) : size_(size)
+    {
+    }
+    ~MemoryPool()
+    {
+        while (!allocated_blocks_.empty()) {
+            auto memory_block = allocated_blocks_.front();
+            allocated_blocks_.pop();
+            std::free(memory_block);
+        }
+    }
+    MemoryPool(const MemoryPool &) = delete;
+    MemoryPool(MemoryPool &&) = delete;
+    MemoryPool &operator=(const MemoryPool &) = delete;
+    MemoryPool &operator=(MemoryPool &&) = delete;
+
+    void *allocate()
+    {
+        if (allocated_blocks_.empty()) {
+            return std::malloc(size_);
+        }
+        auto memory = allocated_blocks_.front();
+        allocated_blocks_.pop();
+        return memory;
+    }
+    void free(void *memory_block)
+    {
+        allocated_blocks_.push(memory_block);
+    }
+
+    std::size_t get_size()
+    {
+        return size_;
+    }
+
+  private:
+    std::size_t size_;
+    std::queue<void *> allocated_blocks_;
+};
+
+class CustomStackAllocator {
+  public:
+    CustomStackAllocator(MemoryPool *memory_pool) : memory_pool_(memory_pool)
+    {
+    }
+
+    boost::context::stack_context allocate()
+    {
+        boost::context::stack_context sctx;
+        sctx.size = memory_pool_->get_size();
+        sctx.sp = static_cast<char *>(memory_pool_->allocate()) + sctx.size;
+        return sctx;
+    }
+
+    void deallocate(boost::context::stack_context &sctx) BOOST_NOEXCEPT_OR_NOTHROW
+    {
+        BOOST_ASSERT(sctx.sp);
+
+        void *vp = static_cast<char *>(sctx.sp) - sctx.size;
+        memory_pool_->free(vp);
+    }
+
+  private:
+    MemoryPool *memory_pool_;
+};
+
 template <typename Network>
 class EventLoop {
   public:
-    EventLoop(size_t fiber_pool_size) : work_guard_{boost::asio::make_work_guard(io_context_)}
+    EventLoop()
+        : work_thread_{[this] {
+              while (!stopped_) {
+                  io_context_.poll();
+                  boost::this_fiber::yield();
+              }
+          }}
     {
-        work_thread_ = std::thread{[fiber_pool_size, this] {
-            std::vector<boost::fibers::fiber> fibers;
-            fibers.reserve(fiber_pool_size);
-            for (size_t i = 0; i < fiber_pool_size; i++) {
-                fibers.emplace_back(boost::fibers::launch::dispatch, [this] { io_context_.run(); });
-            }
-            for (auto &fiber : fibers) {
-                if (fiber.joinable()) {
-                    fiber.join();
-                }
-            }
-        }};
     }
     ~EventLoop()
     {
@@ -161,17 +238,17 @@ class EventLoop {
     template <typename T>
     void Post(T &&task)
     {
-        boost::asio::post(io_context_, std::forward<T>(task));
+        boost::asio::post(io_context_, [this, task = std::forward<T>(task)]() mutable {
+            boost::fibers::fiber(boost::fibers::launch::dispatch, std::allocator_arg,
+                                 CustomStackAllocator{&memory_pool_}, std::forward<T>(task))
+                .detach();
+        });
     }
 
     void Stop()
     {
-        if (!work_guard_.owns_work()) {
-            return;
-        }
-
-        work_guard_.reset();
         io_context_.stop();
+        stopped_ = true;
 
         if (work_thread_.joinable()) {
             work_thread_.join();
@@ -185,9 +262,9 @@ class EventLoop {
 
   private:
     boost::asio::io_context io_context_;
-    boost::asio::executor_work_guard<decltype(io_context_.get_executor())> work_guard_;
-    std::vector<boost::fibers::fiber> work_fibers_;
     std::thread work_thread_;
+    std::atomic<bool> stopped_{false};
+    MemoryPool memory_pool_{64000};
 };
 
 // ========================================= Event dispatcher ========================================= //
@@ -195,10 +272,23 @@ class EventLoop {
 // Default network
 struct Default {};
 
-template <typename Network = Default>
-EventLoop<Network> &getEventLoop(size_t fiber_pool_size = 10)
+std::string &getString()
 {
-    static EventLoop<Network> event_loop{fiber_pool_size};
+    static std::string a;
+    return a;
+}
+
+template <typename v = void>
+std::string &getStringTemplate()
+{
+    static std::string a;
+    return a;
+}
+
+template <typename Network = Default>
+EventLoop<Network> &getEventLoop()
+{
+    static EventLoop<Network> event_loop;
     return event_loop;
 }
 
@@ -264,10 +354,7 @@ void post(T &&task)
 
 // ========================================= Timer ========================================= //
 
-// template trick so all translation units share the same now. Since this should only be used in unit tests, inline
-// would have also probably worked.
-template <typename v = void>
-boost::optional<boost::asio::deadline_timer::traits_type::time_type> &Now()
+inline boost::optional<boost::asio::deadline_timer::traits_type::time_type> &Now()
 {
     static boost::optional<boost::asio::deadline_timer::traits_type::time_type> now;
     return now;

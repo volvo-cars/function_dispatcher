@@ -21,19 +21,27 @@ void printTime(std::string message, int i)
 
 bool TestWait(int i)
 {
-    printTime(" started ", i);
+    dispatcher::post([=] { printTime(" started ", i); });
     boost::fibers::promise<bool> hello;
 
     auto future = hello.get_future();
     future.wait_for(std::chrono::seconds(2));
-    printTime(" ended ", i);
+    dispatcher::post([=] { printTime(" ended ", i); });
     return true;
 }
 
 int main(int argc, char** argv)
 {
+    dispatcher::post([] { std::cout << "Hello" << std::endl; });
     dispatcher::DefaultTimer timer;
     int i = 0;
     timer.DoEvery(std::chrono::milliseconds(500), [&] { bool b = TestWait(i++); });
+    std::thread t{[] {
+        for (int i = 0; i < 10000; i++) {
+            dispatcher::post([] { std::cout << "flooding " << std::endl; });
+            std::this_thread::sleep_for(std::chrono::milliseconds{1});
+        }
+    }};
     std::this_thread::sleep_for(std::chrono::seconds{6});
+    t.join();
 }
