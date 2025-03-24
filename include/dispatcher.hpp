@@ -71,7 +71,9 @@ class NoHandler : public std::exception {
   public:
     const char *what() const noexcept override
     {
-        return "Function was called but no handler was attached";
+        static std::string message =
+            "Function " + std::string(typeid(FuncSignature).name()) + " was called but no handler was attached";
+        return message.c_str();
     }
 };
 
@@ -256,12 +258,16 @@ void publish(Args &&...args)
 {
     EventDispatcher<FuncSignature, Network>::publish(std::forward<Args>(args)...);
 }
+
+template <typename Network = Default, typename T>
+void post(T &&task)
+{
+    getEventLoop<Network>().Post(std::forward<T>(task));
+}
+
 // ========================================= Timer ========================================= //
 
-// template trick so all translation units share the same now. Since this should only be used in unit tests, inline
-// would have also probably worked.
-template <typename v = void>
-boost::optional<boost::asio::deadline_timer::traits_type::time_type> &Now()
+inline boost::optional<boost::asio::deadline_timer::traits_type::time_type> &Now()
 {
     static boost::optional<boost::asio::deadline_timer::traits_type::time_type> now;
     return now;
