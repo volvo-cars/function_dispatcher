@@ -52,7 +52,7 @@ int main()
 
 This library is header only, but requires boost::asio and boost::signals2. You can either add this as a git submodule and link with function_dispatcher, or provide boost yourself and just include the header file.
 
-This requires c++17, but a c++14 version is also provided
+This requires C++14 
 
 # Motivation
 
