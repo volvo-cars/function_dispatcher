@@ -1,0 +1,23 @@
+Copyright 2025 Volvo Car Corporation
+
+This product includes software developed by Volvo Car Corporation.
+This product also includes third-party software components, which are listed below along with their respective licenses.
+
+--------------------------------------------------------------------------------
+Boost Libraries
+--------------------------------------------------------------------------------
+The following Boost libraries are used in this project:
+- Boost.Asio
+- Boost.Signals2
+- Boost.Fibers
+
+Boost Libraries are distributed under the Boost Software License, Version 1.0.
+You may obtain a copy of the license at:
+https://www.boost.org/LICENSE_1_0.txt
+
+--------------------------------------------------------------------------------
+Google Test (gtest)
+--------------------------------------------------------------------------------
+Google Test is distributed under the BSD 3-Clause License.
+You may obtain a copy of the license at:
+https://github.com/google/googletest/blob/main/LICENSE

@@ -15,6 +15,7 @@ find_package(Boost
   COMPONENTS
   asio
   signals2
+  fiber
 )
 
 if(NOT Boost_FOUND)

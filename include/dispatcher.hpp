@@ -1,11 +1,24 @@
 #pragma once
 
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
 #include <boost/asio.hpp>
 #include <boost/date_time/posix_time/posix_time.hpp>
-#include <boost/fiber/fiber.hpp>
+#include <boost/fiber/all.hpp>
 #include <boost/optional.hpp>
 #include <boost/signals2.hpp>
 #include <functional>
+#include <queue>
 #include <thread>
 #include <tuple>
 #include <type_traits>
@@ -13,12 +26,21 @@
 #include <vector>
 
 namespace dispatcher {
+
 template <typename ReturnType, typename Tuple>
 struct FunctionFromTuple;
 
 template <typename ReturnType, typename... Args>
 struct FunctionFromTuple<ReturnType, std::tuple<Args...>> {
     using type = std::function<ReturnType(Args...)>;
+};
+
+template <typename ReturnType, typename Tuple>
+struct ReturnTypeFromCallable;
+
+template <typename Callable, typename... Args>
+struct ReturnTypeFromCallable<Callable, std::tuple<Args...>> {
+    using type = typename std::result_of<Callable(Args...)>::type;
 };
 
 template <typename Tuple>
@@ -64,6 +86,9 @@ struct args_t_or_default<FuncSignature, true> {
     using type = typename FuncSignature::args_t;
 };
 
+// Default network
+struct Default {};
+
 // ========================================= Function dispatcher ========================================= //
 
 template <typename FuncSignature>
@@ -71,9 +96,7 @@ class NoHandler : public std::exception {
   public:
     const char *what() const noexcept override
     {
-        static std::string message =
-            "Function " + std::string(typeid(FuncSignature).name()) + " was called but no handler was attached";
-        return message.c_str();
+        return "Function was called but no handler was attached";
     }
 };
 
@@ -115,6 +138,11 @@ struct FunctionDispatcher {
 template <typename FuncSignature, typename Callable>
 void attach(Callable &&callable)
 {
+    static_assert(
+        std::is_same<
+            typename FunctionDispatcher<FuncSignature>::return_t,
+            typename ReturnTypeFromCallable<Callable, typename FunctionDispatcher<FuncSignature>::args_t>::type>::value,
+        "The return values of the callable is not matching the function signature");
     FunctionDispatcher<FuncSignature>::template attach<Callable>(std::forward<Callable>(callable));
 }
 
@@ -132,12 +160,92 @@ auto call(Args &&...args)
 
 // ========================================= Event loop ========================================= //
 
+class MemoryPool {
+  public:
+    MemoryPool(std::size_t size) : size_(size)
+    {
+    }
+    ~MemoryPool()
+    {
+        while (!allocated_blocks_.empty()) {
+            auto memory_block = allocated_blocks_.front();
+            allocated_blocks_.pop();
+            std::free(memory_block);
+        }
+    }
+    MemoryPool(const MemoryPool &) = delete;
+    MemoryPool(MemoryPool &&) = delete;
+    MemoryPool &operator=(const MemoryPool &) = delete;
+    MemoryPool &operator=(MemoryPool &&) = delete;
+
+    void *allocate()
+    {
+        std::unique_lock<std::mutex> ul{m_};
+        if (allocated_blocks_.empty()) {
+            void *memory = std::malloc(size_);
+            if (!memory) {
+                throw std::bad_alloc();
+            }
+            return memory;
+        }
+        auto memory = allocated_blocks_.front();
+        allocated_blocks_.pop();
+        return memory;
+    }
+    void free(void *memory_block)
+    {
+        std::unique_lock<std::mutex> ul{m_};
+        allocated_blocks_.push(memory_block);
+    }
+
+    std::size_t get_size()
+    {
+        return size_;
+    }
+
+  private:
+    std::size_t size_;
+    std::queue<void *> allocated_blocks_;
+    std::mutex m_;
+};
+
+class CustomStackAllocator {
+  public:
+    CustomStackAllocator(MemoryPool *memory_pool) : memory_pool_(memory_pool)
+    {
+    }
+
+    boost::context::stack_context allocate()
+    {
+        boost::context::stack_context sctx;
+        sctx.size = memory_pool_->get_size();
+        sctx.sp = static_cast<char *>(memory_pool_->allocate()) + sctx.size;
+        return sctx;
+    }
+
+    void deallocate(boost::context::stack_context &sctx) BOOST_NOEXCEPT_OR_NOTHROW
+    {
+        BOOST_ASSERT(sctx.sp);
+
+        void *vp = static_cast<char *>(sctx.sp) - sctx.size;
+        memory_pool_->free(vp);
+    }
+
+  private:
+    MemoryPool *memory_pool_;
+};
+
 template <typename Network>
 class EventLoop {
   public:
-    EventLoop() : work_guard_{boost::asio::make_work_guard(io_context_)}
+    EventLoop()
+        : work_guard_{boost::asio::make_work_guard(io_context_)}, work_thread_{[this] {
+              while (!stopped_) {
+                  io_context_.poll_one();
+                  boost::this_fiber::yield();
+              }
+          }}
     {
-        work_thread_ = std::thread{[this]() { io_context_.run(); }};
     }
     ~EventLoop()
     {
@@ -149,34 +257,41 @@ class EventLoop {
     EventLoop &operator=(const EventLoop &) = delete;
     EventLoop &operator=(EventLoop &&) = delete;
 
+    void SetWorkerThreadsAmount(int threads)
+    {
+        while (additional_work_threads_.size() < threads - 1) {
+            additional_work_threads_.emplace_back([this] {
+                while (!stopped_) {
+                    io_context_.poll_one();
+                    boost::this_fiber::yield();
+                }
+            });
+        }
+    }
+
     template <typename T>
     void Post(T &&task)
     {
-        boost::asio::post(io_context_, [task = std::forward<T>(task)]() mutable {
-            boost::fibers::fiber(boost::fibers::launch::dispatch, std::forward<T>(task)).detach();
+        boost::asio::post(io_context_, [this, task = std::forward<T>(task)]() mutable {
+            boost::fibers::fiber(boost::fibers::launch::dispatch, std::allocator_arg,
+                                 CustomStackAllocator{&memory_pool_}, std::forward<T>(task))
+                .detach();
         });
     }
 
     void Stop()
     {
-        if (!work_guard_.owns_work()) {
-            return;
-        }
-
-        Post([this]() { work_guard_.reset(); });
-        std::thread stop_thread{[this] {
-            std::unique_lock<std::mutex> lock(mutex_);
-
-            cv_.wait_for(lock, std::chrono::seconds{1}, [this] { return true; });
-            io_context_.stop();
-        }};
+        work_guard_.reset();
+        io_context_.stop();
+        stopped_ = true;
 
         if (work_thread_.joinable()) {
             work_thread_.join();
         }
-        cv_.notify_one();
-        if (stop_thread.joinable()) {
-            stop_thread.join();
+        for (auto &thread : additional_work_threads_) {
+            if (thread.joinable()) {
+                thread.join();
+            }
         }
     }
 
@@ -189,14 +304,12 @@ class EventLoop {
     boost::asio::io_context io_context_;
     boost::asio::executor_work_guard<decltype(io_context_.get_executor())> work_guard_;
     std::thread work_thread_;
-    std::mutex mutex_;
-    std::condition_variable cv_;
+    std::vector<std::thread> additional_work_threads_;
+    std::atomic<bool> stopped_{false};
+    MemoryPool memory_pool_{30000};
 };
 
 // ========================================= Event dispatcher ========================================= //
-
-// Default network
-struct Default {};
 
 template <typename Network = Default>
 EventLoop<Network> &getEventLoop()
@@ -206,16 +319,16 @@ EventLoop<Network> &getEventLoop()
 }
 
 template <typename F, typename Tuple, std::size_t... Is>
-void call_with_tuple(F &&f, Tuple &&t, std::index_sequence<Is...>)
+auto call_with_tuple(F &&f, Tuple &&t, std::index_sequence<Is...>)
 {
-    f(std::get<Is>(std::forward<Tuple>(t))...);
+    return f(std::get<Is>(std::forward<Tuple>(t))...);
 }
 
 template <typename F, typename Tuple>
-void call_with_tuple(F &&f, Tuple &&t)
+auto call_with_tuple(F &&f, Tuple &&t)
 {
     constexpr auto size = std::tuple_size<std::decay_t<Tuple>>::value;
-    call_with_tuple(std::forward<F>(f), std::forward<Tuple>(t), std::make_index_sequence<size>{});
+    return call_with_tuple(std::forward<F>(f), std::forward<Tuple>(t), std::make_index_sequence<size>{});
 }
 
 template <typename FuncSignature, typename Network, typename signal_type>
@@ -223,6 +336,21 @@ signal_type &GetSignal()
 {
     static signal_type signal;
     return signal;
+}
+
+template <typename FuncSignature, typename Network = Default, typename... Args>
+auto async_call(Args &&...args)
+{
+    boost::fibers::promise<typename FunctionDispatcher<FuncSignature>::return_t> promise;
+    auto future = promise.get_future();
+
+    using func_type = typename FunctionDispatcher<FuncSignature>::func_type;
+
+    auto argsTuple = std::make_tuple(std::forward<Args>(args)...);
+    getEventLoop<Network>().Post([promise = std::move(promise), argsTuple = std::move(argsTuple)]() mutable {
+        promise.set_value(call_with_tuple(GetFunction<FuncSignature, func_type>(), std::move(argsTuple)));
+    });
+    return future;
 }
 
 template <typename FuncSignature, typename Network = Default>

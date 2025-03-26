@@ -1,17 +1,41 @@
+# Table of Contents <!-- omit from toc -->
+
+- [Introduction](#introduction)
+- [Simple examples](#simple-examples)
+  - [Blocking call](#blocking-call)
+  - [Event dispatching](#event-dispatching)
+- [Installation](#installation)
+- [Motivation](#motivation)
+- [Performances](#performances)
+  - [Blocking calls benchmark](#blocking-calls-benchmark)
+  - [Async calls benchmark](#async-calls-benchmark)
+- [Safety](#safety)
+  - [Compile time](#compile-time)
+  - [Runtime](#runtime)
+
 # Introduction
 
-This library provides an event dispatcher, which allows events to be published through boost::signals2 and a boost::asio event loop
-It is also possible to call functions, this will use std::function without going through the event loop
+This C++ library aims at providing async capabilities, with an API that allows complete decoupling between software components.
 
-# Examples
+Features: 
+    - Blocking calls to attached function using just the function signature from anywhere in the code
+    - Async calls to attached functions, returning boost future. Can be used for easy dispatching of work to worker threads
+    - Asynchronous event dispatching 
+    - Creation of timer with easy integration with dispatcher
+    - Test library with syntax similar to google test/google mock
 
-## Simple call
+# Simple examples
+
+## Blocking call
+
+Using the attach/call API, it is possible to call functions without needing a reference to an object or a callback. 
 
 ```c++
 #include "dispatcher.hpp"
 
 #include <iostream>
 
+// This is the function "signature"
 struct Addition
 {
     using args_t = std::tuple<int, int>;
@@ -20,14 +44,17 @@ struct Addition
 
 int main()
 {
+    // Code in component A
     dispatcher::attach<Addition>([](int a, int b)
                                         {return a + b;});
-    //Prints 5
+    //Blocking function, will print 5. Can be callled from component B without holding any reference to component A
     std::cout << dispatcher::call<Addition>(3, 2) << std::endl;
 }
 ```
 
-## Simple event
+## Event dispatching
+
+It is possible to publish events that will be received by every subscriber. The dispatching is done asynchronously 
 
 ```c++
 #include "dispatcher.hpp"
@@ -50,9 +77,7 @@ int main()
 
 # Installation
 
-This library is header only, but requires boost::asio and boost::signals2. You can either add this as a git submodule and link with function_dispatcher, or provide boost yourself and just include the header file.
-
-This requires C++14 
+This C++ 14 library requires boost::asio and boost::signals2. You can either add this as a git submodule and link with function_dispatcher, or provide boost yourself and just include the header file.
 
 # Motivation
 
@@ -60,12 +85,15 @@ You can design your codebase as a set of independant code islands. This prevents
 
 Each code island only needs to know about its domain specific requirement, not about the rest of the program. 
 
+It is also really easy to accomplish async programming in a thread safe manner, or to move work packages from one thread to another.
+
 # Performances 
 
-Direct function calls are just a std::function in a trenchcoat, should be relatively easy on performances. This may confuse the compiler and remove optimizations though.
+Blocking function calls (dispatcher::call) are just a std::function in a trenchcoat, should be relatively easy on performances. This may confuse the compiler and remove optimizations though.
 Event calls are much more expensive, since you may need to wake up a thread, and is using boost::signals2.
+Async calls have similar performances as event calls.
 
-## Benchmark
+## Blocking calls benchmark
 
 A quick benchmark can be found in benchmark/benchmark.cpp. Here are the results:
 
@@ -94,6 +122,35 @@ CallManipulateStringRefFunctionDispatcherEvent        306 ns          302 ns    
 ``` 
 
 This is only a micro benchmark, results are indicative at best. 
+
+## Async calls benchmark
+
+Another benchmark can be found in benchmark/custom_benchmark 
+
+```
+./custom_benchmark            
+//First run of event posting, need to allocate all the stack                                         
+finished posting
+everything started
+everything finished
+Time to post all tasks: 8 ms
+Time to start all tasks: 216 ms
+Time to finish all tasks: 94 ms
+Total time: 320 ms
+Number of finished posts per seconds : 625000
+ 
+// Second time, we have not freed the fiber stack, so it is faster
+finished posting
+everything started
+everything finished
+Time to post all tasks: 15 ms
+Time to start all tasks: 68 ms
+Time to finish all tasks: 104 ms
+Total time: 188 ms
+Number of finished posts per seconds : 1.06383e+06
+```
+
+This roughly means we can reach 1 million finished task every second, for a single threaded event loop. The event loop is slower at the beginning as we are recycling memory stacks of completed posts
 
 # Safety 
 
