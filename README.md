@@ -17,12 +17,14 @@
 
 This C++ library aims at providing async capabilities, with an API that allows complete decoupling between software components.
 
-Features: 
-    - Blocking calls to attached function using just the function signature from anywhere in the code
-    - Async calls to attached functions, returning boost future. Can be used for easy dispatching of work to worker threads
-    - Asynchronous event dispatching 
-    - Creation of timer with easy integration with dispatcher
-    - Test library with syntax similar to google test/google mock
+It provides the following features:
+
+- Blocking function calling by only using function signature
+- Async function calling returning `boost::future`, by only using function signature
+- Easily sending work packages to worker threads and waiting for the result
+- Event dispatching
+- Timer
+- Test framework with similar capabilities/syntax as Google Test/Mock, to integrate the dispatcher in unit tests
 
 # Simple examples
 
