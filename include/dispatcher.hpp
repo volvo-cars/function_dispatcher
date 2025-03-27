@@ -1,5 +1,6 @@
 #pragma once
 
+// Copyright 2025 Volvo Car Corporation
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
@@ -379,6 +380,16 @@ template <typename FuncSignature, typename Network = Default, typename Callable>
 boost::signals2::connection subscribe(Callable &&callable)
 {
     return EventDispatcher<FuncSignature, Network>::template subscribe(std::forward<Callable>(callable));
+}
+
+template <typename FuncSignature, typename Network = Default, typename Callable>
+boost::fibers::future<std::nullptr_t> expect(/*Callable &&callable*/)
+{
+    boost::fibers::promise<std::nullptr_t> promise;
+    auto future = promise.get_future();
+    EventDispatcher<FuncSignature, Network>::template subscribe(
+        [promise = std::move(promise)](auto &&...) mutable { promise.set_value({}); });
+    return future;
 }
 
 template <typename FuncSignature, typename Network = Default, typename... Args>
