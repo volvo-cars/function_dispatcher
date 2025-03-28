@@ -22,13 +22,13 @@ jobs:
         uses: actions/checkout@v4
       - name: Black Duck Full Scan
         run: |
-          bash <(curl -s -L https://detect.synopsys.com/detect8.sh) \
+          bash <(curl -s -L https://detect.blackduck.com/detect9.sh)) \
           --blackduck.url=$BLACKDUCK_URL \
           --blackduck.api.token=$BLACKDUCK_ACCESS_TOKEN \
           --blackduck.trust.cert=true \
           --detect.project.name=$BLACKDUCK_PROJECT_NAME \
           --detect.project.version.name=$BLACKDUCK_PROJECT_VERSION  \
-          --detect.source.path=include \
+          --detect.source.path=./include \
           --detect.accuracy.required=NONE \
           --detect.project.version.distribution=INTERNAL
  
