@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.24)
 
-project(function_dispatcher VERSION 0.1.0)
+project(function-dispatcher VERSION 0.1.0)
 set(CMAKE_CXX_STANDARD 14)
 
 option(${PROJECT_NAME}_example "Build examples" ON)

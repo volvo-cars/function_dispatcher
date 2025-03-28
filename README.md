@@ -79,7 +79,7 @@ int main()
 
 # Installation
 
-This C++ 14 library requires boost::asio and boost::signals2. You can either add this as a git submodule and link with function_dispatcher, or provide boost yourself and just include the header file.
+This C++ 14 library requires boost::asio and boost::signals2. You can either add this as a git submodule and link with function-dispatcher, or provide boost yourself and just include the header file.
 
 # Motivation
 
@@ -100,7 +100,7 @@ Async calls have similar performances as event calls.
 A quick benchmark can be found in benchmark/benchmark.cpp. Here are the results:
 
 ```
-Running ./function_dispatcher_benchmark
+Running ./function-dispatcher_benchmark
 Run on (14 X 400 MHz CPU s)
 CPU Caches:
   L1 Data 48 KiB (x7)
