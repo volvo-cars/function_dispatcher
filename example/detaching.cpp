@@ -1,3 +1,4 @@
+// Copyright 2025 Volvo Car Corporation
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
@@ -25,7 +26,8 @@ int main()
     dispatcher::detach<HelloWorld>();
     try {
         dispatcher::call<HelloWorld>();
-    } catch (const dispatcher::NoHandler<HelloWorld> &) {
+    } catch (const dispatcher::NoHandler<HelloWorld> &e) {
         std::cout << "The function has been detached" << std::endl;
+        std::cout << e.what() << std::endl;
     }
 }

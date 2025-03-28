@@ -11,28 +11,22 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include <iostream>
-
 #include "dispatcher.hpp"
 
-// You can have different events with the same signature
-
-struct Addition {
-    using args_t = std::tuple<int, int>;
-    using return_t = int;
-};
-
-struct Multiplication {
-    using args_t = std::tuple<int, int>;
-    using return_t = int;
+struct AnEvent {
+    using args_t = std::tuple<std::string>;
 };
 
 int main()
 {
-    dispatcher::attach<Addition>([](int a, int b) { return a + b; });
-    dispatcher::attach<Multiplication>([](int a, int b) { return a * b; });
-    // Print 12
-    std::cout << dispatcher::call<Multiplication>(3, 4) << std::endl;
-    // Print 5
-    std::cout << dispatcher::call<Addition>(2, 3) << std::endl;
+    dispatcher::post([] {
+        auto future = dispatcher::expect<AnEvent>();
+        auto future_2 = dispatcher::expect<AnEvent>([](auto s) { std::cout << s << std::endl; });
+        dispatcher::publish<AnEvent>("Hello world");
+        // Will block until event is received
+        future.wait();
+        // The subscribtion are fullfilled when the event is done
+        dispatcher::publish<AnEvent>("Hello world");
+    });
+    std::this_thread::sleep_for(std::chrono::seconds{1});
 }
