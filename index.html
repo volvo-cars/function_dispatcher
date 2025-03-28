@@ -1,0 +1,1019 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="./">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Function Dispatcher documentation &#8212; Function Dispatcher 0.1 documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=5ecbeea2" />
+    <link rel="stylesheet" type="text/css" href="_static/basic.css?v=b08954a9" />
+    <link rel="stylesheet" type="text/css" href="_static/alabaster.css?v=27fed22d" />
+    <script src="_static/documentation_options.js?v=2709fde1"></script>
+    <script src="_static/doctools.js?v=9bcbadda"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+
+  
+  
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <section id="function-dispatcher-documentation">
+<h1>Function Dispatcher documentation<a class="headerlink" href="#function-dispatcher-documentation" title="Link to this heading">¶</a></h1>
+<div class="toctree-wrapper compound">
+</div>
+<dl class="cpp type">
+<dt class="sig sig-object cpp" id="_CPPv410dispatcher">
+<span id="_CPPv310dispatcher"></span><span id="_CPPv210dispatcher"></span><span id="dispatcher"></span><span class="target" id="namespacedispatcher"></span><span class="k"><span class="pre">namespace</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">dispatcher</span></span></span><a class="headerlink" href="#_CPPv410dispatcher" title="Link to this definition">¶</a><br /></dt>
+<dd><div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-typedefs">Typedefs</p>
+<dl class="cpp type">
+<dt class="sig sig-object cpp" id="_CPPv4N10dispatcher12DefaultTimerE">
+<span id="_CPPv3N10dispatcher12DefaultTimerE"></span><span id="_CPPv2N10dispatcher12DefaultTimerE"></span><span class="target" id="dispatcher_8hpp_1a8dc2503844f7fbaf04b4f7ba65e16829"></span><span class="k"><span class="pre">using</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">DefaultTimer</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><a class="reference internal" href="#_CPPv4I0EN10dispatcher5TimerE" title="dispatcher::Timer"><span class="n"><span class="pre">Timer</span></span></a><span class="p"><span class="pre">&lt;</span></span><a class="reference internal" href="#_CPPv4N10dispatcher8internalE" title="dispatcher::internal"><span class="n"><span class="pre">internal</span></span></a><span class="p"><span class="pre">::</span></span><a class="reference internal" href="#_CPPv4N10dispatcher8internal7DefaultE" title="dispatcher::internal::Default"><span class="n"><span class="pre">Default</span></span></a><span class="p"><span class="pre">&gt;</span></span><a class="headerlink" href="#_CPPv4N10dispatcher12DefaultTimerE" title="Link to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+</div>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-functions">Functions</p>
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4I00EN10dispatcher6attachEvRR8Callable">
+<span id="_CPPv3I00EN10dispatcher6attachERR8Callable"></span><span id="_CPPv2I00EN10dispatcher6attachERR8Callable"></span><span class="k"><span class="pre">template</span></span><span class="p"><span class="pre">&lt;</span></span><span class="k"><span class="pre">typename</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">FuncSignature</span></span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="k"><span class="pre">typename</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">Callable</span></span></span><span class="p"><span class="pre">&gt;</span></span><br /><span class="target" id="dispatcher_8hpp_1a4b3e6fcc71aca242698d93a72b62d062"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">attach</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv4I00EN10dispatcher6attachEvRR8Callable" title="dispatcher::attach::Callable"><span class="n"><span class="pre">Callable</span></span></a><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="p"><span class="pre">&amp;</span></span><span class="n sig-param"><span class="pre">callable</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4I00EN10dispatcher6attachEvRR8Callable" title="Link to this definition">¶</a><br /></dt>
+<dd><p>Attach a callable to a function signature. </p>
+<p>This function binds a callable (e.g., a lambda, function, or functor) to a specific function signature. The callable must match the return type and argument types defined by the function signature.</p>
+<p>
+Example: <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">struct</span> <span class="n">Addition</span> <span class="p">{</span>
+    <span class="n">using</span> <span class="n">args_t</span> <span class="o">=</span> <span class="n">std</span><span class="p">::</span><span class="nb">tuple</span><span class="o">&lt;</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="o">&gt;</span><span class="p">;</span>
+    <span class="n">using</span> <span class="n">return_t</span> <span class="o">=</span> <span class="nb">int</span><span class="p">;</span>
+<span class="p">};</span>
+
+<span class="n">dispatcher</span><span class="p">::</span><span class="n">attach</span><span class="o">&lt;</span><span class="n">Addition</span><span class="o">&gt;</span><span class="p">([](</span><span class="nb">int</span> <span class="n">a</span><span class="p">,</span> <span class="nb">int</span> <span class="n">b</span><span class="p">)</span> <span class="p">{</span> <span class="k">return</span> <span class="n">a</span> <span class="o">+</span> <span class="n">b</span><span class="p">;</span> <span class="p">});</span>
+</pre></div>
+</div>
+ </p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>If the callable’s return type does not match the function signature’s return type, a static assertion will fail.</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Template Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>FuncSignature</strong> – The function signature to attach the callable to. </p></li>
+<li><p><strong>Callable</strong> – The type of the callable. </p></li>
+</ul>
+</dd>
+<dt class="field-even">Parameters<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>callable</strong> – The callable to attach.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4I0EN10dispatcher6detachEvv">
+<span id="_CPPv3I0EN10dispatcher6detachEv"></span><span id="_CPPv2I0EN10dispatcher6detachEv"></span><span class="k"><span class="pre">template</span></span><span class="p"><span class="pre">&lt;</span></span><span class="k"><span class="pre">typename</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">FuncSignature</span></span></span><span class="p"><span class="pre">&gt;</span></span><br /><span class="target" id="dispatcher_8hpp_1a55e472f2ddc87a5bc3a662ebb192db11"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">detach</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4I0EN10dispatcher6detachEvv" title="Link to this definition">¶</a><br /></dt>
+<dd><p>Detach the callable from a function signature. </p>
+<p>This function removes the callable that was previously attached to the specified function signature. After detaching, any calls to the function signature will throw an exception.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Template Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>FuncSignature</strong> – The function signature to detach the callable from. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4I0DpEN10dispatcher4callEDaDpRR4Args">
+<span id="_CPPv3I0DpEN10dispatcher4callEDpRR4Args"></span><span id="_CPPv2I0DpEN10dispatcher4callEDpRR4Args"></span><span class="k"><span class="pre">template</span></span><span class="p"><span class="pre">&lt;</span></span><span class="k"><span class="pre">typename</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">FuncSignature</span></span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="k"><span class="pre">typename</span></span><span class="w"> </span><span class="p"><span class="pre">...</span></span><span class="sig-name descname"><span class="n"><span class="pre">Args</span></span></span><span class="p"><span class="pre">&gt;</span></span><br /><span class="target" id="dispatcher_8hpp_1a41bdc56c6244bd4cebf5ec9e1513c1eb"></span><span class="kt"><span class="pre">auto</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">call</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv4I0DpEN10dispatcher4callEDaDpRR4Args" title="dispatcher::call::Args"><span class="n"><span class="pre">Args</span></span></a><span class="p"><span class="pre">&amp;</span></span><span class="p"><span class="pre">&amp;</span></span><span class="p"><span class="pre">...</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">args</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4I0DpEN10dispatcher4callEDaDpRR4Args" title="Link to this definition">¶</a><br /></dt>
+<dd><p>Call a function by its signature with the provided arguments. </p>
+<p>This function invokes the callable previously attached to the specified function signature with the given arguments. The arguments must match the types defined in the function signature. This function is blocking</p>
+<p>
+Example: <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">struct</span> <span class="n">Addition</span> <span class="p">{</span>
+    <span class="n">using</span> <span class="n">args_t</span> <span class="o">=</span> <span class="n">std</span><span class="p">::</span><span class="nb">tuple</span><span class="o">&lt;</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="o">&gt;</span><span class="p">;</span>
+    <span class="n">using</span> <span class="n">return_t</span> <span class="o">=</span> <span class="nb">int</span><span class="p">;</span>
+<span class="p">};</span>
+
+<span class="n">dispatcher</span><span class="p">::</span><span class="n">attach</span><span class="o">&lt;</span><span class="n">Addition</span><span class="o">&gt;</span><span class="p">([](</span><span class="nb">int</span> <span class="n">a</span><span class="p">,</span> <span class="nb">int</span> <span class="n">b</span><span class="p">)</span> <span class="p">{</span> <span class="k">return</span> <span class="n">a</span> <span class="o">+</span> <span class="n">b</span><span class="p">;</span> <span class="p">});</span>
+<span class="nb">int</span> <span class="n">result</span> <span class="o">=</span> <span class="n">dispatcher</span><span class="p">::</span><span class="n">call</span><span class="o">&lt;</span><span class="n">Addition</span><span class="o">&gt;</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">5</span><span class="p">);</span> <span class="o">//</span> <span class="n">result</span> <span class="n">will</span> <span class="n">be</span> <span class="mi">8</span>
+</pre></div>
+</div>
+ </p>
+<dl class="field-list simple">
+<dt class="field-odd">Template Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>FuncSignature</strong> – The function signature to call. </p></li>
+<li><p><strong>Args</strong> – The types of the arguments to pass to the callable. </p></li>
+</ul>
+</dd>
+<dt class="field-even">Parameters<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>args</strong> – The arguments to pass to the callable. </p>
+</dd>
+<dt class="field-odd">Throws<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span><span class="cpp-expr sig sig-inline cpp"><a class="reference internal" href="#_CPPv4I0EN10dispatcher9NoHandlerE" title="dispatcher::NoHandler"><span class="n">NoHandler</span></a><span class="p">&lt;</span><a class="reference internal" href="#_CPPv4I0DpEN10dispatcher4callEDaDpRR4Args" title="dispatcher::call::FuncSignature"><span class="n">FuncSignature</span></a><span class="p">&gt;</span></span></span> – If no callable is attached to the function signature.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The return value of the callable.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4I00DpEN10dispatcher10async_callEDaDpRR4Args">
+<span id="_CPPv3I00DpEN10dispatcher10async_callEDpRR4Args"></span><span id="_CPPv2I00DpEN10dispatcher10async_callEDpRR4Args"></span><span class="k"><span class="pre">template</span></span><span class="p"><span class="pre">&lt;</span></span><span class="k"><span class="pre">typename</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">FuncSignature</span></span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="k"><span class="pre">typename</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">Network</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><a class="reference internal" href="#_CPPv4N10dispatcher8internalE" title="dispatcher::internal"><span class="n"><span class="pre">internal</span></span></a><span class="p"><span class="pre">::</span></span><a class="reference internal" href="#_CPPv4N10dispatcher8internal7DefaultE" title="dispatcher::internal::Default"><span class="n"><span class="pre">Default</span></span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="k"><span class="pre">typename</span></span><span class="w"> </span><span class="p"><span class="pre">...</span></span><span class="sig-name descname"><span class="n"><span class="pre">Args</span></span></span><span class="p"><span class="pre">&gt;</span></span><br /><span class="target" id="dispatcher_8hpp_1abe335fd6cd21aff194507cd2ffb0e44f"></span><span class="kt"><span class="pre">auto</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">async_call</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv4I00DpEN10dispatcher10async_callEDaDpRR4Args" title="dispatcher::async_call::Args"><span class="n"><span class="pre">Args</span></span></a><span class="p"><span class="pre">&amp;</span></span><span class="p"><span class="pre">&amp;</span></span><span class="p"><span class="pre">...</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">args</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4I00DpEN10dispatcher10async_callEDaDpRR4Args" title="Link to this definition">¶</a><br /></dt>
+<dd><p>Perform an asynchronous function call by its signature with the provided arguments. </p>
+<p>This function invokes the callable attached to the specified function signature asynchronously. The arguments must match the types defined in the function signature. The function returns a <code class="docutils literal notranslate"><span class="pre">boost::fibers::future</span></code> that can be used to retrieve the result of the callable once it completes.</p>
+<p>
+Example <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">struct</span> <span class="n">Addition</span> <span class="p">{</span>
+    <span class="n">using</span> <span class="n">args_t</span> <span class="o">=</span> <span class="n">std</span><span class="p">::</span><span class="nb">tuple</span><span class="o">&lt;</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="o">&gt;</span><span class="p">;</span>
+    <span class="n">using</span> <span class="n">return_t</span> <span class="o">=</span> <span class="nb">int</span><span class="p">;</span>
+<span class="p">};</span>
+
+<span class="n">dispatcher</span><span class="p">::</span><span class="n">attach</span><span class="o">&lt;</span><span class="n">Addition</span><span class="o">&gt;</span><span class="p">([](</span><span class="nb">int</span> <span class="n">a</span><span class="p">,</span> <span class="nb">int</span> <span class="n">b</span><span class="p">)</span> <span class="p">{</span> <span class="k">return</span> <span class="n">a</span> <span class="o">+</span> <span class="n">b</span><span class="p">;</span> <span class="p">});</span>
+<span class="n">auto</span> <span class="n">future</span> <span class="o">=</span> <span class="n">dispatcher</span><span class="p">::</span><span class="n">async_call</span><span class="o">&lt;</span><span class="n">Addition</span><span class="o">&gt;</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">5</span><span class="p">);</span>
+<span class="nb">int</span> <span class="n">result</span> <span class="o">=</span> <span class="n">future</span><span class="o">.</span><span class="n">get</span><span class="p">();</span> <span class="o">//</span> <span class="n">result</span> <span class="n">will</span> <span class="n">be</span> <span class="mi">8</span>
+</pre></div>
+</div>
+ </p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This function does not block the calling thread. The callable is executed in the context of the event loop associated with the specified network.</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Template Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>FuncSignature</strong> – The function signature to call. </p></li>
+<li><p><strong>Network</strong> – The network type, aka wich EventLoop will handle this (default is <code class="docutils literal notranslate"><span class="pre">internal::Default</span></code>). </p></li>
+<li><p><strong>Args</strong> – The types of the arguments to pass to the callable. </p></li>
+</ul>
+</dd>
+<dt class="field-even">Parameters<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>args</strong> – The arguments to pass to the callable. </p>
+</dd>
+<dt class="field-odd">Throws<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span><span class="cpp-expr sig sig-inline cpp"><a class="reference internal" href="#_CPPv4I0EN10dispatcher9NoHandlerE" title="dispatcher::NoHandler"><span class="n">NoHandler</span></a><span class="p">&lt;</span><a class="reference internal" href="#_CPPv4I00DpEN10dispatcher10async_callEDaDpRR4Args" title="dispatcher::async_call::FuncSignature"><span class="n">FuncSignature</span></a><span class="p">&gt;</span></span></span> – If no callable is attached to the function signature.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A <code class="docutils literal notranslate"><span class="pre">boost::fibers::future</span></code> containing the return value of the callable.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4I000EN10dispatcher9subscribeEN5boost8signals210connectionERR8Callable">
+<span id="_CPPv3I000EN10dispatcher9subscribeERR8Callable"></span><span id="_CPPv2I000EN10dispatcher9subscribeERR8Callable"></span><span class="k"><span class="pre">template</span></span><span class="p"><span class="pre">&lt;</span></span><span class="k"><span class="pre">typename</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">FuncSignature</span></span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="k"><span class="pre">typename</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">Network</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><a class="reference internal" href="#_CPPv4N10dispatcher8internalE" title="dispatcher::internal"><span class="n"><span class="pre">internal</span></span></a><span class="p"><span class="pre">::</span></span><a class="reference internal" href="#_CPPv4N10dispatcher8internal7DefaultE" title="dispatcher::internal::Default"><span class="n"><span class="pre">Default</span></span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="k"><span class="pre">typename</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">Callable</span></span></span><span class="p"><span class="pre">&gt;</span></span><br /><span class="target" id="dispatcher_8hpp_1a3d03a1b965028c6f13593746c66bfd76"></span><span class="n"><span class="pre">boost</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">signals2</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">connection</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">subscribe</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv4I000EN10dispatcher9subscribeEN5boost8signals210connectionERR8Callable" title="dispatcher::subscribe::Callable"><span class="n"><span class="pre">Callable</span></span></a><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="p"><span class="pre">&amp;</span></span><span class="n sig-param"><span class="pre">callable</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4I000EN10dispatcher9subscribeEN5boost8signals210connectionERR8Callable" title="Link to this definition">¶</a><br /></dt>
+<dd><p>Subscribe to an event with a callable. </p>
+<p>This function allows you to subscribe to an event by providing a callable (e.g., a lambda, function, or functor). The callable will be invoked whenever the event is published.</p>
+<p>
+Example: <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">struct</span> <span class="n">MyEvent</span> <span class="p">{</span>
+    <span class="n">using</span> <span class="n">args_t</span> <span class="o">=</span> <span class="n">std</span><span class="p">::</span><span class="nb">tuple</span><span class="o">&lt;</span><span class="nb">int</span><span class="p">,</span> <span class="n">std</span><span class="p">::</span><span class="n">string</span><span class="o">&gt;</span><span class="p">;</span>
+<span class="p">};</span>
+
+<span class="n">dispatcher</span><span class="p">::</span><span class="n">subscribe</span><span class="o">&lt;</span><span class="n">MyEvent</span><span class="o">&gt;</span><span class="p">([](</span><span class="nb">int</span> <span class="n">a</span><span class="p">,</span> <span class="n">const</span> <span class="n">std</span><span class="p">::</span><span class="n">string</span><span class="o">&amp;</span> <span class="n">b</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">std</span><span class="p">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s2">&quot;Received event with values: &quot;</span> <span class="o">&lt;&lt;</span> <span class="n">a</span> <span class="o">&lt;&lt;</span> <span class="s2">&quot;, &quot;</span> <span class="o">&lt;&lt;</span> <span class="n">b</span> <span class="o">&lt;&lt;</span> <span class="n">std</span><span class="p">::</span><span class="n">endl</span><span class="p">;</span>
+<span class="p">});</span>
+</pre></div>
+</div>
+ </p>
+<dl class="field-list simple">
+<dt class="field-odd">Template Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>FuncSignature</strong> – The function signature of the event to subscribe to. </p></li>
+<li><p><strong>Network</strong> – The network type, aka which event loop will handle this (default is <code class="docutils literal notranslate"><span class="pre">internal::Default</span></code>). </p></li>
+<li><p><strong>Callable</strong> – The type of the callable. </p></li>
+</ul>
+</dd>
+<dt class="field-even">Parameters<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>callable</strong> – The callable to invoke when the event is published. </p>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>A <code class="docutils literal notranslate"><span class="pre">boost::signals2::connection</span></code> object representing the subscription.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4I00EN10dispatcher6expectEN5boost6fibers6futureINSt9nullptr_tEEEv">
+<span id="_CPPv3I00EN10dispatcher6expectEv"></span><span id="_CPPv2I00EN10dispatcher6expectEv"></span><span class="k"><span class="pre">template</span></span><span class="p"><span class="pre">&lt;</span></span><span class="k"><span class="pre">typename</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">FuncSignature</span></span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="k"><span class="pre">typename</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">Network</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><a class="reference internal" href="#_CPPv4N10dispatcher8internalE" title="dispatcher::internal"><span class="n"><span class="pre">internal</span></span></a><span class="p"><span class="pre">::</span></span><a class="reference internal" href="#_CPPv4N10dispatcher8internal7DefaultE" title="dispatcher::internal::Default"><span class="n"><span class="pre">Default</span></span></a><span class="p"><span class="pre">&gt;</span></span><br /><span class="target" id="dispatcher_8hpp_1af192db92f7618bb64cc6c7799219d296"></span><span class="n"><span class="pre">boost</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">fibers</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">future</span></span><span class="p"><span class="pre">&lt;</span></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">nullptr_t</span></span><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">expect</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4I00EN10dispatcher6expectEN5boost6fibers6futureINSt9nullptr_tEEEv" title="Link to this definition">¶</a><br /></dt>
+<dd><p>Wait for an event to be published. </p>
+<p>This function does not block the current fiber directly. Instead, it returns a future that will be fulfilled when the specified event is published. The caller can block on the returned future if needed to wait for the event.</p>
+<p>
+Example: <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">struct</span> <span class="n">MyEvent</span> <span class="p">{</span>
+    <span class="n">using</span> <span class="n">args_t</span> <span class="o">=</span> <span class="n">std</span><span class="p">::</span><span class="nb">tuple</span><span class="o">&lt;&gt;</span><span class="p">;</span>
+<span class="p">};</span>
+
+<span class="n">auto</span> <span class="n">future</span> <span class="o">=</span> <span class="n">dispatcher</span><span class="p">::</span><span class="n">expect</span><span class="o">&lt;</span><span class="n">MyEvent</span><span class="o">&gt;</span><span class="p">();</span>
+<span class="n">future</span><span class="o">.</span><span class="n">wait</span><span class="p">();</span> <span class="o">//</span> <span class="n">Blocks</span> <span class="n">until</span> <span class="n">the</span> <span class="n">event</span> <span class="ow">is</span> <span class="n">published</span>
+<span class="n">std</span><span class="p">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s2">&quot;Event received!&quot;</span> <span class="o">&lt;&lt;</span> <span class="n">std</span><span class="p">::</span><span class="n">endl</span><span class="p">;</span>
+</pre></div>
+</div>
+ </p>
+<dl class="field-list simple">
+<dt class="field-odd">Template Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>FuncSignature</strong> – The function signature of the event to wait for. </p></li>
+<li><p><strong>Network</strong> – The network type (default is <code class="docutils literal notranslate"><span class="pre">internal::Default</span></code>). </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A <code class="docutils literal notranslate"><span class="pre">boost::fibers::future&lt;std::nullptr_t&gt;</span></code> that will be fulfilled when the event is published.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4I000EN10dispatcher6expectEN5boost6fibers6futureINSt9nullptr_tEEERR8Callable">
+<span id="_CPPv3I000EN10dispatcher6expectERR8Callable"></span><span id="_CPPv2I000EN10dispatcher6expectERR8Callable"></span><span class="k"><span class="pre">template</span></span><span class="p"><span class="pre">&lt;</span></span><span class="k"><span class="pre">typename</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">FuncSignature</span></span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="k"><span class="pre">typename</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">Network</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><a class="reference internal" href="#_CPPv4N10dispatcher8internalE" title="dispatcher::internal"><span class="n"><span class="pre">internal</span></span></a><span class="p"><span class="pre">::</span></span><a class="reference internal" href="#_CPPv4N10dispatcher8internal7DefaultE" title="dispatcher::internal::Default"><span class="n"><span class="pre">Default</span></span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="k"><span class="pre">typename</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">Callable</span></span></span><span class="p"><span class="pre">&gt;</span></span><br /><span class="target" id="dispatcher_8hpp_1ab5790400d98a0013a0bc42f0ea9694cd"></span><span class="n"><span class="pre">boost</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">fibers</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">future</span></span><span class="p"><span class="pre">&lt;</span></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">nullptr_t</span></span><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">expect</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv4I000EN10dispatcher6expectEN5boost6fibers6futureINSt9nullptr_tEEERR8Callable" title="dispatcher::expect::Callable"><span class="n"><span class="pre">Callable</span></span></a><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="p"><span class="pre">&amp;</span></span><span class="n sig-param"><span class="pre">callable</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4I000EN10dispatcher6expectEN5boost6fibers6futureINSt9nullptr_tEEERR8Callable" title="Link to this definition">¶</a><br /></dt>
+<dd><p>Wait for an event to be published and invoke a callable. </p>
+<p>This function does not block the current fiber directly. Instead, it returns a future that will be fulfilled when the specified event is published. Additionally, the provided callable is invoked with the event’s arguments when the event is triggered.</p>
+<p>
+Example: <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">struct</span> <span class="n">MyEvent</span> <span class="p">{</span>
+    <span class="n">using</span> <span class="n">args_t</span> <span class="o">=</span> <span class="n">std</span><span class="p">::</span><span class="nb">tuple</span><span class="o">&lt;</span><span class="nb">int</span><span class="p">,</span> <span class="n">std</span><span class="p">::</span><span class="n">string</span><span class="o">&gt;</span><span class="p">;</span>
+<span class="p">};</span>
+
+<span class="n">auto</span> <span class="n">future</span> <span class="o">=</span> <span class="n">dispatcher</span><span class="p">::</span><span class="n">expect</span><span class="o">&lt;</span><span class="n">MyEvent</span><span class="o">&gt;</span><span class="p">([](</span><span class="nb">int</span> <span class="n">a</span><span class="p">,</span> <span class="n">const</span> <span class="n">std</span><span class="p">::</span><span class="n">string</span><span class="o">&amp;</span> <span class="n">b</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">std</span><span class="p">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s2">&quot;Received event with values: &quot;</span> <span class="o">&lt;&lt;</span> <span class="n">a</span> <span class="o">&lt;&lt;</span> <span class="s2">&quot;, &quot;</span> <span class="o">&lt;&lt;</span> <span class="n">b</span> <span class="o">&lt;&lt;</span> <span class="n">std</span><span class="p">::</span><span class="n">endl</span><span class="p">;</span>
+<span class="p">});</span>
+<span class="n">future</span><span class="o">.</span><span class="n">wait</span><span class="p">();</span> <span class="o">//</span> <span class="n">Blocks</span> <span class="n">until</span> <span class="n">the</span> <span class="n">event</span> <span class="ow">is</span> <span class="n">published</span>
+<span class="n">std</span><span class="p">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s2">&quot;Event handling completed!&quot;</span> <span class="o">&lt;&lt;</span> <span class="n">std</span><span class="p">::</span><span class="n">endl</span><span class="p">;</span>
+</pre></div>
+</div>
+ </p>
+<dl class="field-list simple">
+<dt class="field-odd">Template Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>FuncSignature</strong> – The function signature of the event to wait for. </p></li>
+<li><p><strong>Network</strong> – The network type (default is <code class="docutils literal notranslate"><span class="pre">internal::Default</span></code>). </p></li>
+<li><p><strong>Callable</strong> – The type of the callable. </p></li>
+</ul>
+</dd>
+<dt class="field-even">Parameters<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>callable</strong> – The callable to invoke when the event is published. </p>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>A <code class="docutils literal notranslate"><span class="pre">boost::fibers::future&lt;std::nullptr_t&gt;</span></code> that will be fulfilled after the callable is executed.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4I00DpEN10dispatcher7publishEvDpRR4Args">
+<span id="_CPPv3I00DpEN10dispatcher7publishEDpRR4Args"></span><span id="_CPPv2I00DpEN10dispatcher7publishEDpRR4Args"></span><span class="k"><span class="pre">template</span></span><span class="p"><span class="pre">&lt;</span></span><span class="k"><span class="pre">typename</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">FuncSignature</span></span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="k"><span class="pre">typename</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">Network</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><a class="reference internal" href="#_CPPv4N10dispatcher8internalE" title="dispatcher::internal"><span class="n"><span class="pre">internal</span></span></a><span class="p"><span class="pre">::</span></span><a class="reference internal" href="#_CPPv4N10dispatcher8internal7DefaultE" title="dispatcher::internal::Default"><span class="n"><span class="pre">Default</span></span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="k"><span class="pre">typename</span></span><span class="w"> </span><span class="p"><span class="pre">...</span></span><span class="sig-name descname"><span class="n"><span class="pre">Args</span></span></span><span class="p"><span class="pre">&gt;</span></span><br /><span class="target" id="dispatcher_8hpp_1a4ef021d4b075b6d46a1217f0b3b1e6e9"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">publish</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv4I00DpEN10dispatcher7publishEvDpRR4Args" title="dispatcher::publish::Args"><span class="n"><span class="pre">Args</span></span></a><span class="p"><span class="pre">&amp;</span></span><span class="p"><span class="pre">&amp;</span></span><span class="p"><span class="pre">...</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">args</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4I00DpEN10dispatcher7publishEvDpRR4Args" title="Link to this definition">¶</a><br /></dt>
+<dd><p>Publish an event with the specified arguments. </p>
+<p>This function triggers an event by its function signature and passes the provided arguments to all subscribed callables. The event is handled asynchronously by the associated event loop.</p>
+<p>
+Example <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">struct</span> <span class="n">MyEvent</span> <span class="p">{</span>
+    <span class="n">using</span> <span class="n">args_t</span> <span class="o">=</span> <span class="n">std</span><span class="p">::</span><span class="nb">tuple</span><span class="o">&lt;</span><span class="nb">int</span><span class="p">,</span> <span class="n">std</span><span class="p">::</span><span class="n">string</span><span class="o">&gt;</span><span class="p">;</span>
+<span class="p">};</span>
+
+<span class="n">dispatcher</span><span class="p">::</span><span class="n">subscribe</span><span class="o">&lt;</span><span class="n">MyEvent</span><span class="o">&gt;</span><span class="p">([](</span><span class="nb">int</span> <span class="n">a</span><span class="p">,</span> <span class="n">const</span> <span class="n">std</span><span class="p">::</span><span class="n">string</span><span class="o">&amp;</span> <span class="n">b</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">std</span><span class="p">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s2">&quot;Received event with values: &quot;</span> <span class="o">&lt;&lt;</span> <span class="n">a</span> <span class="o">&lt;&lt;</span> <span class="s2">&quot;, &quot;</span> <span class="o">&lt;&lt;</span> <span class="n">b</span> <span class="o">&lt;&lt;</span> <span class="n">std</span><span class="p">::</span><span class="n">endl</span><span class="p">;</span>
+<span class="p">});</span>
+
+<span class="n">dispatcher</span><span class="p">::</span><span class="n">publish</span><span class="o">&lt;</span><span class="n">MyEvent</span><span class="o">&gt;</span><span class="p">(</span><span class="mi">42</span><span class="p">,</span> <span class="s2">&quot;Hello, World!&quot;</span><span class="p">);</span>
+</pre></div>
+</div>
+ </p>
+<dl class="field-list simple">
+<dt class="field-odd">Template Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>FuncSignature</strong> – The function signature of the event to publish. </p></li>
+<li><p><strong>Network</strong> – The network type (default is <code class="docutils literal notranslate"><span class="pre">internal::Default</span></code>). </p></li>
+<li><p><strong>Args</strong> – The types of the arguments to pass to the event. </p></li>
+</ul>
+</dd>
+<dt class="field-even">Parameters<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>args</strong> – The arguments to pass to the event.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4I00EN10dispatcher4postEvRR1T">
+<span id="_CPPv3I00EN10dispatcher4postERR1T"></span><span id="_CPPv2I00EN10dispatcher4postERR1T"></span><span class="k"><span class="pre">template</span></span><span class="p"><span class="pre">&lt;</span></span><span class="k"><span class="pre">typename</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">Network</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><a class="reference internal" href="#_CPPv4N10dispatcher8internalE" title="dispatcher::internal"><span class="n"><span class="pre">internal</span></span></a><span class="p"><span class="pre">::</span></span><a class="reference internal" href="#_CPPv4N10dispatcher8internal7DefaultE" title="dispatcher::internal::Default"><span class="n"><span class="pre">Default</span></span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="k"><span class="pre">typename</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">T</span></span></span><span class="p"><span class="pre">&gt;</span></span><br /><span class="target" id="dispatcher_8hpp_1a6af1b5ecf3f925ab231888716f03209f"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">post</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv4I00EN10dispatcher4postEvRR1T" title="dispatcher::post::T"><span class="n"><span class="pre">T</span></span></a><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="p"><span class="pre">&amp;</span></span><span class="n sig-param"><span class="pre">task</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4I00EN10dispatcher4postEvRR1T" title="Link to this definition">¶</a><br /></dt>
+<dd><p>Post a task to the event loop for asynchronous execution. </p>
+<p>This function schedules a task to be executed asynchronously by the event loop associated with the specified network.</p>
+<p>
+Example: <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">dispatcher</span><span class="p">::</span><span class="n">post</span><span class="p">([]</span> <span class="p">{</span>
+    <span class="n">std</span><span class="p">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s2">&quot;Task executed asynchronously!&quot;</span> <span class="o">&lt;&lt;</span> <span class="n">std</span><span class="p">::</span><span class="n">endl</span><span class="p">;</span>
+<span class="p">});</span>
+</pre></div>
+</div>
+ </p>
+<dl class="field-list simple">
+<dt class="field-odd">Template Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>Network</strong> – The network type (default is <code class="docutils literal notranslate"><span class="pre">internal::Default</span></code>). </p></li>
+<li><p><strong>T</strong> – The type of the task. </p></li>
+</ul>
+</dd>
+<dt class="field-even">Parameters<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>task</strong> – The task to execute asynchronously.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4I0EN10dispatcher18set_worker_threadsEvi">
+<span id="_CPPv3I0EN10dispatcher18set_worker_threadsEi"></span><span id="_CPPv2I0EN10dispatcher18set_worker_threadsEi"></span><span class="k"><span class="pre">template</span></span><span class="p"><span class="pre">&lt;</span></span><span class="k"><span class="pre">typename</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">Network</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><a class="reference internal" href="#_CPPv4N10dispatcher8internalE" title="dispatcher::internal"><span class="n"><span class="pre">internal</span></span></a><span class="p"><span class="pre">::</span></span><a class="reference internal" href="#_CPPv4N10dispatcher8internal7DefaultE" title="dispatcher::internal::Default"><span class="n"><span class="pre">Default</span></span></a><span class="p"><span class="pre">&gt;</span></span><br /><span class="target" id="dispatcher_8hpp_1aa3cd287b7e3600bdb3bb157ddf60f1dc"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">set_worker_threads</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">thread_count</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4I0EN10dispatcher18set_worker_threadsEvi" title="Link to this definition">¶</a><br /></dt>
+<dd><p>Set the number of worker threads for the event loop. </p>
+<p>This function configures the number of worker threads in the event loop associated with the specified network. Worker threads are used to process tasks asynchronously. By default, the event loop runs with a single thread.</p>
+<p>
+Example: <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">dispatcher</span><span class="p">::</span><span class="n">set_worker_threads</span><span class="o">&lt;</span><span class="n">WorkNetwork</span><span class="o">&gt;</span><span class="p">(</span><span class="mi">10</span><span class="p">);</span> <span class="o">//</span> <span class="n">Set</span> <span class="mi">10</span> <span class="n">worker</span> <span class="n">threads</span> <span class="k">for</span> <span class="n">the</span> <span class="n">WorkNetwork</span> <span class="n">event</span> <span class="n">loop</span><span class="o">.</span>
+</pre></div>
+</div>
+ </p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The number of threads must be greater than or equal to 1. If the current number of threads is already greater than or equal to the specified thread count, no additional threads will be created, and the event loop configuration remains unchanged.</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Template Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>Network</strong> – The network type (default is <code class="docutils literal notranslate"><span class="pre">internal::Default</span></code>). </p>
+</dd>
+<dt class="field-even">Parameters<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>thread_count</strong> – The number of worker threads to set for the event loop.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+<dl class="cpp class">
+<dt class="sig sig-object cpp" id="_CPPv4I0EN10dispatcher9NoHandlerE">
+<span id="_CPPv3I0EN10dispatcher9NoHandlerE"></span><span id="_CPPv2I0EN10dispatcher9NoHandlerE"></span><span class="k"><span class="pre">template</span></span><span class="p"><span class="pre">&lt;</span></span><span class="k"><span class="pre">typename</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">FuncSignature</span></span></span><span class="p"><span class="pre">&gt;</span></span><br /><span class="target" id="classdispatcher_1_1NoHandler"></span><span class="k"><span class="pre">class</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">NoHandler</span></span></span><span class="w"> </span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="k"><span class="pre">public</span></span><span class="w"> </span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">exception</span></span><a class="headerlink" href="#_CPPv4I0EN10dispatcher9NoHandlerE" title="Link to this definition">¶</a><br /></dt>
+<dd><div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-public-functions">Public Functions</p>
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4NK10dispatcher9NoHandler4whatEv">
+<span id="_CPPv3NK10dispatcher9NoHandler4whatEv"></span><span id="_CPPv2NK10dispatcher9NoHandler4whatEv"></span><span id="dispatcher::NoHandler::whatC"></span><span class="target" id="classdispatcher_1_1NoHandler_1a712329fe7993377bf5c0182d85ad2619"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">what</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><span class="w"> </span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="k"><span class="pre">noexcept</span></span><span class="w"> </span><span class="k"><span class="pre">override</span></span><a class="headerlink" href="#_CPPv4NK10dispatcher9NoHandler4whatEv" title="Link to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+</div>
+</dd></dl>
+
+<dl class="cpp class">
+<dt class="sig sig-object cpp" id="_CPPv4I0EN10dispatcher5TimerE">
+<span id="_CPPv3I0EN10dispatcher5TimerE"></span><span id="_CPPv2I0EN10dispatcher5TimerE"></span><span class="k"><span class="pre">template</span></span><span class="p"><span class="pre">&lt;</span></span><span class="k"><span class="pre">typename</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">Network</span></span></span><span class="p"><span class="pre">&gt;</span></span><br /><span class="target" id="classdispatcher_1_1Timer"></span><span class="k"><span class="pre">class</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">Timer</span></span></span><a class="headerlink" href="#_CPPv4I0EN10dispatcher5TimerE" title="Link to this definition">¶</a><br /></dt>
+<dd><div class="docutils container">
+<em>#include &lt;dispatcher.hpp&gt;</em></div>
+<p>A timer utility for scheduling tasks in the event loop. </p>
+<p>The <code class="docutils literal notranslate"><a class="reference internal" href="#classdispatcher_1_1Timer"><span class="std std-ref"><span class="pre">Timer</span></span></a></code> class provides functionality to schedule tasks to be executed after a specified duration or repeatedly at regular intervals. It uses the event loop associated with the specified network to handle the execution of tasks asynchronously.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Template Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>Network</strong> – The network type (default is <code class="docutils literal notranslate"><span class="pre">internal::Default</span></code>). </p>
+</dd>
+</dl>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-public-functions">Public Functions</p>
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N10dispatcher5Timer5TimerEv">
+<span id="_CPPv3N10dispatcher5Timer5TimerEv"></span><span id="_CPPv2N10dispatcher5Timer5TimerEv"></span><span id="dispatcher::Timer::Timer"></span><span class="target" id="classdispatcher_1_1Timer_1a191563b89b2b5555ab9fc5c0bc6004b1"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">Timer</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N10dispatcher5Timer5TimerEv" title="Link to this definition">¶</a><br /></dt>
+<dd><p>Construct a new <a class="reference internal" href="#classdispatcher_1_1Timer"><span class="std std-ref">Timer</span></a> object. </p>
+<p>Initializes the timer using the IO context of the event loop associated with the specified network. </p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N10dispatcher5Timer6CancelEv">
+<span id="_CPPv3N10dispatcher5Timer6CancelEv"></span><span id="_CPPv2N10dispatcher5Timer6CancelEv"></span><span id="dispatcher::Timer::Cancel"></span><span class="target" id="classdispatcher_1_1Timer_1ace1836a5bfe91825fd55486189e33d63"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">Cancel</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N10dispatcher5Timer6CancelEv" title="Link to this definition">¶</a><br /></dt>
+<dd><p>Cancel the timer. </p>
+<p>Cancels any pending tasks associated with the timer. If the timer is already expired or no tasks are pending, this function has no effect. </p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4I00EN10dispatcher5Timer4DoInEv8DurationRR8Callback">
+<span id="_CPPv3I00EN10dispatcher5Timer4DoInE8DurationRR8Callback"></span><span id="_CPPv2I00EN10dispatcher5Timer4DoInE8DurationRR8Callback"></span><span class="k"><span class="pre">template</span></span><span class="p"><span class="pre">&lt;</span></span><span class="k"><span class="pre">typename</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">Duration</span></span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="k"><span class="pre">typename</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">Callback</span></span></span><span class="p"><span class="pre">&gt;</span></span><br /><span class="target" id="classdispatcher_1_1Timer_1a7b925ba7fb07fdaa55ffb37e959fa429"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">DoIn</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv4I00EN10dispatcher5Timer4DoInEv8DurationRR8Callback" title="dispatcher::Timer::DoIn::Duration"><span class="n"><span class="pre">Duration</span></span></a><span class="w"> </span><span class="n sig-param"><span class="pre">duration</span></span>, <a class="reference internal" href="#_CPPv4I00EN10dispatcher5Timer4DoInEv8DurationRR8Callback" title="dispatcher::Timer::DoIn::Callback"><span class="n"><span class="pre">Callback</span></span></a><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="p"><span class="pre">&amp;</span></span><span class="n sig-param"><span class="pre">callback</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4I00EN10dispatcher5Timer4DoInEv8DurationRR8Callback" title="Link to this definition">¶</a><br /></dt>
+<dd><p>Schedule a task to be executed after a specified duration. </p>
+<p>This function schedules a task to be executed once after the specified duration has elapsed.</p>
+<p>
+Example: <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">dispatcher</span><span class="p">::</span><span class="n">Timer</span><span class="o">&lt;&gt;</span> <span class="n">timer</span><span class="p">;</span>
+<span class="n">timer</span><span class="o">.</span><span class="n">DoIn</span><span class="p">(</span><span class="n">std</span><span class="p">::</span><span class="n">chrono</span><span class="p">::</span><span class="n">seconds</span><span class="p">(</span><span class="mi">5</span><span class="p">),</span> <span class="p">[]</span> <span class="p">{</span>
+    <span class="n">std</span><span class="p">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s2">&quot;Task executed after 5 seconds!&quot;</span> <span class="o">&lt;&lt;</span> <span class="n">std</span><span class="p">::</span><span class="n">endl</span><span class="p">;</span>
+<span class="p">});</span>
+</pre></div>
+</div>
+ </p>
+<dl class="field-list simple">
+<dt class="field-odd">Template Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>Duration</strong> – The type of the duration (e.g., <code class="docutils literal notranslate"><span class="pre">std::chrono::milliseconds</span></code>). </p></li>
+<li><p><strong>Callback</strong> – The type of the callback function. </p></li>
+</ul>
+</dd>
+<dt class="field-even">Parameters<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>duration</strong> – The duration to wait before executing the task. </p></li>
+<li><p><strong>callback</strong> – The callback function to execute after the duration.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4I00EN10dispatcher5Timer7DoEveryEv8DurationRR8Callback">
+<span id="_CPPv3I00EN10dispatcher5Timer7DoEveryE8DurationRR8Callback"></span><span id="_CPPv2I00EN10dispatcher5Timer7DoEveryE8DurationRR8Callback"></span><span class="k"><span class="pre">template</span></span><span class="p"><span class="pre">&lt;</span></span><span class="k"><span class="pre">typename</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">Duration</span></span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="k"><span class="pre">typename</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">Callback</span></span></span><span class="p"><span class="pre">&gt;</span></span><br /><span class="target" id="classdispatcher_1_1Timer_1a84280a98bc5d843e4f11b88199a7bb43"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">DoEvery</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv4I00EN10dispatcher5Timer7DoEveryEv8DurationRR8Callback" title="dispatcher::Timer::DoEvery::Duration"><span class="n"><span class="pre">Duration</span></span></a><span class="w"> </span><span class="n sig-param"><span class="pre">duration</span></span>, <a class="reference internal" href="#_CPPv4I00EN10dispatcher5Timer7DoEveryEv8DurationRR8Callback" title="dispatcher::Timer::DoEvery::Callback"><span class="n"><span class="pre">Callback</span></span></a><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="p"><span class="pre">&amp;</span></span><span class="n sig-param"><span class="pre">callback</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4I00EN10dispatcher5Timer7DoEveryEv8DurationRR8Callback" title="Link to this definition">¶</a><br /></dt>
+<dd><p>Schedule a task to be executed repeatedly at regular intervals. </p>
+<p>This function schedules a task to be executed repeatedly at the specified interval.</p>
+<p>
+Example: <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">dispatcher</span><span class="p">::</span><span class="n">Timer</span><span class="o">&lt;&gt;</span> <span class="n">timer</span><span class="p">;</span>
+<span class="n">timer</span><span class="o">.</span><span class="n">DoEvery</span><span class="p">(</span><span class="n">std</span><span class="p">::</span><span class="n">chrono</span><span class="p">::</span><span class="n">seconds</span><span class="p">(</span><span class="mi">2</span><span class="p">),</span> <span class="p">[]</span> <span class="p">{</span>
+    <span class="n">std</span><span class="p">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s2">&quot;Task executed every 2 seconds!&quot;</span> <span class="o">&lt;&lt;</span> <span class="n">std</span><span class="p">::</span><span class="n">endl</span><span class="p">;</span>
+<span class="p">});</span>
+</pre></div>
+</div>
+ </p>
+<dl class="field-list simple">
+<dt class="field-odd">Template Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>Duration</strong> – The type of the duration (e.g., <code class="docutils literal notranslate"><span class="pre">std::chrono::milliseconds</span></code>). </p></li>
+<li><p><strong>Callback</strong> – The type of the callback function. </p></li>
+</ul>
+</dd>
+<dt class="field-even">Parameters<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>duration</strong> – The interval at which to execute the task. </p></li>
+<li><p><strong>callback</strong> – The callback function to execute at each interval.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-private-members">Private Members</p>
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N10dispatcher5Timer6timer_E">
+<span id="_CPPv3N10dispatcher5Timer6timer_E"></span><span id="_CPPv2N10dispatcher5Timer6timer_E"></span><span id="dispatcher::Timer::timer___boost::asio::basic_deadline_timer:boost::posix_time::ptime.internal::MockableClock:"></span><span class="target" id="classdispatcher_1_1Timer_1a9ebbbdde46f9ed905b631e0045746543"></span><span class="n"><span class="pre">boost</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">asio</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">basic_deadline_timer</span></span><span class="p"><span class="pre">&lt;</span></span><span class="n"><span class="pre">boost</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">posix_time</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">ptime</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="#_CPPv4N10dispatcher8internalE" title="dispatcher::internal"><span class="n"><span class="pre">internal</span></span></a><span class="p"><span class="pre">::</span></span><a class="reference internal" href="#_CPPv4N10dispatcher8internal13MockableClockE" title="dispatcher::internal::MockableClock"><span class="n"><span class="pre">MockableClock</span></span></a><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">timer_</span></span></span><a class="headerlink" href="#_CPPv4N10dispatcher5Timer6timer_E" title="Link to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+</div>
+</dd></dl>
+
+<dl class="cpp type">
+<dt class="sig sig-object cpp" id="_CPPv4N10dispatcher8internalE">
+<span id="_CPPv3N10dispatcher8internalE"></span><span id="_CPPv2N10dispatcher8internalE"></span><span id="dispatcher::internal"></span><span class="target" id="namespacedispatcher_1_1internal"></span><span class="k"><span class="pre">namespace</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">internal</span></span></span><a class="headerlink" href="#_CPPv4N10dispatcher8internalE" title="Link to this definition">¶</a><br /></dt>
+<dd><div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-typedefs">Typedefs</p>
+<dl class="cpp type">
+<dt class="sig sig-object cpp" id="_CPPv4IDpEN10dispatcher8internal6void_tE">
+<span id="_CPPv3IDpEN10dispatcher8internal6void_tE"></span><span id="_CPPv2IDpEN10dispatcher8internal6void_tE"></span><span class="k"><span class="pre">template</span></span><span class="p"><span class="pre">&lt;</span></span><span class="k"><span class="pre">typename</span></span><span class="p"><span class="pre">...</span></span><span class="p"><span class="pre">&gt;</span></span><br /><span class="target" id="dispatcher_8hpp_1aa95d89093931177dd45d2414d7e976ce"></span><span class="k"><span class="pre">using</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">void_t</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="kt"><span class="pre">void</span></span><a class="headerlink" href="#_CPPv4IDpEN10dispatcher8internal6void_tE" title="Link to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+</div>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-functions">Functions</p>
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4I00EN10dispatcher8internal11GetFunctionER9func_typev">
+<span id="_CPPv3I00EN10dispatcher8internal11GetFunctionEv"></span><span id="_CPPv2I00EN10dispatcher8internal11GetFunctionEv"></span><span class="k"><span class="pre">template</span></span><span class="p"><span class="pre">&lt;</span></span><span class="k"><span class="pre">typename</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">FuncSignature</span></span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="k"><span class="pre">typename</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">func_type</span></span></span><span class="p"><span class="pre">&gt;</span></span><br /><span class="target" id="dispatcher_8hpp_1a8aa76c354dd544b31c5c18bc3ccfdcde"></span><a class="reference internal" href="#_CPPv4I00EN10dispatcher8internal11GetFunctionER9func_typev" title="dispatcher::internal::GetFunction::func_type"><span class="n"><span class="pre">func_type</span></span></a><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="sig-name descname"><span class="n"><span class="pre">GetFunction</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4I00EN10dispatcher8internal11GetFunctionER9func_typev" title="Link to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4I0EN10dispatcher8internal12getEventLoopER9EventLoopI7NetworkEv">
+<span id="_CPPv3I0EN10dispatcher8internal12getEventLoopEv"></span><span id="_CPPv2I0EN10dispatcher8internal12getEventLoopEv"></span><span class="k"><span class="pre">template</span></span><span class="p"><span class="pre">&lt;</span></span><span class="k"><span class="pre">typename</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">Network</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><a class="reference internal" href="#_CPPv4N10dispatcher8internal7DefaultE" title="dispatcher::internal::Default"><span class="n"><span class="pre">Default</span></span></a><span class="p"><span class="pre">&gt;</span></span><br /><span class="target" id="dispatcher_8hpp_1a3d70aaf345d780b6843797c15336138d"></span><a class="reference internal" href="#_CPPv4I0EN10dispatcher8internal9EventLoopE" title="dispatcher::internal::EventLoop"><span class="n"><span class="pre">EventLoop</span></span></a><span class="p"><span class="pre">&lt;</span></span><a class="reference internal" href="#_CPPv4I0EN10dispatcher8internal12getEventLoopER9EventLoopI7NetworkEv" title="dispatcher::internal::getEventLoop::Network"><span class="n"><span class="pre">Network</span></span></a><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="sig-name descname"><span class="n"><span class="pre">getEventLoop</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4I0EN10dispatcher8internal12getEventLoopER9EventLoopI7NetworkEv" title="Link to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4I00_DpNSt6size_tEEN10dispatcher8internal15call_with_tupleEDaRR1FRR5TupleNSt14index_sequenceIDp2IsEE">
+<span id="_CPPv3I00_DpNSt6size_tEEN10dispatcher8internal15call_with_tupleERR1FRR5TupleNSt14index_sequenceIDp2IsEE"></span><span id="_CPPv2I00_DpNSt6size_tEEN10dispatcher8internal15call_with_tupleERR1FRR5TupleNSt14index_sequenceIDp2IsEE"></span><span class="k"><span class="pre">template</span></span><span class="p"><span class="pre">&lt;</span></span><span class="k"><span class="pre">typename</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">F</span></span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="k"><span class="pre">typename</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">Tuple</span></span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">size_t</span></span><span class="p"><span class="pre">...</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">Is</span></span></span><span class="p"><span class="pre">&gt;</span></span><br /><span class="target" id="dispatcher_8hpp_1a5c995d8c5b6d2d97440e196220d3e171"></span><span class="kt"><span class="pre">auto</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">call_with_tuple</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv4I00_DpNSt6size_tEEN10dispatcher8internal15call_with_tupleEDaRR1FRR5TupleNSt14index_sequenceIDp2IsEE" title="dispatcher::internal::call_with_tuple::F"><span class="n"><span class="pre">F</span></span></a><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="p"><span class="pre">&amp;</span></span><span class="n sig-param"><span class="pre">f</span></span>, <a class="reference internal" href="#_CPPv4I00_DpNSt6size_tEEN10dispatcher8internal15call_with_tupleEDaRR1FRR5TupleNSt14index_sequenceIDp2IsEE" title="dispatcher::internal::call_with_tuple::Tuple"><span class="n"><span class="pre">Tuple</span></span></a><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="p"><span class="pre">&amp;</span></span><span class="n sig-param"><span class="pre">t</span></span>, <span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">index_sequence</span></span><span class="p"><span class="pre">&lt;</span></span><a class="reference internal" href="#_CPPv4I00_DpNSt6size_tEEN10dispatcher8internal15call_with_tupleEDaRR1FRR5TupleNSt14index_sequenceIDp2IsEE" title="dispatcher::internal::call_with_tuple::Is"><span class="n"><span class="pre">Is</span></span></a><span class="p"><span class="pre">...</span></span><span class="p"><span class="pre">&gt;</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4I00_DpNSt6size_tEEN10dispatcher8internal15call_with_tupleEDaRR1FRR5TupleNSt14index_sequenceIDp2IsEE" title="Link to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4I00EN10dispatcher8internal15call_with_tupleEDaRR1FRR5Tuple">
+<span id="_CPPv3I00EN10dispatcher8internal15call_with_tupleERR1FRR5Tuple"></span><span id="_CPPv2I00EN10dispatcher8internal15call_with_tupleERR1FRR5Tuple"></span><span class="k"><span class="pre">template</span></span><span class="p"><span class="pre">&lt;</span></span><span class="k"><span class="pre">typename</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">F</span></span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="k"><span class="pre">typename</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">Tuple</span></span></span><span class="p"><span class="pre">&gt;</span></span><br /><span class="target" id="dispatcher_8hpp_1a2e86280f0fec8ac3aa9b7cfadd278331"></span><span class="kt"><span class="pre">auto</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">call_with_tuple</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv4I00EN10dispatcher8internal15call_with_tupleEDaRR1FRR5Tuple" title="dispatcher::internal::call_with_tuple::F"><span class="n"><span class="pre">F</span></span></a><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="p"><span class="pre">&amp;</span></span><span class="n sig-param"><span class="pre">f</span></span>, <a class="reference internal" href="#_CPPv4I00EN10dispatcher8internal15call_with_tupleEDaRR1FRR5Tuple" title="dispatcher::internal::call_with_tuple::Tuple"><span class="n"><span class="pre">Tuple</span></span></a><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="p"><span class="pre">&amp;</span></span><span class="n sig-param"><span class="pre">t</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4I00EN10dispatcher8internal15call_with_tupleEDaRR1FRR5Tuple" title="Link to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4I000EN10dispatcher8internal9GetSignalER11signal_typev">
+<span id="_CPPv3I000EN10dispatcher8internal9GetSignalEv"></span><span id="_CPPv2I000EN10dispatcher8internal9GetSignalEv"></span><span class="k"><span class="pre">template</span></span><span class="p"><span class="pre">&lt;</span></span><span class="k"><span class="pre">typename</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">FuncSignature</span></span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="k"><span class="pre">typename</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">Network</span></span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="k"><span class="pre">typename</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">signal_type</span></span></span><span class="p"><span class="pre">&gt;</span></span><br /><span class="target" id="dispatcher_8hpp_1ac26d009b673b88854f808e5348c24647"></span><a class="reference internal" href="#_CPPv4I000EN10dispatcher8internal9GetSignalER11signal_typev" title="dispatcher::internal::GetSignal::signal_type"><span class="n"><span class="pre">signal_type</span></span></a><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="sig-name descname"><span class="n"><span class="pre">GetSignal</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4I000EN10dispatcher8internal9GetSignalER11signal_typev" title="Link to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N10dispatcher8internal3NowEv">
+<span id="_CPPv3N10dispatcher8internal3NowEv"></span><span id="_CPPv2N10dispatcher8internal3NowEv"></span><span id="dispatcher::internal::Now"></span><span class="target" id="dispatcher_8hpp_1acf8e1b833de9611fe8963f9e818f5516"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="n"><span class="pre">boost</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">optional</span></span><span class="p"><span class="pre">&lt;</span></span><span class="n"><span class="pre">boost</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">asio</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">deadline_timer</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">traits_type</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">time_type</span></span><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="sig-name descname"><span class="n"><span class="pre">Now</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N10dispatcher8internal3NowEv" title="Link to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+</div>
+<dl class="cpp struct">
+<dt class="sig sig-object cpp" id="_CPPv4I0_bEN10dispatcher8internal17args_t_or_defaultE">
+<span id="_CPPv3I0_bEN10dispatcher8internal17args_t_or_defaultE"></span><span id="_CPPv2I0_bEN10dispatcher8internal17args_t_or_defaultE"></span><span class="k"><span class="pre">template</span></span><span class="p"><span class="pre">&lt;</span></span><span class="k"><span class="pre">typename</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">FuncSignature</span></span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">HasReturnT</span></span></span><span class="p"><span class="pre">&gt;</span></span><br /><span class="target" id="structdispatcher_1_1internal_1_1args__t__or__default"></span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">args_t_or_default</span></span></span><a class="headerlink" href="#_CPPv4I0_bEN10dispatcher8internal17args_t_or_defaultE" title="Link to this definition">¶</a><br /></dt>
+<dd><div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-public-types">Public Types</p>
+<dl class="cpp type">
+<dt class="sig sig-object cpp" id="_CPPv4N10dispatcher8internal17args_t_or_default4typeE">
+<span id="_CPPv3N10dispatcher8internal17args_t_or_default4typeE"></span><span id="_CPPv2N10dispatcher8internal17args_t_or_default4typeE"></span><span class="target" id="structdispatcher_1_1internal_1_1args__t__or__default_1abe65c5575b2c2dea3ebf701993a25bc0"></span><span class="k"><span class="pre">using</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">type</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">tuple</span></span><span class="p"><span class="pre">&lt;</span></span><span class="p"><span class="pre">&gt;</span></span><a class="headerlink" href="#_CPPv4N10dispatcher8internal17args_t_or_default4typeE" title="Link to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+</div>
+</dd></dl>
+
+<dl class="cpp struct">
+<dt class="sig sig-object cpp" id="_CPPv4I0EN10dispatcher8internal17args_t_or_defaultI13FuncSignatureXL1EEEE">
+<span id="_CPPv3I0EN10dispatcher8internal17args_t_or_defaultI13FuncSignatureXL1EEEE"></span><span id="_CPPv2I0EN10dispatcher8internal17args_t_or_defaultI13FuncSignatureXtrueEEE"></span><span class="k"><span class="pre">template</span></span><span class="p"><span class="pre">&lt;</span></span><span class="k"><span class="pre">typename</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">FuncSignature</span></span></span><span class="p"><span class="pre">&gt;</span></span><br /><span class="target" id="structdispatcher_1_1internal_1_1args__t__or__default_3_01FuncSignature_00_01true_01_4"></span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">args_t_or_default</span></span></span><span class="p"><span class="pre">&lt;</span></span><a class="reference internal" href="#_CPPv4I0EN10dispatcher8internal17args_t_or_defaultI13FuncSignatureXL1EEEE" title="dispatcher::internal::args_t_or_default&lt;FuncSignature, true&gt;::FuncSignature"><span class="n"><span class="pre">FuncSignature</span></span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="k"><span class="pre">true</span></span><span class="p"><span class="pre">&gt;</span></span><a class="headerlink" href="#_CPPv4I0EN10dispatcher8internal17args_t_or_defaultI13FuncSignatureXL1EEEE" title="Link to this definition">¶</a><br /></dt>
+<dd><div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-public-types">Public Types</p>
+<dl class="cpp type">
+<dt class="sig sig-object cpp" id="_CPPv4N10dispatcher8internal17args_t_or_defaultI13FuncSignatureXL1EEE4typeE">
+<span id="_CPPv3N10dispatcher8internal17args_t_or_defaultI13FuncSignatureXL1EEE4typeE"></span><span id="_CPPv2N10dispatcher8internal17args_t_or_defaultI13FuncSignatureXtrueEE4typeE"></span><span class="target" id="structdispatcher_1_1internal_1_1args__t__or__default_3_01FuncSignature_00_01true_01_4_1a26947d6af22fac1cd06fa0ff4c0de13d"></span><span class="k"><span class="pre">using</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">type</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="k"><span class="pre">typename</span></span><span class="w"> </span><a class="reference internal" href="#_CPPv4I0EN10dispatcher8internal17args_t_or_defaultI13FuncSignatureXL1EEEE" title="dispatcher::internal::args_t_or_default&lt;FuncSignature, true&gt;::FuncSignature"><span class="n"><span class="pre">FuncSignature</span></span></a><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">args_t</span></span><a class="headerlink" href="#_CPPv4N10dispatcher8internal17args_t_or_defaultI13FuncSignatureXL1EEE4typeE" title="Link to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+</div>
+</dd></dl>
+
+<dl class="cpp class">
+<dt class="sig sig-object cpp" id="_CPPv4N10dispatcher8internal20CustomStackAllocatorE">
+<span id="_CPPv3N10dispatcher8internal20CustomStackAllocatorE"></span><span id="_CPPv2N10dispatcher8internal20CustomStackAllocatorE"></span><span id="dispatcher::internal::CustomStackAllocator"></span><span class="target" id="classdispatcher_1_1internal_1_1CustomStackAllocator"></span><span class="k"><span class="pre">class</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">CustomStackAllocator</span></span></span><a class="headerlink" href="#_CPPv4N10dispatcher8internal20CustomStackAllocatorE" title="Link to this definition">¶</a><br /></dt>
+<dd><div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-public-functions">Public Functions</p>
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N10dispatcher8internal20CustomStackAllocator20CustomStackAllocatorEP10MemoryPool">
+<span id="_CPPv3N10dispatcher8internal20CustomStackAllocator20CustomStackAllocatorEP10MemoryPool"></span><span id="_CPPv2N10dispatcher8internal20CustomStackAllocator20CustomStackAllocatorEP10MemoryPool"></span><span id="dispatcher::internal::CustomStackAllocator::CustomStackAllocator__MemoryPoolP"></span><span class="target" id="classdispatcher_1_1internal_1_1CustomStackAllocator_1ab5e7513a5e3d201324d1c2e53bfbeaa2"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">CustomStackAllocator</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv4N10dispatcher8internal10MemoryPoolE" title="dispatcher::internal::MemoryPool"><span class="n"><span class="pre">MemoryPool</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">memory_pool</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N10dispatcher8internal20CustomStackAllocator20CustomStackAllocatorEP10MemoryPool" title="Link to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N10dispatcher8internal20CustomStackAllocator8allocateEv">
+<span id="_CPPv3N10dispatcher8internal20CustomStackAllocator8allocateEv"></span><span id="_CPPv2N10dispatcher8internal20CustomStackAllocator8allocateEv"></span><span id="dispatcher::internal::CustomStackAllocator::allocate"></span><span class="target" id="classdispatcher_1_1internal_1_1CustomStackAllocator_1a43bd342eb372a46255a8274974fdc153"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="n"><span class="pre">boost</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">context</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">stack_context</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">allocate</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N10dispatcher8internal20CustomStackAllocator8allocateEv" title="Link to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N10dispatcher8internal20CustomStackAllocator10deallocateERN5boost7context13stack_contextE">
+<span id="_CPPv3N10dispatcher8internal20CustomStackAllocator10deallocateERN5boost7context13stack_contextE"></span><span id="_CPPv2N10dispatcher8internal20CustomStackAllocator10deallocateERN5boost7context13stack_contextE"></span><span id="dispatcher::internal::CustomStackAllocator::deallocate__boost::context::stack_contextR"></span><span class="target" id="classdispatcher_1_1internal_1_1CustomStackAllocator_1a6a9836034258ddd3e7b213ed5ce24f9b"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">deallocate</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">boost</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">context</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">stack_context</span></span><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="n sig-param"><span class="pre">sctx</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N10dispatcher8internal20CustomStackAllocator10deallocateERN5boost7context13stack_contextE" title="Link to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+</div>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-private-members">Private Members</p>
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N10dispatcher8internal20CustomStackAllocator12memory_pool_E">
+<span id="_CPPv3N10dispatcher8internal20CustomStackAllocator12memory_pool_E"></span><span id="_CPPv2N10dispatcher8internal20CustomStackAllocator12memory_pool_E"></span><span id="dispatcher::internal::CustomStackAllocator::memory_pool___MemoryPoolP"></span><span class="target" id="classdispatcher_1_1internal_1_1CustomStackAllocator_1a11142b9b9e2ddb8fb08998f51207cf4b"></span><a class="reference internal" href="#_CPPv4N10dispatcher8internal10MemoryPoolE" title="dispatcher::internal::MemoryPool"><span class="n"><span class="pre">MemoryPool</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">memory_pool_</span></span></span><a class="headerlink" href="#_CPPv4N10dispatcher8internal20CustomStackAllocator12memory_pool_E" title="Link to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+</div>
+</dd></dl>
+
+<dl class="cpp struct">
+<dt class="sig sig-object cpp" id="_CPPv4N10dispatcher8internal7DefaultE">
+<span id="_CPPv3N10dispatcher8internal7DefaultE"></span><span id="_CPPv2N10dispatcher8internal7DefaultE"></span><span id="dispatcher::internal::Default"></span><span class="target" id="structdispatcher_1_1internal_1_1Default"></span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">Default</span></span></span><a class="headerlink" href="#_CPPv4N10dispatcher8internal7DefaultE" title="Link to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp struct">
+<dt class="sig sig-object cpp" id="_CPPv4I00EN10dispatcher8internal15EventDispatcherE">
+<span id="_CPPv3I00EN10dispatcher8internal15EventDispatcherE"></span><span id="_CPPv2I00EN10dispatcher8internal15EventDispatcherE"></span><span class="k"><span class="pre">template</span></span><span class="p"><span class="pre">&lt;</span></span><span class="k"><span class="pre">typename</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">FuncSignature</span></span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="k"><span class="pre">typename</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">Network</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><a class="reference internal" href="#_CPPv4N10dispatcher8internalE" title="dispatcher::internal"><span class="n"><span class="pre">internal</span></span></a><span class="p"><span class="pre">::</span></span><a class="reference internal" href="#_CPPv4N10dispatcher8internal7DefaultE" title="dispatcher::internal::Default"><span class="n"><span class="pre">Default</span></span></a><span class="p"><span class="pre">&gt;</span></span><br /><span class="target" id="structdispatcher_1_1internal_1_1EventDispatcher"></span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">EventDispatcher</span></span></span><a class="headerlink" href="#_CPPv4I00EN10dispatcher8internal15EventDispatcherE" title="Link to this definition">¶</a><br /></dt>
+<dd><div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-public-types">Public Types</p>
+<dl class="cpp type">
+<dt class="sig sig-object cpp" id="_CPPv4N10dispatcher8internal15EventDispatcher6args_tE">
+<span id="_CPPv3N10dispatcher8internal15EventDispatcher6args_tE"></span><span id="_CPPv2N10dispatcher8internal15EventDispatcher6args_tE"></span><span class="target" id="structdispatcher_1_1internal_1_1EventDispatcher_1aef2393a2878eff53fb29b800ba42be66"></span><span class="k"><span class="pre">using</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">args_t</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="k"><span class="pre">typename</span></span><span class="w"> </span><a class="reference internal" href="#_CPPv4I0_bEN10dispatcher8internal17args_t_or_defaultE" title="dispatcher::internal::args_t_or_default"><span class="n"><span class="pre">args_t_or_default</span></span></a><span class="p"><span class="pre">&lt;</span></span><a class="reference internal" href="#_CPPv4I00EN10dispatcher8internal15EventDispatcherE" title="dispatcher::internal::EventDispatcher::FuncSignature"><span class="n"><span class="pre">FuncSignature</span></span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="#_CPPv4I00EN10dispatcher8internal10has_args_tE" title="dispatcher::internal::has_args_t"><span class="n"><span class="pre">has_args_t</span></span></a><span class="p"><span class="pre">&lt;</span></span><a class="reference internal" href="#_CPPv4I00EN10dispatcher8internal15EventDispatcherE" title="dispatcher::internal::EventDispatcher::FuncSignature"><span class="n"><span class="pre">FuncSignature</span></span></a><span class="p"><span class="pre">&gt;</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">value</span></span><span class="p"><span class="pre">&gt;</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">type</span></span><a class="headerlink" href="#_CPPv4N10dispatcher8internal15EventDispatcher6args_tE" title="Link to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp type">
+<dt class="sig sig-object cpp" id="_CPPv4N10dispatcher8internal15EventDispatcher11signal_typeE">
+<span id="_CPPv3N10dispatcher8internal15EventDispatcher11signal_typeE"></span><span id="_CPPv2N10dispatcher8internal15EventDispatcher11signal_typeE"></span><span class="target" id="structdispatcher_1_1internal_1_1EventDispatcher_1aab78fb64f8eab6c9db6cc8d3d1737571"></span><span class="k"><span class="pre">using</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">signal_type</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="k"><span class="pre">typename</span></span><span class="w"> </span><span class="n"><span class="pre">SignalFromTuple</span></span><span class="p"><span class="pre">&lt;</span></span><a class="reference internal" href="#_CPPv4N10dispatcher8internal15EventDispatcher6args_tE" title="dispatcher::internal::EventDispatcher::args_t"><span class="n"><span class="pre">args_t</span></span></a><span class="p"><span class="pre">&gt;</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">type</span></span><a class="headerlink" href="#_CPPv4N10dispatcher8internal15EventDispatcher11signal_typeE" title="Link to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+</div>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-public-static-functions">Public Static Functions</p>
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4I0EN10dispatcher8internal15EventDispatcher9subscribeEN5boost8signals210connectionERR8Callable">
+<span id="_CPPv3I0EN10dispatcher8internal15EventDispatcher9subscribeERR8Callable"></span><span id="_CPPv2I0EN10dispatcher8internal15EventDispatcher9subscribeERR8Callable"></span><span class="k"><span class="pre">template</span></span><span class="p"><span class="pre">&lt;</span></span><span class="k"><span class="pre">typename</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">Callable</span></span></span><span class="p"><span class="pre">&gt;</span></span><br /><span class="target" id="structdispatcher_1_1internal_1_1EventDispatcher_1a4c443fa1f4b82f6f25c1d9458cecd8dd"></span><span class="k"><span class="pre">static</span></span><span class="w"> </span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="n"><span class="pre">boost</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">signals2</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">connection</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">subscribe</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv4I0EN10dispatcher8internal15EventDispatcher9subscribeEN5boost8signals210connectionERR8Callable" title="dispatcher::internal::EventDispatcher::subscribe::Callable"><span class="n"><span class="pre">Callable</span></span></a><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="p"><span class="pre">&amp;</span></span><span class="n sig-param"><span class="pre">callable</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4I0EN10dispatcher8internal15EventDispatcher9subscribeEN5boost8signals210connectionERR8Callable" title="Link to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4IDpEN10dispatcher8internal15EventDispatcher7publishEvDpRR4Args">
+<span id="_CPPv3IDpEN10dispatcher8internal15EventDispatcher7publishEDpRR4Args"></span><span id="_CPPv2IDpEN10dispatcher8internal15EventDispatcher7publishEDpRR4Args"></span><span class="k"><span class="pre">template</span></span><span class="p"><span class="pre">&lt;</span></span><span class="k"><span class="pre">typename</span></span><span class="w"> </span><span class="p"><span class="pre">...</span></span><span class="sig-name descname"><span class="n"><span class="pre">Args</span></span></span><span class="p"><span class="pre">&gt;</span></span><br /><span class="target" id="structdispatcher_1_1internal_1_1EventDispatcher_1a133059bce55bf00602c5f788ee1654c0"></span><span class="k"><span class="pre">static</span></span><span class="w"> </span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">publish</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv4IDpEN10dispatcher8internal15EventDispatcher7publishEvDpRR4Args" title="dispatcher::internal::EventDispatcher::publish::Args"><span class="n"><span class="pre">Args</span></span></a><span class="p"><span class="pre">&amp;</span></span><span class="p"><span class="pre">&amp;</span></span><span class="p"><span class="pre">...</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">args</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4IDpEN10dispatcher8internal15EventDispatcher7publishEvDpRR4Args" title="Link to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+</div>
+</dd></dl>
+
+<dl class="cpp class">
+<dt class="sig sig-object cpp" id="_CPPv4I0EN10dispatcher8internal9EventLoopE">
+<span id="_CPPv3I0EN10dispatcher8internal9EventLoopE"></span><span id="_CPPv2I0EN10dispatcher8internal9EventLoopE"></span><span class="k"><span class="pre">template</span></span><span class="p"><span class="pre">&lt;</span></span><span class="k"><span class="pre">typename</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">Network</span></span></span><span class="p"><span class="pre">&gt;</span></span><br /><span class="target" id="classdispatcher_1_1internal_1_1EventLoop"></span><span class="k"><span class="pre">class</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">EventLoop</span></span></span><a class="headerlink" href="#_CPPv4I0EN10dispatcher8internal9EventLoopE" title="Link to this definition">¶</a><br /></dt>
+<dd><div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-public-functions">Public Functions</p>
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N10dispatcher8internal9EventLoop9EventLoopEv">
+<span id="_CPPv3N10dispatcher8internal9EventLoop9EventLoopEv"></span><span id="_CPPv2N10dispatcher8internal9EventLoop9EventLoopEv"></span><span id="dispatcher::internal::EventLoop::EventLoop"></span><span class="target" id="classdispatcher_1_1internal_1_1EventLoop_1abd21442c23743cad7d7d64f38b73a42e"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">EventLoop</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N10dispatcher8internal9EventLoop9EventLoopEv" title="Link to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N10dispatcher8internal9EventLoopD0Ev">
+<span id="_CPPv3N10dispatcher8internal9EventLoopD0Ev"></span><span id="_CPPv2N10dispatcher8internal9EventLoopD0Ev"></span><span id="dispatcher::internal::EventLoop::~EventLoop"></span><span class="target" id="classdispatcher_1_1internal_1_1EventLoop_1a8aaa76079c721e677eac1a52c02d02bd"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">~EventLoop</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N10dispatcher8internal9EventLoopD0Ev" title="Link to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N10dispatcher8internal9EventLoop9EventLoopERK9EventLoop">
+<span id="_CPPv3N10dispatcher8internal9EventLoop9EventLoopERK9EventLoop"></span><span id="_CPPv2N10dispatcher8internal9EventLoop9EventLoopERK9EventLoop"></span><span id="dispatcher::internal::EventLoop::EventLoop__EventLoopCR"></span><span class="target" id="classdispatcher_1_1internal_1_1EventLoop_1adf603e01db31fbcbf3433f6e1ea0f8d8"></span><span class="sig-name descname"><span class="n"><span class="pre">EventLoop</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><a class="reference internal" href="#_CPPv4N10dispatcher8internal9EventLoop9EventLoopERK9EventLoop" title="dispatcher::internal::EventLoop::EventLoop"><span class="n"><span class="pre">EventLoop</span></span></a><span class="p"><span class="pre">&amp;</span></span><span class="sig-paren">)</span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="k"><span class="pre">delete</span></span><a class="headerlink" href="#_CPPv4N10dispatcher8internal9EventLoop9EventLoopERK9EventLoop" title="Link to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N10dispatcher8internal9EventLoop9EventLoopERR9EventLoop">
+<span id="_CPPv3N10dispatcher8internal9EventLoop9EventLoopERR9EventLoop"></span><span id="_CPPv2N10dispatcher8internal9EventLoop9EventLoopERR9EventLoop"></span><span id="dispatcher::internal::EventLoop::EventLoop__EventLoopRR"></span><span class="target" id="classdispatcher_1_1internal_1_1EventLoop_1a6e9bef6e5ef7a9aa5433f244dcf4d83d"></span><span class="sig-name descname"><span class="n"><span class="pre">EventLoop</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv4N10dispatcher8internal9EventLoop9EventLoopERR9EventLoop" title="dispatcher::internal::EventLoop::EventLoop"><span class="n"><span class="pre">EventLoop</span></span></a><span class="p"><span class="pre">&amp;</span></span><span class="p"><span class="pre">&amp;</span></span><span class="sig-paren">)</span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="k"><span class="pre">delete</span></span><a class="headerlink" href="#_CPPv4N10dispatcher8internal9EventLoop9EventLoopERR9EventLoop" title="Link to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N10dispatcher8internal9EventLoopaSERK9EventLoop">
+<span id="_CPPv3N10dispatcher8internal9EventLoopaSERK9EventLoop"></span><span id="_CPPv2N10dispatcher8internal9EventLoopaSERK9EventLoop"></span><span id="dispatcher::internal::EventLoop::assign-operator__EventLoopCR"></span><span class="target" id="classdispatcher_1_1internal_1_1EventLoop_1a518ac7417433b725a0d4eddc8b99d360"></span><a class="reference internal" href="#_CPPv4I0EN10dispatcher8internal9EventLoopE" title="dispatcher::internal::EventLoop"><span class="n"><span class="pre">EventLoop</span></span></a><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="sig-name descname"><span class="k"><span class="pre">operator</span></span><span class="o"><span class="pre">=</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><a class="reference internal" href="#_CPPv4I0EN10dispatcher8internal9EventLoopE" title="dispatcher::internal::EventLoop"><span class="n"><span class="pre">EventLoop</span></span></a><span class="p"><span class="pre">&amp;</span></span><span class="sig-paren">)</span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="k"><span class="pre">delete</span></span><a class="headerlink" href="#_CPPv4N10dispatcher8internal9EventLoopaSERK9EventLoop" title="Link to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N10dispatcher8internal9EventLoopaSERR9EventLoop">
+<span id="_CPPv3N10dispatcher8internal9EventLoopaSERR9EventLoop"></span><span id="_CPPv2N10dispatcher8internal9EventLoopaSERR9EventLoop"></span><span id="dispatcher::internal::EventLoop::assign-operator__EventLoopRR"></span><span class="target" id="classdispatcher_1_1internal_1_1EventLoop_1ac719134ab9ede613e5273389a44fdf34"></span><a class="reference internal" href="#_CPPv4I0EN10dispatcher8internal9EventLoopE" title="dispatcher::internal::EventLoop"><span class="n"><span class="pre">EventLoop</span></span></a><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="sig-name descname"><span class="k"><span class="pre">operator</span></span><span class="o"><span class="pre">=</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv4I0EN10dispatcher8internal9EventLoopE" title="dispatcher::internal::EventLoop"><span class="n"><span class="pre">EventLoop</span></span></a><span class="p"><span class="pre">&amp;</span></span><span class="p"><span class="pre">&amp;</span></span><span class="sig-paren">)</span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="k"><span class="pre">delete</span></span><a class="headerlink" href="#_CPPv4N10dispatcher8internal9EventLoopaSERR9EventLoop" title="Link to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N10dispatcher8internal9EventLoop22SetWorkerThreadsAmountEi">
+<span id="_CPPv3N10dispatcher8internal9EventLoop22SetWorkerThreadsAmountEi"></span><span id="_CPPv2N10dispatcher8internal9EventLoop22SetWorkerThreadsAmountEi"></span><span id="dispatcher::internal::EventLoop::SetWorkerThreadsAmount__i"></span><span class="target" id="classdispatcher_1_1internal_1_1EventLoop_1ab203f858ced43e6ea3bf67cb0b290e7a"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">SetWorkerThreadsAmount</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">threads</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N10dispatcher8internal9EventLoop22SetWorkerThreadsAmountEi" title="Link to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4I0EN10dispatcher8internal9EventLoop4PostEvRR1T">
+<span id="_CPPv3I0EN10dispatcher8internal9EventLoop4PostERR1T"></span><span id="_CPPv2I0EN10dispatcher8internal9EventLoop4PostERR1T"></span><span class="k"><span class="pre">template</span></span><span class="p"><span class="pre">&lt;</span></span><span class="k"><span class="pre">typename</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">T</span></span></span><span class="p"><span class="pre">&gt;</span></span><br /><span class="target" id="classdispatcher_1_1internal_1_1EventLoop_1a55ba1d9a70210190bf283b6d1cbc18d4"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">Post</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv4I0EN10dispatcher8internal9EventLoop4PostEvRR1T" title="dispatcher::internal::EventLoop::Post::T"><span class="n"><span class="pre">T</span></span></a><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="p"><span class="pre">&amp;</span></span><span class="n sig-param"><span class="pre">task</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4I0EN10dispatcher8internal9EventLoop4PostEvRR1T" title="Link to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N10dispatcher8internal9EventLoop4StopEv">
+<span id="_CPPv3N10dispatcher8internal9EventLoop4StopEv"></span><span id="_CPPv2N10dispatcher8internal9EventLoop4StopEv"></span><span id="dispatcher::internal::EventLoop::Stop"></span><span class="target" id="classdispatcher_1_1internal_1_1EventLoop_1a8afe27ca4f5a6dc1dd4673c9127cf90f"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">Stop</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N10dispatcher8internal9EventLoop4StopEv" title="Link to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N10dispatcher8internal9EventLoop12GetIOContextEv">
+<span id="_CPPv3N10dispatcher8internal9EventLoop12GetIOContextEv"></span><span id="_CPPv2N10dispatcher8internal9EventLoop12GetIOContextEv"></span><span id="dispatcher::internal::EventLoop::GetIOContext"></span><span class="target" id="classdispatcher_1_1internal_1_1EventLoop_1a86266e9dec4d5187ce10c6e1ce068759"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="n"><span class="pre">boost</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">asio</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">io_context</span></span><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="sig-name descname"><span class="n"><span class="pre">GetIOContext</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N10dispatcher8internal9EventLoop12GetIOContextEv" title="Link to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+</div>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-private-members">Private Members</p>
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N10dispatcher8internal9EventLoop11io_context_E">
+<span id="_CPPv3N10dispatcher8internal9EventLoop11io_context_E"></span><span id="_CPPv2N10dispatcher8internal9EventLoop11io_context_E"></span><span id="dispatcher::internal::EventLoop::io_context___boost::asio::io_context"></span><span class="target" id="classdispatcher_1_1internal_1_1EventLoop_1a7f06178b73658ed72e356d6f5b7ff2dd"></span><span class="n"><span class="pre">boost</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">asio</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">io_context</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">io_context_</span></span></span><a class="headerlink" href="#_CPPv4N10dispatcher8internal9EventLoop11io_context_E" title="Link to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N10dispatcher8internal9EventLoop11work_guard_E">
+<span id="_CPPv3N10dispatcher8internal9EventLoop11work_guard_E"></span><span id="_CPPv2N10dispatcher8internal9EventLoop11work_guard_E"></span><span class="target" id="classdispatcher_1_1internal_1_1EventLoop_1a663605d52a4e7db685d7801d3d13d049"></span><span class="n"><span class="pre">boost</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">asio</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">executor_work_guard</span></span><span class="p"><span class="pre">&lt;</span></span><span class="k"><span class="pre">decltype</span></span><span class="p"><span class="pre">(</span></span><a class="reference internal" href="#_CPPv4N10dispatcher8internal9EventLoop11io_context_E" title="dispatcher::internal::EventLoop::io_context_"><span class="n"><span class="pre">io_context_</span></span></a><span class="p"><span class="pre">.</span></span><span class="n"><span class="pre">get_executor</span></span><span class="p"><span class="pre">(</span></span><span class="p"><span class="pre">)</span></span><span class="p"><span class="pre">)</span></span><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">work_guard_</span></span></span><a class="headerlink" href="#_CPPv4N10dispatcher8internal9EventLoop11work_guard_E" title="Link to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N10dispatcher8internal9EventLoop12work_thread_E">
+<span id="_CPPv3N10dispatcher8internal9EventLoop12work_thread_E"></span><span id="_CPPv2N10dispatcher8internal9EventLoop12work_thread_E"></span><span id="dispatcher::internal::EventLoop::work_thread___std::thread"></span><span class="target" id="classdispatcher_1_1internal_1_1EventLoop_1add4b0d7d5b702e3dbe42ef0bdcfbf261"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">thread</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">work_thread_</span></span></span><a class="headerlink" href="#_CPPv4N10dispatcher8internal9EventLoop12work_thread_E" title="Link to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N10dispatcher8internal9EventLoop24additional_work_threads_E">
+<span id="_CPPv3N10dispatcher8internal9EventLoop24additional_work_threads_E"></span><span id="_CPPv2N10dispatcher8internal9EventLoop24additional_work_threads_E"></span><span id="dispatcher::internal::EventLoop::additional_work_threads___std::vector:std::thread:"></span><span class="target" id="classdispatcher_1_1internal_1_1EventLoop_1a5f55718f1a273faaac621fdab27668b9"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">vector</span></span><span class="p"><span class="pre">&lt;</span></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">thread</span></span><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">additional_work_threads_</span></span></span><a class="headerlink" href="#_CPPv4N10dispatcher8internal9EventLoop24additional_work_threads_E" title="Link to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N10dispatcher8internal9EventLoop8stopped_E">
+<span id="_CPPv3N10dispatcher8internal9EventLoop8stopped_E"></span><span id="_CPPv2N10dispatcher8internal9EventLoop8stopped_E"></span><span id="dispatcher::internal::EventLoop::stopped___std::atomic:b:"></span><span class="target" id="classdispatcher_1_1internal_1_1EventLoop_1a3b37f33599b5e5df7ebb159a4decd181"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">atomic</span></span><span class="p"><span class="pre">&lt;</span></span><span class="kt"><span class="pre">bool</span></span><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">stopped_</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="p"><span class="pre">{</span></span><span class="k"><span class="pre">false</span></span><span class="p"><span class="pre">}</span></span><a class="headerlink" href="#_CPPv4N10dispatcher8internal9EventLoop8stopped_E" title="Link to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N10dispatcher8internal9EventLoop12memory_pool_E">
+<span id="_CPPv3N10dispatcher8internal9EventLoop12memory_pool_E"></span><span id="_CPPv2N10dispatcher8internal9EventLoop12memory_pool_E"></span><span id="dispatcher::internal::EventLoop::memory_pool___MemoryPool"></span><span class="target" id="classdispatcher_1_1internal_1_1EventLoop_1aa11310df4867281385ad2dbcedd35326"></span><a class="reference internal" href="#_CPPv4N10dispatcher8internal10MemoryPoolE" title="dispatcher::internal::MemoryPool"><span class="n"><span class="pre">MemoryPool</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">memory_pool_</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="p"><span class="pre">{</span></span><span class="m"><span class="pre">30000</span></span><span class="p"><span class="pre">}</span></span><a class="headerlink" href="#_CPPv4N10dispatcher8internal9EventLoop12memory_pool_E" title="Link to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+</div>
+</dd></dl>
+
+<dl class="cpp struct">
+<dt class="sig sig-object cpp" id="_CPPv4I0EN10dispatcher8internal18FunctionDispatcherE">
+<span id="_CPPv3I0EN10dispatcher8internal18FunctionDispatcherE"></span><span id="_CPPv2I0EN10dispatcher8internal18FunctionDispatcherE"></span><span class="k"><span class="pre">template</span></span><span class="p"><span class="pre">&lt;</span></span><span class="k"><span class="pre">typename</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">FuncSignature</span></span></span><span class="p"><span class="pre">&gt;</span></span><br /><span class="target" id="structdispatcher_1_1internal_1_1FunctionDispatcher"></span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">FunctionDispatcher</span></span></span><a class="headerlink" href="#_CPPv4I0EN10dispatcher8internal18FunctionDispatcherE" title="Link to this definition">¶</a><br /></dt>
+<dd><div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-public-types">Public Types</p>
+<dl class="cpp type">
+<dt class="sig sig-object cpp" id="_CPPv4N10dispatcher8internal18FunctionDispatcher8return_tE">
+<span id="_CPPv3N10dispatcher8internal18FunctionDispatcher8return_tE"></span><span id="_CPPv2N10dispatcher8internal18FunctionDispatcher8return_tE"></span><span class="target" id="structdispatcher_1_1internal_1_1FunctionDispatcher_1ad3508bbcd2b4fd7e269cd0aa214ec1fa"></span><span class="k"><span class="pre">using</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">return_t</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="k"><span class="pre">typename</span></span><span class="w"> </span><a class="reference internal" href="#_CPPv4I0_bEN10dispatcher8internal19return_t_or_defaultE" title="dispatcher::internal::return_t_or_default"><span class="n"><span class="pre">return_t_or_default</span></span></a><span class="p"><span class="pre">&lt;</span></span><a class="reference internal" href="#_CPPv4I0EN10dispatcher8internal18FunctionDispatcherE" title="dispatcher::internal::FunctionDispatcher::FuncSignature"><span class="n"><span class="pre">FuncSignature</span></span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="#_CPPv4I00EN10dispatcher8internal12has_return_tE" title="dispatcher::internal::has_return_t"><span class="n"><span class="pre">has_return_t</span></span></a><span class="p"><span class="pre">&lt;</span></span><a class="reference internal" href="#_CPPv4I0EN10dispatcher8internal18FunctionDispatcherE" title="dispatcher::internal::FunctionDispatcher::FuncSignature"><span class="n"><span class="pre">FuncSignature</span></span></a><span class="p"><span class="pre">&gt;</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">value</span></span><span class="p"><span class="pre">&gt;</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">type</span></span><a class="headerlink" href="#_CPPv4N10dispatcher8internal18FunctionDispatcher8return_tE" title="Link to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp type">
+<dt class="sig sig-object cpp" id="_CPPv4N10dispatcher8internal18FunctionDispatcher6args_tE">
+<span id="_CPPv3N10dispatcher8internal18FunctionDispatcher6args_tE"></span><span id="_CPPv2N10dispatcher8internal18FunctionDispatcher6args_tE"></span><span class="target" id="structdispatcher_1_1internal_1_1FunctionDispatcher_1ae259da99f5d78e7daa7f888bed6335c8"></span><span class="k"><span class="pre">using</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">args_t</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="k"><span class="pre">typename</span></span><span class="w"> </span><a class="reference internal" href="#_CPPv4I0_bEN10dispatcher8internal17args_t_or_defaultE" title="dispatcher::internal::args_t_or_default"><span class="n"><span class="pre">args_t_or_default</span></span></a><span class="p"><span class="pre">&lt;</span></span><a class="reference internal" href="#_CPPv4I0EN10dispatcher8internal18FunctionDispatcherE" title="dispatcher::internal::FunctionDispatcher::FuncSignature"><span class="n"><span class="pre">FuncSignature</span></span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="#_CPPv4I00EN10dispatcher8internal10has_args_tE" title="dispatcher::internal::has_args_t"><span class="n"><span class="pre">has_args_t</span></span></a><span class="p"><span class="pre">&lt;</span></span><a class="reference internal" href="#_CPPv4I0EN10dispatcher8internal18FunctionDispatcherE" title="dispatcher::internal::FunctionDispatcher::FuncSignature"><span class="n"><span class="pre">FuncSignature</span></span></a><span class="p"><span class="pre">&gt;</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">value</span></span><span class="p"><span class="pre">&gt;</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">type</span></span><a class="headerlink" href="#_CPPv4N10dispatcher8internal18FunctionDispatcher6args_tE" title="Link to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp type">
+<dt class="sig sig-object cpp" id="_CPPv4N10dispatcher8internal18FunctionDispatcher9func_typeE">
+<span id="_CPPv3N10dispatcher8internal18FunctionDispatcher9func_typeE"></span><span id="_CPPv2N10dispatcher8internal18FunctionDispatcher9func_typeE"></span><span class="target" id="structdispatcher_1_1internal_1_1FunctionDispatcher_1ac9a40f0d15ef04084f2c3c5122d6bf62"></span><span class="k"><span class="pre">using</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">func_type</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="k"><span class="pre">typename</span></span><span class="w"> </span><span class="n"><span class="pre">FunctionFromTuple</span></span><span class="p"><span class="pre">&lt;</span></span><a class="reference internal" href="#_CPPv4N10dispatcher8internal18FunctionDispatcher8return_tE" title="dispatcher::internal::FunctionDispatcher::return_t"><span class="n"><span class="pre">return_t</span></span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="#_CPPv4N10dispatcher8internal18FunctionDispatcher6args_tE" title="dispatcher::internal::FunctionDispatcher::args_t"><span class="n"><span class="pre">args_t</span></span></a><span class="p"><span class="pre">&gt;</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">type</span></span><a class="headerlink" href="#_CPPv4N10dispatcher8internal18FunctionDispatcher9func_typeE" title="Link to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+</div>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-public-static-functions">Public Static Functions</p>
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4I0EN10dispatcher8internal18FunctionDispatcher6attachEvRR8Callable">
+<span id="_CPPv3I0EN10dispatcher8internal18FunctionDispatcher6attachERR8Callable"></span><span id="_CPPv2I0EN10dispatcher8internal18FunctionDispatcher6attachERR8Callable"></span><span class="k"><span class="pre">template</span></span><span class="p"><span class="pre">&lt;</span></span><span class="k"><span class="pre">typename</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">Callable</span></span></span><span class="p"><span class="pre">&gt;</span></span><br /><span class="target" id="structdispatcher_1_1internal_1_1FunctionDispatcher_1a7fa2edbe2ec73a44389bc3ae3b93a2f0"></span><span class="k"><span class="pre">static</span></span><span class="w"> </span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">attach</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv4I0EN10dispatcher8internal18FunctionDispatcher6attachEvRR8Callable" title="dispatcher::internal::FunctionDispatcher::attach::Callable"><span class="n"><span class="pre">Callable</span></span></a><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="p"><span class="pre">&amp;</span></span><span class="n sig-param"><span class="pre">callable</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4I0EN10dispatcher8internal18FunctionDispatcher6attachEvRR8Callable" title="Link to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N10dispatcher8internal18FunctionDispatcher6detachEv">
+<span id="_CPPv3N10dispatcher8internal18FunctionDispatcher6detachEv"></span><span id="_CPPv2N10dispatcher8internal18FunctionDispatcher6detachEv"></span><span id="dispatcher::internal::FunctionDispatcher::detach"></span><span class="target" id="structdispatcher_1_1internal_1_1FunctionDispatcher_1ac750c29caf4d22fe22326d99fdedf7f1"></span><span class="k"><span class="pre">static</span></span><span class="w"> </span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">detach</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N10dispatcher8internal18FunctionDispatcher6detachEv" title="Link to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4IDpEN10dispatcher8internal18FunctionDispatcher4callEDaDpRR4Args">
+<span id="_CPPv3IDpEN10dispatcher8internal18FunctionDispatcher4callEDpRR4Args"></span><span id="_CPPv2IDpEN10dispatcher8internal18FunctionDispatcher4callEDpRR4Args"></span><span class="k"><span class="pre">template</span></span><span class="p"><span class="pre">&lt;</span></span><span class="k"><span class="pre">typename</span></span><span class="w"> </span><span class="p"><span class="pre">...</span></span><span class="sig-name descname"><span class="n"><span class="pre">Args</span></span></span><span class="p"><span class="pre">&gt;</span></span><br /><span class="target" id="structdispatcher_1_1internal_1_1FunctionDispatcher_1a5d64a9b9ca1d105e3fc7ab5a68459ed2"></span><span class="k"><span class="pre">static</span></span><span class="w"> </span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="kt"><span class="pre">auto</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">call</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv4IDpEN10dispatcher8internal18FunctionDispatcher4callEDaDpRR4Args" title="dispatcher::internal::FunctionDispatcher::call::Args"><span class="n"><span class="pre">Args</span></span></a><span class="p"><span class="pre">&amp;</span></span><span class="p"><span class="pre">&amp;</span></span><span class="p"><span class="pre">...</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">args</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4IDpEN10dispatcher8internal18FunctionDispatcher4callEDaDpRR4Args" title="Link to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+</div>
+</dd></dl>
+
+<dl class="cpp struct">
+<dt class="sig sig-object cpp" id="_CPPv4I0DpEN10dispatcher8internal17FunctionFromTupleI10ReturnTypeNSt5tupleIDp4ArgsEEEE">
+<span id="_CPPv3I0DpEN10dispatcher8internal17FunctionFromTupleI10ReturnTypeNSt5tupleIDp4ArgsEEEE"></span><span id="_CPPv2I0DpEN10dispatcher8internal17FunctionFromTupleI10ReturnTypeNSt5tupleIDp4ArgsEEEE"></span><span class="k"><span class="pre">template</span></span><span class="p"><span class="pre">&lt;</span></span><span class="k"><span class="pre">typename</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">ReturnType</span></span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="k"><span class="pre">typename</span></span><span class="w"> </span><span class="p"><span class="pre">...</span></span><span class="sig-name descname"><span class="n"><span class="pre">Args</span></span></span><span class="p"><span class="pre">&gt;</span></span><br /><span class="target" id="structdispatcher_1_1internal_1_1FunctionFromTuple_3_01ReturnType_00_01std_1_1tuple_3_01Args_8_8_8_01_4_01_4"></span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">FunctionFromTuple</span></span></span><span class="p"><span class="pre">&lt;</span></span><a class="reference internal" href="#_CPPv4I0DpEN10dispatcher8internal17FunctionFromTupleI10ReturnTypeNSt5tupleIDp4ArgsEEEE" title="dispatcher::internal::FunctionFromTuple&lt;ReturnType, std::tuple&lt;Args...&gt;&gt;::ReturnType"><span class="n"><span class="pre">ReturnType</span></span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">tuple</span></span><span class="p"><span class="pre">&lt;</span></span><a class="reference internal" href="#_CPPv4I0DpEN10dispatcher8internal17FunctionFromTupleI10ReturnTypeNSt5tupleIDp4ArgsEEEE" title="dispatcher::internal::FunctionFromTuple&lt;ReturnType, std::tuple&lt;Args...&gt;&gt;::Args"><span class="n"><span class="pre">Args</span></span></a><span class="p"><span class="pre">...</span></span><span class="p"><span class="pre">&gt;</span></span><span class="p"><span class="pre">&gt;</span></span><a class="headerlink" href="#_CPPv4I0DpEN10dispatcher8internal17FunctionFromTupleI10ReturnTypeNSt5tupleIDp4ArgsEEEE" title="Link to this definition">¶</a><br /></dt>
+<dd><div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-public-types">Public Types</p>
+<dl class="cpp type">
+<dt class="sig sig-object cpp" id="_CPPv4N10dispatcher8internal17FunctionFromTupleI10ReturnTypeNSt5tupleIDp4ArgsEEE4typeE">
+<span id="_CPPv3N10dispatcher8internal17FunctionFromTupleI10ReturnTypeNSt5tupleIDp4ArgsEEE4typeE"></span><span id="_CPPv2N10dispatcher8internal17FunctionFromTupleI10ReturnTypeNSt5tupleIDp4ArgsEEE4typeE"></span><span class="target" id="structdispatcher_1_1internal_1_1FunctionFromTuple_3_01ReturnType_00_01std_1_1tuple_3_01Args_8_8_8_01_4_01_4_1aa57df71c89d4de06ec78cfc290468af1"></span><span class="k"><span class="pre">using</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">type</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">function</span></span><span class="p"><span class="pre">&lt;</span></span><a class="reference internal" href="#_CPPv4I0DpEN10dispatcher8internal17FunctionFromTupleI10ReturnTypeNSt5tupleIDp4ArgsEEEE" title="dispatcher::internal::FunctionFromTuple&lt;ReturnType, std::tuple&lt;Args...&gt;&gt;::ReturnType"><span class="n"><span class="pre">ReturnType</span></span></a><span class="p"><span class="pre">(</span></span><a class="reference internal" href="#_CPPv4I0DpEN10dispatcher8internal17FunctionFromTupleI10ReturnTypeNSt5tupleIDp4ArgsEEEE" title="dispatcher::internal::FunctionFromTuple&lt;ReturnType, std::tuple&lt;Args...&gt;&gt;::Args"><span class="n"><span class="pre">Args</span></span></a><span class="p"><span class="pre">...</span></span><span class="p"><span class="pre">)</span></span><span class="p"><span class="pre">&gt;</span></span><a class="headerlink" href="#_CPPv4N10dispatcher8internal17FunctionFromTupleI10ReturnTypeNSt5tupleIDp4ArgsEEE4typeE" title="Link to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+</div>
+</dd></dl>
+
+<dl class="cpp struct">
+<dt class="sig sig-object cpp" id="_CPPv4I00EN10dispatcher8internal10has_args_tE">
+<span id="_CPPv3I00EN10dispatcher8internal10has_args_tE"></span><span id="_CPPv2I00EN10dispatcher8internal10has_args_tE"></span><span class="k"><span class="pre">template</span></span><span class="p"><span class="pre">&lt;</span></span><span class="k"><span class="pre">typename</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">FuncSignature</span></span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="k"><span class="pre">typename</span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="kt"><span class="pre">void</span></span><span class="p"><span class="pre">&gt;</span></span><br /><span class="target" id="structdispatcher_1_1internal_1_1has__args__t"></span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">has_args_t</span></span></span><span class="w"> </span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="k"><span class="pre">public</span></span><span class="w"> </span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">false_type</span></span><a class="headerlink" href="#_CPPv4I00EN10dispatcher8internal10has_args_tE" title="Link to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp struct">
+<dt class="sig sig-object cpp" id="_CPPv4I0EN10dispatcher8internal10has_args_tI13FuncSignature6void_tIN13FuncSignature6args_tEEEE">
+<span id="_CPPv3I0EN10dispatcher8internal10has_args_tI13FuncSignature6void_tIN13FuncSignature6args_tEEEE"></span><span id="_CPPv2I0EN10dispatcher8internal10has_args_tI13FuncSignature6void_tIN13FuncSignature6args_tEEEE"></span><span class="k"><span class="pre">template</span></span><span class="p"><span class="pre">&lt;</span></span><span class="k"><span class="pre">typename</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">FuncSignature</span></span></span><span class="p"><span class="pre">&gt;</span></span><br /><span class="target" id="structdispatcher_1_1internal_1_1has__args__t_3_01FuncSignature_00_01void__t_3_01typename_01FuncSignature_1_1args__t_01_4_01_4"></span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">has_args_t</span></span></span><span class="p"><span class="pre">&lt;</span></span><a class="reference internal" href="#_CPPv4I0EN10dispatcher8internal10has_args_tI13FuncSignature6void_tIN13FuncSignature6args_tEEEE" title="dispatcher::internal::has_args_t&lt;FuncSignature, void_t&lt;typename FuncSignature::args_t&gt;&gt;::FuncSignature"><span class="n"><span class="pre">FuncSignature</span></span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="#_CPPv4IDpEN10dispatcher8internal6void_tE" title="dispatcher::internal::void_t"><span class="n"><span class="pre">void_t</span></span></a><span class="p"><span class="pre">&lt;</span></span><span class="k"><span class="pre">typename</span></span><span class="w"> </span><a class="reference internal" href="#_CPPv4I0EN10dispatcher8internal10has_args_tI13FuncSignature6void_tIN13FuncSignature6args_tEEEE" title="dispatcher::internal::has_args_t&lt;FuncSignature, void_t&lt;typename FuncSignature::args_t&gt;&gt;::FuncSignature"><span class="n"><span class="pre">FuncSignature</span></span></a><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">args_t</span></span><span class="p"><span class="pre">&gt;</span></span><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="k"><span class="pre">public</span></span><span class="w"> </span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">true_type</span></span><a class="headerlink" href="#_CPPv4I0EN10dispatcher8internal10has_args_tI13FuncSignature6void_tIN13FuncSignature6args_tEEEE" title="Link to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp struct">
+<dt class="sig sig-object cpp" id="_CPPv4I00EN10dispatcher8internal12has_return_tE">
+<span id="_CPPv3I00EN10dispatcher8internal12has_return_tE"></span><span id="_CPPv2I00EN10dispatcher8internal12has_return_tE"></span><span class="k"><span class="pre">template</span></span><span class="p"><span class="pre">&lt;</span></span><span class="k"><span class="pre">typename</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">FuncSignature</span></span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="k"><span class="pre">typename</span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="kt"><span class="pre">void</span></span><span class="p"><span class="pre">&gt;</span></span><br /><span class="target" id="structdispatcher_1_1internal_1_1has__return__t"></span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">has_return_t</span></span></span><span class="w"> </span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="k"><span class="pre">public</span></span><span class="w"> </span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">false_type</span></span><a class="headerlink" href="#_CPPv4I00EN10dispatcher8internal12has_return_tE" title="Link to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp struct">
+<dt class="sig sig-object cpp" id="_CPPv4I0EN10dispatcher8internal12has_return_tI13FuncSignature6void_tIN13FuncSignature8return_tEEEE">
+<span id="_CPPv3I0EN10dispatcher8internal12has_return_tI13FuncSignature6void_tIN13FuncSignature8return_tEEEE"></span><span id="_CPPv2I0EN10dispatcher8internal12has_return_tI13FuncSignature6void_tIN13FuncSignature8return_tEEEE"></span><span class="k"><span class="pre">template</span></span><span class="p"><span class="pre">&lt;</span></span><span class="k"><span class="pre">typename</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">FuncSignature</span></span></span><span class="p"><span class="pre">&gt;</span></span><br /><span class="target" id="structdispatcher_1_1internal_1_1has__return__t_3_01FuncSignature_00_01void__t_3_01typename_01Funf79f83a9ac24ba65ddb4c15811ab195e"></span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">has_return_t</span></span></span><span class="p"><span class="pre">&lt;</span></span><a class="reference internal" href="#_CPPv4I0EN10dispatcher8internal12has_return_tI13FuncSignature6void_tIN13FuncSignature8return_tEEEE" title="dispatcher::internal::has_return_t&lt;FuncSignature, void_t&lt;typename FuncSignature::return_t&gt;&gt;::FuncSignature"><span class="n"><span class="pre">FuncSignature</span></span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="#_CPPv4IDpEN10dispatcher8internal6void_tE" title="dispatcher::internal::void_t"><span class="n"><span class="pre">void_t</span></span></a><span class="p"><span class="pre">&lt;</span></span><span class="k"><span class="pre">typename</span></span><span class="w"> </span><a class="reference internal" href="#_CPPv4I0EN10dispatcher8internal12has_return_tI13FuncSignature6void_tIN13FuncSignature8return_tEEEE" title="dispatcher::internal::has_return_t&lt;FuncSignature, void_t&lt;typename FuncSignature::return_t&gt;&gt;::FuncSignature"><span class="n"><span class="pre">FuncSignature</span></span></a><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">return_t</span></span><span class="p"><span class="pre">&gt;</span></span><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="k"><span class="pre">public</span></span><span class="w"> </span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">true_type</span></span><a class="headerlink" href="#_CPPv4I0EN10dispatcher8internal12has_return_tI13FuncSignature6void_tIN13FuncSignature8return_tEEEE" title="Link to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp class">
+<dt class="sig sig-object cpp" id="_CPPv4N10dispatcher8internal10MemoryPoolE">
+<span id="_CPPv3N10dispatcher8internal10MemoryPoolE"></span><span id="_CPPv2N10dispatcher8internal10MemoryPoolE"></span><span id="dispatcher::internal::MemoryPool"></span><span class="target" id="classdispatcher_1_1internal_1_1MemoryPool"></span><span class="k"><span class="pre">class</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">MemoryPool</span></span></span><a class="headerlink" href="#_CPPv4N10dispatcher8internal10MemoryPoolE" title="Link to this definition">¶</a><br /></dt>
+<dd><div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-public-functions">Public Functions</p>
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N10dispatcher8internal10MemoryPool10MemoryPoolENSt6size_tE">
+<span id="_CPPv3N10dispatcher8internal10MemoryPool10MemoryPoolENSt6size_tE"></span><span id="_CPPv2N10dispatcher8internal10MemoryPool10MemoryPoolENSt6size_tE"></span><span id="dispatcher::internal::MemoryPool::MemoryPool__std::s"></span><span class="target" id="classdispatcher_1_1internal_1_1MemoryPool_1a33d1250085a2b4e1303d51fd7aa648d8"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">MemoryPool</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">size_t</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">size</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N10dispatcher8internal10MemoryPool10MemoryPoolENSt6size_tE" title="Link to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N10dispatcher8internal10MemoryPoolD0Ev">
+<span id="_CPPv3N10dispatcher8internal10MemoryPoolD0Ev"></span><span id="_CPPv2N10dispatcher8internal10MemoryPoolD0Ev"></span><span id="dispatcher::internal::MemoryPool::~MemoryPool"></span><span class="target" id="classdispatcher_1_1internal_1_1MemoryPool_1a34090fe7b081f6fe2802e8e8e6310473"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">~MemoryPool</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N10dispatcher8internal10MemoryPoolD0Ev" title="Link to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N10dispatcher8internal10MemoryPool10MemoryPoolERK10MemoryPool">
+<span id="_CPPv3N10dispatcher8internal10MemoryPool10MemoryPoolERK10MemoryPool"></span><span id="_CPPv2N10dispatcher8internal10MemoryPool10MemoryPoolERK10MemoryPool"></span><span id="dispatcher::internal::MemoryPool::MemoryPool__MemoryPoolCR"></span><span class="target" id="classdispatcher_1_1internal_1_1MemoryPool_1a70a45d2208268ef6efdb4e93ad2e0a05"></span><span class="sig-name descname"><span class="n"><span class="pre">MemoryPool</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><a class="reference internal" href="#_CPPv4N10dispatcher8internal10MemoryPool10MemoryPoolERK10MemoryPool" title="dispatcher::internal::MemoryPool::MemoryPool"><span class="n"><span class="pre">MemoryPool</span></span></a><span class="p"><span class="pre">&amp;</span></span><span class="sig-paren">)</span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="k"><span class="pre">delete</span></span><a class="headerlink" href="#_CPPv4N10dispatcher8internal10MemoryPool10MemoryPoolERK10MemoryPool" title="Link to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N10dispatcher8internal10MemoryPool10MemoryPoolERR10MemoryPool">
+<span id="_CPPv3N10dispatcher8internal10MemoryPool10MemoryPoolERR10MemoryPool"></span><span id="_CPPv2N10dispatcher8internal10MemoryPool10MemoryPoolERR10MemoryPool"></span><span id="dispatcher::internal::MemoryPool::MemoryPool__MemoryPoolRR"></span><span class="target" id="classdispatcher_1_1internal_1_1MemoryPool_1ad2bd60f9198493e47a11df97d1988a0f"></span><span class="sig-name descname"><span class="n"><span class="pre">MemoryPool</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv4N10dispatcher8internal10MemoryPool10MemoryPoolERR10MemoryPool" title="dispatcher::internal::MemoryPool::MemoryPool"><span class="n"><span class="pre">MemoryPool</span></span></a><span class="p"><span class="pre">&amp;</span></span><span class="p"><span class="pre">&amp;</span></span><span class="sig-paren">)</span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="k"><span class="pre">delete</span></span><a class="headerlink" href="#_CPPv4N10dispatcher8internal10MemoryPool10MemoryPoolERR10MemoryPool" title="Link to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N10dispatcher8internal10MemoryPoolaSERK10MemoryPool">
+<span id="_CPPv3N10dispatcher8internal10MemoryPoolaSERK10MemoryPool"></span><span id="_CPPv2N10dispatcher8internal10MemoryPoolaSERK10MemoryPool"></span><span id="dispatcher::internal::MemoryPool::assign-operator__MemoryPoolCR"></span><span class="target" id="classdispatcher_1_1internal_1_1MemoryPool_1a2bcaa1226c837f731810f02a38a05f90"></span><a class="reference internal" href="#_CPPv4N10dispatcher8internal10MemoryPoolE" title="dispatcher::internal::MemoryPool"><span class="n"><span class="pre">MemoryPool</span></span></a><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="sig-name descname"><span class="k"><span class="pre">operator</span></span><span class="o"><span class="pre">=</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><a class="reference internal" href="#_CPPv4N10dispatcher8internal10MemoryPoolE" title="dispatcher::internal::MemoryPool"><span class="n"><span class="pre">MemoryPool</span></span></a><span class="p"><span class="pre">&amp;</span></span><span class="sig-paren">)</span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="k"><span class="pre">delete</span></span><a class="headerlink" href="#_CPPv4N10dispatcher8internal10MemoryPoolaSERK10MemoryPool" title="Link to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N10dispatcher8internal10MemoryPoolaSERR10MemoryPool">
+<span id="_CPPv3N10dispatcher8internal10MemoryPoolaSERR10MemoryPool"></span><span id="_CPPv2N10dispatcher8internal10MemoryPoolaSERR10MemoryPool"></span><span id="dispatcher::internal::MemoryPool::assign-operator__MemoryPoolRR"></span><span class="target" id="classdispatcher_1_1internal_1_1MemoryPool_1ab96ccdfedf157f6ad3d70124930e1745"></span><a class="reference internal" href="#_CPPv4N10dispatcher8internal10MemoryPoolE" title="dispatcher::internal::MemoryPool"><span class="n"><span class="pre">MemoryPool</span></span></a><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="sig-name descname"><span class="k"><span class="pre">operator</span></span><span class="o"><span class="pre">=</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv4N10dispatcher8internal10MemoryPoolE" title="dispatcher::internal::MemoryPool"><span class="n"><span class="pre">MemoryPool</span></span></a><span class="p"><span class="pre">&amp;</span></span><span class="p"><span class="pre">&amp;</span></span><span class="sig-paren">)</span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="k"><span class="pre">delete</span></span><a class="headerlink" href="#_CPPv4N10dispatcher8internal10MemoryPoolaSERR10MemoryPool" title="Link to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N10dispatcher8internal10MemoryPool8allocateEv">
+<span id="_CPPv3N10dispatcher8internal10MemoryPool8allocateEv"></span><span id="_CPPv2N10dispatcher8internal10MemoryPool8allocateEv"></span><span id="dispatcher::internal::MemoryPool::allocate"></span><span class="target" id="classdispatcher_1_1internal_1_1MemoryPool_1acde0a357c2ec6f94ced9fa59dd1e063b"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">allocate</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N10dispatcher8internal10MemoryPool8allocateEv" title="Link to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N10dispatcher8internal10MemoryPool4freeEPv">
+<span id="_CPPv3N10dispatcher8internal10MemoryPool4freeEPv"></span><span id="_CPPv2N10dispatcher8internal10MemoryPool4freeEPv"></span><span id="dispatcher::internal::MemoryPool::free__voidP"></span><span class="target" id="classdispatcher_1_1internal_1_1MemoryPool_1ace0e4c434741099947650ab0957ebe6c"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">free</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">memory_block</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N10dispatcher8internal10MemoryPool4freeEPv" title="Link to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N10dispatcher8internal10MemoryPool8get_sizeEv">
+<span id="_CPPv3N10dispatcher8internal10MemoryPool8get_sizeEv"></span><span id="_CPPv2N10dispatcher8internal10MemoryPool8get_sizeEv"></span><span id="dispatcher::internal::MemoryPool::get_size"></span><span class="target" id="classdispatcher_1_1internal_1_1MemoryPool_1aba8b96e976e4a1fe42a17a6e02bd91ed"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">size_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">get_size</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N10dispatcher8internal10MemoryPool8get_sizeEv" title="Link to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+</div>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-private-members">Private Members</p>
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N10dispatcher8internal10MemoryPool5size_E">
+<span id="_CPPv3N10dispatcher8internal10MemoryPool5size_E"></span><span id="_CPPv2N10dispatcher8internal10MemoryPool5size_E"></span><span id="dispatcher::internal::MemoryPool::size___std::s"></span><span class="target" id="classdispatcher_1_1internal_1_1MemoryPool_1a7f5d614183c9fb0b68f88b3e756071be"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">size_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">size_</span></span></span><a class="headerlink" href="#_CPPv4N10dispatcher8internal10MemoryPool5size_E" title="Link to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N10dispatcher8internal10MemoryPool17allocated_blocks_E">
+<span id="_CPPv3N10dispatcher8internal10MemoryPool17allocated_blocks_E"></span><span id="_CPPv2N10dispatcher8internal10MemoryPool17allocated_blocks_E"></span><span id="dispatcher::internal::MemoryPool::allocated_blocks___std::queue:voidP:"></span><span class="target" id="classdispatcher_1_1internal_1_1MemoryPool_1a097cb290ca92dca08c32d57d5f8584ad"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">queue</span></span><span class="p"><span class="pre">&lt;</span></span><span class="kt"><span class="pre">void</span></span><span class="p"><span class="pre">*</span></span><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">allocated_blocks_</span></span></span><a class="headerlink" href="#_CPPv4N10dispatcher8internal10MemoryPool17allocated_blocks_E" title="Link to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N10dispatcher8internal10MemoryPool2m_E">
+<span id="_CPPv3N10dispatcher8internal10MemoryPool2m_E"></span><span id="_CPPv2N10dispatcher8internal10MemoryPool2m_E"></span><span id="dispatcher::internal::MemoryPool::m___std::mutex"></span><span class="target" id="classdispatcher_1_1internal_1_1MemoryPool_1a39289719144d51fdf972e6da92544e5b"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">mutex</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_</span></span></span><a class="headerlink" href="#_CPPv4N10dispatcher8internal10MemoryPool2m_E" title="Link to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+</div>
+</dd></dl>
+
+<dl class="cpp struct">
+<dt class="sig sig-object cpp" id="_CPPv4N10dispatcher8internal13MockableClockE">
+<span id="_CPPv3N10dispatcher8internal13MockableClockE"></span><span id="_CPPv2N10dispatcher8internal13MockableClockE"></span><span id="dispatcher::internal::MockableClock"></span><span class="target" id="structdispatcher_1_1internal_1_1MockableClock"></span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">MockableClock</span></span></span><a class="headerlink" href="#_CPPv4N10dispatcher8internal13MockableClockE" title="Link to this definition">¶</a><br /></dt>
+<dd><div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-public-types">Public Types</p>
+<dl class="cpp type">
+<dt class="sig sig-object cpp" id="_CPPv4N10dispatcher8internal13MockableClock13source_traitsE">
+<span id="_CPPv3N10dispatcher8internal13MockableClock13source_traitsE"></span><span id="_CPPv2N10dispatcher8internal13MockableClock13source_traitsE"></span><span id="dispatcher::internal::MockableClock::source_traits"></span><span class="target" id="structdispatcher_1_1internal_1_1MockableClock_1a4d04055dbb5e03e3fc4120716c4b3761"></span><span class="k"><span class="pre">typedef</span></span><span class="w"> </span><span class="n"><span class="pre">boost</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">asio</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">deadline_timer</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">traits_type</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">source_traits</span></span></span><a class="headerlink" href="#_CPPv4N10dispatcher8internal13MockableClock13source_traitsE" title="Link to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp type">
+<dt class="sig sig-object cpp" id="_CPPv4N10dispatcher8internal13MockableClock9time_typeE">
+<span id="_CPPv3N10dispatcher8internal13MockableClock9time_typeE"></span><span id="_CPPv2N10dispatcher8internal13MockableClock9time_typeE"></span><span id="dispatcher::internal::MockableClock::time_type"></span><span class="target" id="structdispatcher_1_1internal_1_1MockableClock_1a96ff47160ef10589d41af1f5b82b3220"></span><span class="k"><span class="pre">typedef</span></span><span class="w"> </span><a class="reference internal" href="#_CPPv4N10dispatcher8internal13MockableClock13source_traitsE" title="dispatcher::internal::MockableClock::source_traits"><span class="n"><span class="pre">source_traits</span></span></a><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">time_type</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">time_type</span></span></span><a class="headerlink" href="#_CPPv4N10dispatcher8internal13MockableClock9time_typeE" title="Link to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp type">
+<dt class="sig sig-object cpp" id="_CPPv4N10dispatcher8internal13MockableClock13duration_typeE">
+<span id="_CPPv3N10dispatcher8internal13MockableClock13duration_typeE"></span><span id="_CPPv2N10dispatcher8internal13MockableClock13duration_typeE"></span><span id="dispatcher::internal::MockableClock::duration_type"></span><span class="target" id="structdispatcher_1_1internal_1_1MockableClock_1a31d21a77dd4d521aa24838fe03bfe213"></span><span class="k"><span class="pre">typedef</span></span><span class="w"> </span><a class="reference internal" href="#_CPPv4N10dispatcher8internal13MockableClock13source_traitsE" title="dispatcher::internal::MockableClock::source_traits"><span class="n"><span class="pre">source_traits</span></span></a><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">duration_type</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">duration_type</span></span></span><a class="headerlink" href="#_CPPv4N10dispatcher8internal13MockableClock13duration_typeE" title="Link to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+</div>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-public-static-functions">Public Static Functions</p>
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N10dispatcher8internal13MockableClock3nowEv">
+<span id="_CPPv3N10dispatcher8internal13MockableClock3nowEv"></span><span id="_CPPv2N10dispatcher8internal13MockableClock3nowEv"></span><span id="dispatcher::internal::MockableClock::now"></span><span class="target" id="structdispatcher_1_1internal_1_1MockableClock_1ada958b9d4b7a619cd41d09d862dd2269"></span><span class="k"><span class="pre">static</span></span><span class="w"> </span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><a class="reference internal" href="#_CPPv4N10dispatcher8internal13MockableClock9time_typeE" title="dispatcher::internal::MockableClock::time_type"><span class="n"><span class="pre">time_type</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">now</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N10dispatcher8internal13MockableClock3nowEv" title="Link to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N10dispatcher8internal13MockableClock7set_nowE9time_type">
+<span id="_CPPv3N10dispatcher8internal13MockableClock7set_nowE9time_type"></span><span id="_CPPv2N10dispatcher8internal13MockableClock7set_nowE9time_type"></span><span id="dispatcher::internal::MockableClock::set_now__time_type"></span><span class="target" id="structdispatcher_1_1internal_1_1MockableClock_1a8167e923e9ce8564cd5f66ad30df2d82"></span><span class="k"><span class="pre">static</span></span><span class="w"> </span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">set_now</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv4N10dispatcher8internal13MockableClock9time_typeE" title="dispatcher::internal::MockableClock::time_type"><span class="n"><span class="pre">time_type</span></span></a><span class="w"> </span><span class="n sig-param"><span class="pre">t</span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><a class="reference internal" href="#_CPPv4N10dispatcher8internal13MockableClock15chrono_to_ptimeERKNSt6chrono12system_clock10time_pointE" title="dispatcher::internal::MockableClock::chrono_to_ptime"><span class="n"><span class="pre">chrono_to_ptime</span></span></a><span class="p"><span class="pre">(</span></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">chrono</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">system_clock</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">now</span></span><span class="p"><span class="pre">(</span></span><span class="p"><span class="pre">)</span></span><span class="p"><span class="pre">)</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N10dispatcher8internal13MockableClock7set_nowE9time_type" title="Link to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4I0EN10dispatcher8internal13MockableClock12advance_timeEvRR8Duration">
+<span id="_CPPv3I0EN10dispatcher8internal13MockableClock12advance_timeERR8Duration"></span><span id="_CPPv2I0EN10dispatcher8internal13MockableClock12advance_timeERR8Duration"></span><span class="k"><span class="pre">template</span></span><span class="p"><span class="pre">&lt;</span></span><span class="k"><span class="pre">typename</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">Duration</span></span></span><span class="p"><span class="pre">&gt;</span></span><br /><span class="target" id="structdispatcher_1_1internal_1_1MockableClock_1a776dc4ea2129863b60a2b616b1a61e72"></span><span class="k"><span class="pre">static</span></span><span class="w"> </span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">advance_time</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv4I0EN10dispatcher8internal13MockableClock12advance_timeEvRR8Duration" title="dispatcher::internal::MockableClock::advance_time::Duration"><span class="n"><span class="pre">Duration</span></span></a><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="p"><span class="pre">&amp;</span></span><span class="n sig-param"><span class="pre">d</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4I0EN10dispatcher8internal13MockableClock12advance_timeEvRR8Duration" title="Link to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N10dispatcher8internal13MockableClock3addE9time_type13duration_type">
+<span id="_CPPv3N10dispatcher8internal13MockableClock3addE9time_type13duration_type"></span><span id="_CPPv2N10dispatcher8internal13MockableClock3addE9time_type13duration_type"></span><span id="dispatcher::internal::MockableClock::add__time_type.duration_type"></span><span class="target" id="structdispatcher_1_1internal_1_1MockableClock_1a958bb3dfbca68bc3b81a97c6ee29733a"></span><span class="k"><span class="pre">static</span></span><span class="w"> </span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><a class="reference internal" href="#_CPPv4N10dispatcher8internal13MockableClock9time_typeE" title="dispatcher::internal::MockableClock::time_type"><span class="n"><span class="pre">time_type</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">add</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv4N10dispatcher8internal13MockableClock9time_typeE" title="dispatcher::internal::MockableClock::time_type"><span class="n"><span class="pre">time_type</span></span></a><span class="w"> </span><span class="n sig-param"><span class="pre">t</span></span>, <a class="reference internal" href="#_CPPv4N10dispatcher8internal13MockableClock13duration_typeE" title="dispatcher::internal::MockableClock::duration_type"><span class="n"><span class="pre">duration_type</span></span></a><span class="w"> </span><span class="n sig-param"><span class="pre">d</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N10dispatcher8internal13MockableClock3addE9time_type13duration_type" title="Link to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N10dispatcher8internal13MockableClock8subtractE9time_type9time_type">
+<span id="_CPPv3N10dispatcher8internal13MockableClock8subtractE9time_type9time_type"></span><span id="_CPPv2N10dispatcher8internal13MockableClock8subtractE9time_type9time_type"></span><span id="dispatcher::internal::MockableClock::subtract__time_type.time_type"></span><span class="target" id="structdispatcher_1_1internal_1_1MockableClock_1a5e97d01ebd42865b32ce3654315fb295"></span><span class="k"><span class="pre">static</span></span><span class="w"> </span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><a class="reference internal" href="#_CPPv4N10dispatcher8internal13MockableClock13duration_typeE" title="dispatcher::internal::MockableClock::duration_type"><span class="n"><span class="pre">duration_type</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">subtract</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv4N10dispatcher8internal13MockableClock9time_typeE" title="dispatcher::internal::MockableClock::time_type"><span class="n"><span class="pre">time_type</span></span></a><span class="w"> </span><span class="n sig-param"><span class="pre">t1</span></span>, <a class="reference internal" href="#_CPPv4N10dispatcher8internal13MockableClock9time_typeE" title="dispatcher::internal::MockableClock::time_type"><span class="n"><span class="pre">time_type</span></span></a><span class="w"> </span><span class="n sig-param"><span class="pre">t2</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N10dispatcher8internal13MockableClock8subtractE9time_type9time_type" title="Link to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N10dispatcher8internal13MockableClock9less_thanE9time_type9time_type">
+<span id="_CPPv3N10dispatcher8internal13MockableClock9less_thanE9time_type9time_type"></span><span id="_CPPv2N10dispatcher8internal13MockableClock9less_thanE9time_type9time_type"></span><span id="dispatcher::internal::MockableClock::less_than__time_type.time_type"></span><span class="target" id="structdispatcher_1_1internal_1_1MockableClock_1a6a51cda1a41ca93d988480c87ab45ee1"></span><span class="k"><span class="pre">static</span></span><span class="w"> </span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">less_than</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv4N10dispatcher8internal13MockableClock9time_typeE" title="dispatcher::internal::MockableClock::time_type"><span class="n"><span class="pre">time_type</span></span></a><span class="w"> </span><span class="n sig-param"><span class="pre">t1</span></span>, <a class="reference internal" href="#_CPPv4N10dispatcher8internal13MockableClock9time_typeE" title="dispatcher::internal::MockableClock::time_type"><span class="n"><span class="pre">time_type</span></span></a><span class="w"> </span><span class="n sig-param"><span class="pre">t2</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N10dispatcher8internal13MockableClock9less_thanE9time_type9time_type" title="Link to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N10dispatcher8internal13MockableClock17to_posix_durationE13duration_type">
+<span id="_CPPv3N10dispatcher8internal13MockableClock17to_posix_durationE13duration_type"></span><span id="_CPPv2N10dispatcher8internal13MockableClock17to_posix_durationE13duration_type"></span><span id="dispatcher::internal::MockableClock::to_posix_duration__duration_type"></span><span class="target" id="structdispatcher_1_1internal_1_1MockableClock_1a1e89272a3872c5acb57dae2aea576cbc"></span><span class="k"><span class="pre">static</span></span><span class="w"> </span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="n"><span class="pre">boost</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">posix_time</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">time_duration</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">to_posix_duration</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv4N10dispatcher8internal13MockableClock13duration_typeE" title="dispatcher::internal::MockableClock::duration_type"><span class="n"><span class="pre">duration_type</span></span></a><span class="w"> </span><span class="n sig-param"><span class="pre">d</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N10dispatcher8internal13MockableClock17to_posix_durationE13duration_type" title="Link to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N10dispatcher8internal13MockableClock15chrono_to_ptimeERKNSt6chrono12system_clock10time_pointE">
+<span id="_CPPv3N10dispatcher8internal13MockableClock15chrono_to_ptimeERKNSt6chrono12system_clock10time_pointE"></span><span id="_CPPv2N10dispatcher8internal13MockableClock15chrono_to_ptimeERKNSt6chrono12system_clock10time_pointE"></span><span id="dispatcher::internal::MockableClock::chrono_to_ptime__std::chrono::system_clock::time_pointCR"></span><span class="target" id="structdispatcher_1_1internal_1_1MockableClock_1a500335bcb67d35cd20966c3d0528a46c"></span><span class="k"><span class="pre">static</span></span><span class="w"> </span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="n"><span class="pre">boost</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">posix_time</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">ptime</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">chrono_to_ptime</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">chrono</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">system_clock</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">time_point</span></span><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="n sig-param"><span class="pre">tp</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N10dispatcher8internal13MockableClock15chrono_to_ptimeERKNSt6chrono12system_clock10time_pointE" title="Link to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+</div>
+</dd></dl>
+
+<dl class="cpp struct">
+<dt class="sig sig-object cpp" id="_CPPv4I0_bEN10dispatcher8internal19return_t_or_defaultE">
+<span id="_CPPv3I0_bEN10dispatcher8internal19return_t_or_defaultE"></span><span id="_CPPv2I0_bEN10dispatcher8internal19return_t_or_defaultE"></span><span class="k"><span class="pre">template</span></span><span class="p"><span class="pre">&lt;</span></span><span class="k"><span class="pre">typename</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">FuncSignature</span></span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">HasReturnT</span></span></span><span class="p"><span class="pre">&gt;</span></span><br /><span class="target" id="structdispatcher_1_1internal_1_1return__t__or__default"></span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">return_t_or_default</span></span></span><a class="headerlink" href="#_CPPv4I0_bEN10dispatcher8internal19return_t_or_defaultE" title="Link to this definition">¶</a><br /></dt>
+<dd><div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-public-types">Public Types</p>
+<dl class="cpp type">
+<dt class="sig sig-object cpp" id="_CPPv4N10dispatcher8internal19return_t_or_default4typeE">
+<span id="_CPPv3N10dispatcher8internal19return_t_or_default4typeE"></span><span id="_CPPv2N10dispatcher8internal19return_t_or_default4typeE"></span><span class="target" id="structdispatcher_1_1internal_1_1return__t__or__default_1aac16a8a74ee7a20d724ab967c36aff7f"></span><span class="k"><span class="pre">using</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">type</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="kt"><span class="pre">void</span></span><a class="headerlink" href="#_CPPv4N10dispatcher8internal19return_t_or_default4typeE" title="Link to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+</div>
+</dd></dl>
+
+<dl class="cpp struct">
+<dt class="sig sig-object cpp" id="_CPPv4I0EN10dispatcher8internal19return_t_or_defaultI13FuncSignatureXL1EEEE">
+<span id="_CPPv3I0EN10dispatcher8internal19return_t_or_defaultI13FuncSignatureXL1EEEE"></span><span id="_CPPv2I0EN10dispatcher8internal19return_t_or_defaultI13FuncSignatureXtrueEEE"></span><span class="k"><span class="pre">template</span></span><span class="p"><span class="pre">&lt;</span></span><span class="k"><span class="pre">typename</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">FuncSignature</span></span></span><span class="p"><span class="pre">&gt;</span></span><br /><span class="target" id="structdispatcher_1_1internal_1_1return__t__or__default_3_01FuncSignature_00_01true_01_4"></span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">return_t_or_default</span></span></span><span class="p"><span class="pre">&lt;</span></span><a class="reference internal" href="#_CPPv4I0EN10dispatcher8internal19return_t_or_defaultI13FuncSignatureXL1EEEE" title="dispatcher::internal::return_t_or_default&lt;FuncSignature, true&gt;::FuncSignature"><span class="n"><span class="pre">FuncSignature</span></span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="k"><span class="pre">true</span></span><span class="p"><span class="pre">&gt;</span></span><a class="headerlink" href="#_CPPv4I0EN10dispatcher8internal19return_t_or_defaultI13FuncSignatureXL1EEEE" title="Link to this definition">¶</a><br /></dt>
+<dd><div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-public-types">Public Types</p>
+<dl class="cpp type">
+<dt class="sig sig-object cpp" id="_CPPv4N10dispatcher8internal19return_t_or_defaultI13FuncSignatureXL1EEE4typeE">
+<span id="_CPPv3N10dispatcher8internal19return_t_or_defaultI13FuncSignatureXL1EEE4typeE"></span><span id="_CPPv2N10dispatcher8internal19return_t_or_defaultI13FuncSignatureXtrueEE4typeE"></span><span class="target" id="structdispatcher_1_1internal_1_1return__t__or__default_3_01FuncSignature_00_01true_01_4_1af1f64153a698ed7399e039b158e16d95"></span><span class="k"><span class="pre">using</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">type</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="k"><span class="pre">typename</span></span><span class="w"> </span><a class="reference internal" href="#_CPPv4I0EN10dispatcher8internal19return_t_or_defaultI13FuncSignatureXL1EEEE" title="dispatcher::internal::return_t_or_default&lt;FuncSignature, true&gt;::FuncSignature"><span class="n"><span class="pre">FuncSignature</span></span></a><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">return_t</span></span><a class="headerlink" href="#_CPPv4N10dispatcher8internal19return_t_or_defaultI13FuncSignatureXL1EEE4typeE" title="Link to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+</div>
+</dd></dl>
+
+<dl class="cpp struct">
+<dt class="sig sig-object cpp" id="_CPPv4I0DpEN10dispatcher8internal22ReturnTypeFromCallableI8CallableNSt5tupleIDp4ArgsEEEE">
+<span id="_CPPv3I0DpEN10dispatcher8internal22ReturnTypeFromCallableI8CallableNSt5tupleIDp4ArgsEEEE"></span><span id="_CPPv2I0DpEN10dispatcher8internal22ReturnTypeFromCallableI8CallableNSt5tupleIDp4ArgsEEEE"></span><span class="k"><span class="pre">template</span></span><span class="p"><span class="pre">&lt;</span></span><span class="k"><span class="pre">typename</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">Callable</span></span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="k"><span class="pre">typename</span></span><span class="w"> </span><span class="p"><span class="pre">...</span></span><span class="sig-name descname"><span class="n"><span class="pre">Args</span></span></span><span class="p"><span class="pre">&gt;</span></span><br /><span class="target" id="structdispatcher_1_1internal_1_1ReturnTypeFromCallable_3_01Callable_00_01std_1_1tuple_3_01Args_8_8_8_01_4_01_4"></span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">ReturnTypeFromCallable</span></span></span><span class="p"><span class="pre">&lt;</span></span><a class="reference internal" href="#_CPPv4I0DpEN10dispatcher8internal22ReturnTypeFromCallableI8CallableNSt5tupleIDp4ArgsEEEE" title="dispatcher::internal::ReturnTypeFromCallable&lt;Callable, std::tuple&lt;Args...&gt;&gt;::Callable"><span class="n"><span class="pre">Callable</span></span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">tuple</span></span><span class="p"><span class="pre">&lt;</span></span><a class="reference internal" href="#_CPPv4I0DpEN10dispatcher8internal22ReturnTypeFromCallableI8CallableNSt5tupleIDp4ArgsEEEE" title="dispatcher::internal::ReturnTypeFromCallable&lt;Callable, std::tuple&lt;Args...&gt;&gt;::Args"><span class="n"><span class="pre">Args</span></span></a><span class="p"><span class="pre">...</span></span><span class="p"><span class="pre">&gt;</span></span><span class="p"><span class="pre">&gt;</span></span><a class="headerlink" href="#_CPPv4I0DpEN10dispatcher8internal22ReturnTypeFromCallableI8CallableNSt5tupleIDp4ArgsEEEE" title="Link to this definition">¶</a><br /></dt>
+<dd><div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-public-types">Public Types</p>
+<dl class="cpp type">
+<dt class="sig sig-object cpp" id="_CPPv4N10dispatcher8internal22ReturnTypeFromCallableI8CallableNSt5tupleIDp4ArgsEEE4typeE">
+<span id="_CPPv3N10dispatcher8internal22ReturnTypeFromCallableI8CallableNSt5tupleIDp4ArgsEEE4typeE"></span><span id="_CPPv2N10dispatcher8internal22ReturnTypeFromCallableI8CallableNSt5tupleIDp4ArgsEEE4typeE"></span><span class="target" id="structdispatcher_1_1internal_1_1ReturnTypeFromCallable_3_01Callable_00_01std_1_1tuple_3_01Args_8_8_8_01_4_01_4_1a00ea5ed989047fb3b58ed74f8d1ef1dd"></span><span class="k"><span class="pre">using</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">type</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="k"><span class="pre">typename</span></span><span class="w"> </span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">result_of</span></span><span class="p"><span class="pre">&lt;</span></span><a class="reference internal" href="#_CPPv4I0DpEN10dispatcher8internal22ReturnTypeFromCallableI8CallableNSt5tupleIDp4ArgsEEEE" title="dispatcher::internal::ReturnTypeFromCallable&lt;Callable, std::tuple&lt;Args...&gt;&gt;::Callable"><span class="n"><span class="pre">Callable</span></span></a><span class="p"><span class="pre">(</span></span><a class="reference internal" href="#_CPPv4I0DpEN10dispatcher8internal22ReturnTypeFromCallableI8CallableNSt5tupleIDp4ArgsEEEE" title="dispatcher::internal::ReturnTypeFromCallable&lt;Callable, std::tuple&lt;Args...&gt;&gt;::Args"><span class="n"><span class="pre">Args</span></span></a><span class="p"><span class="pre">...</span></span><span class="p"><span class="pre">)</span></span><span class="p"><span class="pre">&gt;</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">type</span></span><a class="headerlink" href="#_CPPv4N10dispatcher8internal22ReturnTypeFromCallableI8CallableNSt5tupleIDp4ArgsEEE4typeE" title="Link to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+</div>
+</dd></dl>
+
+<dl class="cpp struct">
+<dt class="sig sig-object cpp" id="_CPPv4IDpEN10dispatcher8internal15SignalFromTupleINSt5tupleIDp4ArgsEEEE">
+<span id="_CPPv3IDpEN10dispatcher8internal15SignalFromTupleINSt5tupleIDp4ArgsEEEE"></span><span id="_CPPv2IDpEN10dispatcher8internal15SignalFromTupleINSt5tupleIDp4ArgsEEEE"></span><span class="k"><span class="pre">template</span></span><span class="p"><span class="pre">&lt;</span></span><span class="k"><span class="pre">typename</span></span><span class="w"> </span><span class="p"><span class="pre">...</span></span><span class="sig-name descname"><span class="n"><span class="pre">Args</span></span></span><span class="p"><span class="pre">&gt;</span></span><br /><span class="target" id="structdispatcher_1_1internal_1_1SignalFromTuple_3_01std_1_1tuple_3_01Args_8_8_8_01_4_01_4"></span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">SignalFromTuple</span></span></span><span class="p"><span class="pre">&lt;</span></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">tuple</span></span><span class="p"><span class="pre">&lt;</span></span><a class="reference internal" href="#_CPPv4IDpEN10dispatcher8internal15SignalFromTupleINSt5tupleIDp4ArgsEEEE" title="dispatcher::internal::SignalFromTuple&lt;std::tuple&lt;Args...&gt;&gt;::Args"><span class="n"><span class="pre">Args</span></span></a><span class="p"><span class="pre">...</span></span><span class="p"><span class="pre">&gt;</span></span><span class="p"><span class="pre">&gt;</span></span><a class="headerlink" href="#_CPPv4IDpEN10dispatcher8internal15SignalFromTupleINSt5tupleIDp4ArgsEEEE" title="Link to this definition">¶</a><br /></dt>
+<dd><div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-public-types">Public Types</p>
+<dl class="cpp type">
+<dt class="sig sig-object cpp" id="_CPPv4N10dispatcher8internal15SignalFromTupleINSt5tupleIDp4ArgsEEE4typeE">
+<span id="_CPPv3N10dispatcher8internal15SignalFromTupleINSt5tupleIDp4ArgsEEE4typeE"></span><span id="_CPPv2N10dispatcher8internal15SignalFromTupleINSt5tupleIDp4ArgsEEE4typeE"></span><span class="target" id="structdispatcher_1_1internal_1_1SignalFromTuple_3_01std_1_1tuple_3_01Args_8_8_8_01_4_01_4_1ac4555d1ce5cf158c76f6942e580d8507"></span><span class="k"><span class="pre">using</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">type</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="n"><span class="pre">boost</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">signals2</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">signal</span></span><span class="p"><span class="pre">&lt;</span></span><span class="kt"><span class="pre">void</span></span><span class="p"><span class="pre">(</span></span><a class="reference internal" href="#_CPPv4IDpEN10dispatcher8internal15SignalFromTupleINSt5tupleIDp4ArgsEEEE" title="dispatcher::internal::SignalFromTuple&lt;std::tuple&lt;Args...&gt;&gt;::Args"><span class="n"><span class="pre">Args</span></span></a><span class="p"><span class="pre">...</span></span><span class="p"><span class="pre">)</span></span><span class="p"><span class="pre">&gt;</span></span><a class="headerlink" href="#_CPPv4N10dispatcher8internal15SignalFromTupleINSt5tupleIDp4ArgsEEE4typeE" title="Link to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+</div>
+</dd></dl>
+
+</dd></dl>
+
+</dd></dl>
+
+</section>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="#">Function Dispatcher</a></h1>
+
+
+
+
+
+
+
+
+
+<search id="searchbox" style="display: none" role="search">
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" placeholder="Search"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script><h3>Navigation</h3>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="#">Documentation overview</a><ul>
+  </ul></li>
+</ul>
+</div>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &#169;2025, Bastien Souchu.
+      
+      |
+      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 8.2.3</a>
+      &amp; <a href="https://alabaster.readthedocs.io">Alabaster 1.0.0</a>
+      
+      |
+      <a href="_sources/index.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>
