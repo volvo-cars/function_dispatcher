@@ -22,7 +22,8 @@ void printTime(std::string message, int i)
     // Get current time
     auto now = std::chrono::system_clock::now();
     auto now_time_t = std::chrono::system_clock::to_time_t(now);
-    auto now_tm = *std::localtime(&now_time_t);
+    struct tm now_tm;
+    localtime_r(&now_time_t, &now_tm);
 
     // Extract milliseconds
     auto now_ms = std::chrono::duration_cast<std::chrono::milliseconds>(now.time_since_epoch()) % 1000;
