@@ -1,0 +1,73 @@
+name: bd-action
+run-name: Blackduck-scan-${{github.actor}}-${{github.sha}}
+on:
+  pull_request:
+    branches:
+      - master
+  push:
+    branches:
+      - "master"
+env: 
+  BLACKDUCK_URL: https://apus-blackduck.volvocars.biz
+  BLACKDUCK_PROJECT_NAME: function-dispatcher               
+  BLACKDUCK_PROJECT_VERSION:  0.1.0                       
+  BLACKDUCK_ACCESS_TOKEN: ${{secrets.BLACKDUCK_API_TOKEN}} 
+
+
+jobs:
+  BlackDuckScan: 
+    runs-on: [ubuntu-latest]
+    steps:
+      - name: Checkout Source
+        uses: actions/checkout@v3
+      - name: Black Duck Full Scan
+        run: |
+          bash <(curl -s -L https://detect.synopsys.com/detect8.sh) \
+          --blackduck.url=$BLACKDUCK_URL \
+          --blackduck.api.token=$BLACKDUCK_ACCESS_TOKEN \
+          --blackduck.trust.cert=true \
+          --detect.project.name=$BLACKDUCK_PROJECT_NAME \
+          --detect.project.version.name=$BLACKDUCK_PROJECT_VERSION  \
+          --detect.accuracy.required=NONE \
+          --detect.project.version.distribution=INTERNAL
+ 
+  GetSBOMSPDX23:
+    needs: BlackDuckScan
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout bd-export-SBOM Repository 
+        uses: actions/checkout@v4 
+        with:
+          repository: 'volvo-cars/bd-export-SBOM'
+          token: ${{secrets.GH_TOKEN}}
+      - name: Setup Python 
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10' 
+      - name: Get SBOM SPDX2.3
+        run: |
+          pip install -r requirements.txt
+          python getSBOMfromBD.py --url="https://apus-blackduck.volvocars.biz" --token=${{secrets.BLACKDUCK_API_TOKEN}} --project=$BLACKDUCK_PROJECT_NAME --version=$BLACKDUCK_PROJECT_VERSION
+          python getNOTICE.py --url="https://apus-blackduck.volvocars.biz"  --token=${{secrets.BLACKDUCK_API_TOKEN}} --project=$BLACKDUCK_PROJECT_NAME --version=$BLACKDUCK_PROJECT_VERSION
+      - name: Store Artifact 
+        uses: actions/upload-artifact@v3
+        with:
+          name: SBOM
+          path: OSS_SBOM_* 
+          retention-days: 3
+      - name: Store Artifact 
+        uses: actions/upload-artifact@v3
+        with:
+          name: NOTICE
+          path: OSS_NOTICE_*
+          retention-days: 3
+      - name: Setup to JFrog Artifactory
+        uses: jfrog/setup-jfrog-cli@v3
+        env:
+          JF_URL: ${{secrets.JF_URL}}              
+          JF_USER: ${{ secrets.JF_USER }}          
+          JF_PASSWORD: ${{ secrets.JF_PASSWORD }}   
+      - name: Store in Artifactory
+        run: |
+          jf rt u "OSS_SBOM_*.json" ospotest/ospo-sample-app/  # change path for your setup, it is folder where artifact are stored
+          jf rt u "OSS_NOTICE_*.txt" ospotest/ospo-sample-app/  # change path for your setup, it is folder where artifact are stored
