@@ -22,7 +22,7 @@ jobs:
         uses: actions/checkout@v4
       - name: Black Duck Full Scan
         run: |
-          bash <(curl -s -L https://detect.blackduck.com/detect9.sh)) \
+          bash <(curl -s -L https://detect.blackduck.com/detect9.sh) \
           --blackduck.url=$BLACKDUCK_URL \
           --blackduck.api.token=$BLACKDUCK_ACCESS_TOKEN \
           --blackduck.trust.cert=true \
