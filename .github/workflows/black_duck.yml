@@ -1,9 +1,6 @@
 name: bd-action
 run-name: Blackduck-scan-${{github.actor}}-${{github.sha}}
 on:
-  pull_request:
-    branches:
-      - master
   push:
     branches:
       - "master"
