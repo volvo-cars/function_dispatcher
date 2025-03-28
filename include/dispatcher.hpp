@@ -252,22 +252,8 @@ class EventLoop {
     void Post(T &&task)
     {
         boost::asio::post(io_context_, [this, task = std::forward<T>(task)]() mutable {
-            boost::fibers::fiber(
-                boost::fibers::launch::dispatch, std::allocator_arg,
-                /**
-                 * @brief Call a function by its signature with the provided arguments.
-                 *
-                 * This function invokes the callable attached to the specified function signature with the given
-                 * arguments. The arguments must match the types defined in the function signature.
-                 *
-                 * @tparam FuncSignature The function signature to call.
-                 * @tparam Args The types of the arguments to pass to the callable.
-                 * @param args The arguments to pass to the callable.
-                 * @return The return value of the callable.
-                 *
-                 * @throws NoHandler<FuncSignature> If no callable is attached to the function signature.
-                 */
-                CustomStackAllocator{&memory_pool_}, std::forward<T>(task))
+            boost::fibers::fiber(boost::fibers::launch::dispatch, std::allocator_arg,
+                                 CustomStackAllocator{&memory_pool_}, std::forward<T>(task))
                 .detach();
         });
     }
