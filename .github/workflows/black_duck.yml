@@ -28,7 +28,7 @@ jobs:
           --blackduck.trust.cert=true \
           --detect.project.name=$BLACKDUCK_PROJECT_NAME \
           --detect.project.version.name=$BLACKDUCK_PROJECT_VERSION  \
-          --detect.source.path=./include \
+          --detect.source.path=. \
           --detect.accuracy.required=NONE \
           --detect.project.version.distribution=INTERNAL
  
