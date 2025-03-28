@@ -69,5 +69,5 @@ jobs:
           JF_PASSWORD: ${{ secrets.JF_PASSWORD }}   
       - name: Store in Artifactory
         run: |
-          jf rt u "OSS_SBOM_*.json" ospotest/ospo-sample-app/  # change path for your setup, it is folder where artifact are stored
-          jf rt u "OSS_NOTICE_*.txt" ospotest/ospo-sample-app/  # change path for your setup, it is folder where artifact are stored
+          jf rt u "OSS_SBOM_*.json" function_dispatcher
+          jf rt u "OSS_NOTICE_*.txt"  function_dispatcher
