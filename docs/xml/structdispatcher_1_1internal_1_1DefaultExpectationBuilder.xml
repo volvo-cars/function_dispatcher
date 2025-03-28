@@ -1,0 +1,77 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.1" xml:lang="en-US">
+  <compounddef id="structdispatcher_1_1internal_1_1DefaultExpectationBuilder" kind="struct" language="C++" prot="public">
+    <compoundname>dispatcher::internal::DefaultExpectationBuilder</compoundname>
+    <templateparamlist>
+      <param>
+        <type>typename FuncSignature</type>
+      </param>
+    </templateparamlist>
+      <sectiondef kind="public-attrib">
+      <memberdef kind="variable" id="structdispatcher_1_1internal_1_1DefaultExpectationBuilder_1a29f3a7f02bc5786b0881154edae56de9" prot="public" static="no" mutable="no">
+        <type>ExpecterContainer *</type>
+        <definition>ExpecterContainer* dispatcher::internal::DefaultExpectationBuilder&lt; FuncSignature &gt;::expecter_container_</definition>
+        <argsstring></argsstring>
+        <name>expecter_container_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/dispatcher_test.hpp" line="459" column="23" bodyfile="include/dispatcher_test.hpp" bodystart="459" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="structdispatcher_1_1internal_1_1DefaultExpectationBuilder_1aae3ea8da464444c86f415997f63ea2fd" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>dispatcher::internal::DefaultExpectationBuilder&lt; FuncSignature &gt;::DefaultExpectationBuilder</definition>
+        <argsstring>(ExpecterContainer *expected_container)</argsstring>
+        <name>DefaultExpectationBuilder</name>
+        <param>
+          <type>ExpecterContainer *</type>
+          <declname>expected_container</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/dispatcher_test.hpp" line="448" column="5" bodyfile="include/dispatcher_test.hpp" bodystart="448" bodyend="453"/>
+      </memberdef>
+      <memberdef kind="function" id="structdispatcher_1_1internal_1_1DefaultExpectationBuilder_1ae43baaac7e96163f21f5d16aff52d1ad" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename Callback</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void dispatcher::internal::DefaultExpectationBuilder&lt; FuncSignature &gt;::WillByDefault</definition>
+        <argsstring>(Callback &amp;&amp;callback)</argsstring>
+        <name>WillByDefault</name>
+        <param>
+          <type>Callback &amp;&amp;</type>
+          <declname>callback</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/dispatcher_test.hpp" line="455" column="10" bodyfile="include/dispatcher_test.hpp" bodystart="455" bodyend="458"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="include/dispatcher_test.hpp" line="447" column="1" bodyfile="include/dispatcher_test.hpp" bodystart="447" bodyend="460"/>
+    <listofallmembers>
+      <member refid="structdispatcher_1_1internal_1_1DefaultExpectationBuilder_1aae3ea8da464444c86f415997f63ea2fd" prot="public" virt="non-virtual"><scope>dispatcher::internal::DefaultExpectationBuilder</scope><name>DefaultExpectationBuilder</name></member>
+      <member refid="structdispatcher_1_1internal_1_1DefaultExpectationBuilder_1a29f3a7f02bc5786b0881154edae56de9" prot="public" virt="non-virtual"><scope>dispatcher::internal::DefaultExpectationBuilder</scope><name>expecter_container_</name></member>
+      <member refid="structdispatcher_1_1internal_1_1DefaultExpectationBuilder_1ae43baaac7e96163f21f5d16aff52d1ad" prot="public" virt="non-virtual"><scope>dispatcher::internal::DefaultExpectationBuilder</scope><name>WillByDefault</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

@@ -1,0 +1,81 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.1" xml:lang="en-US">
+  <compounddef id="classdispatcher_1_1internal_1_1CustomStackAllocator" kind="class" language="C++" prot="public">
+    <compoundname>dispatcher::internal::CustomStackAllocator</compoundname>
+      <sectiondef kind="private-attrib">
+      <memberdef kind="variable" id="classdispatcher_1_1internal_1_1CustomStackAllocator_1a11142b9b9e2ddb8fb08998f51207cf4b" prot="private" static="no" mutable="no">
+        <type>MemoryPool *</type>
+        <definition>MemoryPool* dispatcher::internal::CustomStackAllocator::memory_pool_</definition>
+        <argsstring></argsstring>
+        <name>memory_pool_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/dispatcher.hpp" line="214" column="16" bodyfile="include/dispatcher.hpp" bodystart="214" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="classdispatcher_1_1internal_1_1CustomStackAllocator_1ab5e7513a5e3d201324d1c2e53bfbeaa2" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>dispatcher::internal::CustomStackAllocator::CustomStackAllocator</definition>
+        <argsstring>(MemoryPool *memory_pool)</argsstring>
+        <name>CustomStackAllocator</name>
+        <param>
+          <type>MemoryPool *</type>
+          <declname>memory_pool</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/dispatcher.hpp" line="193" column="5" bodyfile="include/dispatcher.hpp" bodystart="193" bodyend="195"/>
+      </memberdef>
+      <memberdef kind="function" id="classdispatcher_1_1internal_1_1CustomStackAllocator_1a43bd342eb372a46255a8274974fdc153" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>boost::context::stack_context</type>
+        <definition>boost::context::stack_context dispatcher::internal::CustomStackAllocator::allocate</definition>
+        <argsstring>()</argsstring>
+        <name>allocate</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/dispatcher.hpp" line="197" column="35" bodyfile="include/dispatcher.hpp" bodystart="197" bodyend="203"/>
+      </memberdef>
+      <memberdef kind="function" id="classdispatcher_1_1internal_1_1CustomStackAllocator_1a6a9836034258ddd3e7b213ed5ce24f9b" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void dispatcher::internal::CustomStackAllocator::deallocate</definition>
+        <argsstring>(boost::context::stack_context &amp;sctx)</argsstring>
+        <name>deallocate</name>
+        <param>
+          <type>boost::context::stack_context &amp;</type>
+          <declname>sctx</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/dispatcher.hpp" line="205" column="10" bodyfile="include/dispatcher.hpp" bodystart="205" bodyend="211"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="include/dispatcher.hpp" line="191" column="1" bodyfile="include/dispatcher.hpp" bodystart="191" bodyend="215"/>
+    <listofallmembers>
+      <member refid="classdispatcher_1_1internal_1_1CustomStackAllocator_1a43bd342eb372a46255a8274974fdc153" prot="public" virt="non-virtual"><scope>dispatcher::internal::CustomStackAllocator</scope><name>allocate</name></member>
+      <member refid="classdispatcher_1_1internal_1_1CustomStackAllocator_1ab5e7513a5e3d201324d1c2e53bfbeaa2" prot="public" virt="non-virtual"><scope>dispatcher::internal::CustomStackAllocator</scope><name>CustomStackAllocator</name></member>
+      <member refid="classdispatcher_1_1internal_1_1CustomStackAllocator_1a6a9836034258ddd3e7b213ed5ce24f9b" prot="public" virt="non-virtual"><scope>dispatcher::internal::CustomStackAllocator</scope><name>deallocate</name></member>
+      <member refid="classdispatcher_1_1internal_1_1CustomStackAllocator_1a11142b9b9e2ddb8fb08998f51207cf4b" prot="private" virt="non-virtual"><scope>dispatcher::internal::CustomStackAllocator</scope><name>memory_pool_</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

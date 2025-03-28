@@ -1,0 +1,689 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.1" xml:lang="en-US">
+  <compounddef id="namespacedispatcher" kind="namespace" language="C++">
+    <compoundname>dispatcher</compoundname>
+    <innerclass refid="classdispatcher_1_1NoHandler" prot="public">dispatcher::NoHandler</innerclass>
+    <innerclass refid="classdispatcher_1_1Timer" prot="public">dispatcher::Timer</innerclass>
+    <innerclass refid="classdispatcher_1_1InSequence" prot="public">dispatcher::InSequence</innerclass>
+    <innerclass refid="classdispatcher_1_1Test" prot="public">dispatcher::Test</innerclass>
+    <innernamespace refid="namespacedispatcher_1_1internal">dispatcher::internal</innernamespace>
+      <sectiondef kind="typedef">
+      <memberdef kind="typedef" id="dispatcher_8hpp_1a8dc2503844f7fbaf04b4f7ba65e16829" prot="public" static="no">
+        <type><ref refid="classdispatcher_1_1Timer" kindref="compound">Timer</ref>&lt; internal::Default &gt;</type>
+        <definition>using dispatcher::DefaultTimer = typedef Timer&lt;internal::Default&gt;</definition>
+        <argsstring></argsstring>
+        <name>DefaultTimer</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/dispatcher.hpp" line="839" column="1" bodyfile="include/dispatcher.hpp" bodystart="839" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="var">
+      <memberdef kind="variable" id="dispatcher__test_8hpp_1a2dde742955d08bfcf70368d5d80e4e26" prot="public" static="no" mutable="no">
+        <type>const internal::AnythingMatcher</type>
+        <definition>const internal::AnythingMatcher dispatcher::_</definition>
+        <argsstring></argsstring>
+        <name>_</name>
+        <initializer>= {}</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/dispatcher_test.hpp" line="539" column="33" bodyfile="include/dispatcher_test.hpp" bodystart="539" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="func">
+      <memberdef kind="function" id="dispatcher_8hpp_1a4b3e6fcc71aca242698d93a72b62d062" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename FuncSignature</type>
+          </param>
+          <param>
+            <type>typename Callable</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void dispatcher::attach</definition>
+        <argsstring>(Callable &amp;&amp;callable)</argsstring>
+        <name>attach</name>
+        <param>
+          <type>Callable &amp;&amp;</type>
+          <declname>callable</declname>
+        </param>
+        <briefdescription>
+<para>Attach a callable to a function signature. </para>
+        </briefdescription>
+        <detaileddescription>
+<para>This function binds a callable (e.g., a lambda, function, or functor) to a specific function signature. The callable must match the return type and argument types defined by the function signature.</para>
+<para><parameterlist kind="templateparam"><parameteritem>
+<parameternamelist>
+<parametername>FuncSignature</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The function signature to attach the callable to. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>Callable</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The type of the callable. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>callable</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The callable to attach.</para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="note"><para>If the callable&apos;s return type does not match the function signature&apos;s return type, a static assertion will fail.</para>
+</simplesect>
+Example: <programlisting><codeline><highlight class="normal">struct<sp/>Addition<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>using<sp/>args_t<sp/>=<sp/>std::tuple&lt;int,<sp/>int&gt;;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>using<sp/>return_t<sp/>=<sp/>int;</highlight></codeline>
+<codeline><highlight class="normal">};</highlight></codeline>
+<codeline></codeline>
+<codeline><highlight class="normal">dispatcher::attach&lt;Addition&gt;([](int<sp/>a,<sp/>int<sp/>b)<sp/>{<sp/>return<sp/>a<sp/>+<sp/>b;<sp/>});</highlight></codeline>
+</programlisting> </para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/dispatcher.hpp" line="453" column="6" bodyfile="include/dispatcher.hpp" bodystart="453" bodyend="461"/>
+      </memberdef>
+      <memberdef kind="function" id="dispatcher_8hpp_1a55e472f2ddc87a5bc3a662ebb192db11" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename FuncSignature</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void dispatcher::detach</definition>
+        <argsstring>()</argsstring>
+        <name>detach</name>
+        <briefdescription>
+<para>Detach the callable from a function signature. </para>
+        </briefdescription>
+        <detaileddescription>
+<para>This function removes the callable that was previously attached to the specified function signature. After detaching, any calls to the function signature will throw an exception.</para>
+<para><parameterlist kind="templateparam"><parameteritem>
+<parameternamelist>
+<parametername>FuncSignature</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The function signature to detach the callable from. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/dispatcher.hpp" line="472" column="6" bodyfile="include/dispatcher.hpp" bodystart="472" bodyend="475"/>
+      </memberdef>
+      <memberdef kind="function" id="dispatcher_8hpp_1a41bdc56c6244bd4cebf5ec9e1513c1eb" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename FuncSignature</type>
+          </param>
+          <param>
+            <type>typename...</type>
+            <declname>Args</declname>
+            <defname>Args</defname>
+          </param>
+        </templateparamlist>
+        <type>auto</type>
+        <definition>auto dispatcher::call</definition>
+        <argsstring>(Args &amp;&amp;...args)</argsstring>
+        <name>call</name>
+        <param>
+          <type>Args &amp;&amp;...</type>
+          <declname>args</declname>
+        </param>
+        <briefdescription>
+<para>Call a function by its signature with the provided arguments. </para>
+        </briefdescription>
+        <detaileddescription>
+<para>This function invokes the callable previously attached to the specified function signature with the given arguments. The arguments must match the types defined in the function signature. This function is blocking</para>
+<para><parameterlist kind="templateparam"><parameteritem>
+<parameternamelist>
+<parametername>FuncSignature</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The function signature to call. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>Args</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The types of the arguments to pass to the callable. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>args</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The arguments to pass to the callable. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>The return value of the callable.</para>
+</simplesect>
+<parameterlist kind="exception"><parameteritem>
+<parameternamelist>
+<parametername>NoHandler&lt;FuncSignature&gt;</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>If no callable is attached to the function signature.</para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+Example: <programlisting><codeline><highlight class="normal">struct<sp/>Addition<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>using<sp/>args_t<sp/>=<sp/>std::tuple&lt;int,<sp/>int&gt;;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>using<sp/>return_t<sp/>=<sp/>int;</highlight></codeline>
+<codeline><highlight class="normal">};</highlight></codeline>
+<codeline></codeline>
+<codeline><highlight class="normal">dispatcher::attach&lt;Addition&gt;([](int<sp/>a,<sp/>int<sp/>b)<sp/>{<sp/>return<sp/>a<sp/>+<sp/>b;<sp/>});</highlight></codeline>
+<codeline><highlight class="normal">int<sp/>result<sp/>=<sp/>dispatcher::call&lt;Addition&gt;(3,<sp/>5);<sp/>//<sp/>result<sp/>will<sp/>be<sp/>8</highlight></codeline>
+</programlisting> </para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/dispatcher.hpp" line="503" column="6" bodyfile="include/dispatcher.hpp" bodystart="503" bodyend="506"/>
+      </memberdef>
+      <memberdef kind="function" id="dispatcher_8hpp_1abe335fd6cd21aff194507cd2ffb0e44f" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename FuncSignature</type>
+          </param>
+          <param>
+            <type>typename Network</type>
+            <defval>internal::Default</defval>
+          </param>
+          <param>
+            <type>typename...</type>
+            <declname>Args</declname>
+            <defname>Args</defname>
+          </param>
+        </templateparamlist>
+        <type>auto</type>
+        <definition>auto dispatcher::async_call</definition>
+        <argsstring>(Args &amp;&amp;...args)</argsstring>
+        <name>async_call</name>
+        <param>
+          <type>Args &amp;&amp;...</type>
+          <declname>args</declname>
+        </param>
+        <briefdescription>
+<para>Perform an asynchronous function call by its signature with the provided arguments. </para>
+        </briefdescription>
+        <detaileddescription>
+<para>This function invokes the callable attached to the specified function signature asynchronously. The arguments must match the types defined in the function signature. The function returns a <computeroutput>boost::fibers::future</computeroutput> that can be used to retrieve the result of the callable once it completes.</para>
+<para><parameterlist kind="templateparam"><parameteritem>
+<parameternamelist>
+<parametername>FuncSignature</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The function signature to call. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>Network</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The network type, aka wich EventLoop will handle this (default is <computeroutput>internal::Default</computeroutput>). </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>Args</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The types of the arguments to pass to the callable. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>args</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The arguments to pass to the callable. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>A <computeroutput>boost::fibers::future</computeroutput> containing the return value of the callable.</para>
+</simplesect>
+<parameterlist kind="exception"><parameteritem>
+<parameternamelist>
+<parametername>NoHandler&lt;FuncSignature&gt;</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>If no callable is attached to the function signature.</para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="note"><para>This function does not block the calling thread. The callable is executed in the context of the event loop associated with the specified network.</para>
+</simplesect>
+Example <programlisting><codeline><highlight class="normal">struct<sp/>Addition<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>using<sp/>args_t<sp/>=<sp/>std::tuple&lt;int,<sp/>int&gt;;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>using<sp/>return_t<sp/>=<sp/>int;</highlight></codeline>
+<codeline><highlight class="normal">};</highlight></codeline>
+<codeline></codeline>
+<codeline><highlight class="normal">dispatcher::attach&lt;Addition&gt;([](int<sp/>a,<sp/>int<sp/>b)<sp/>{<sp/>return<sp/>a<sp/>+<sp/>b;<sp/>});</highlight></codeline>
+<codeline><highlight class="normal">auto<sp/>future<sp/>=<sp/>dispatcher::async_call&lt;Addition&gt;(3,<sp/>5);</highlight></codeline>
+<codeline><highlight class="normal">int<sp/>result<sp/>=<sp/>future.get();<sp/>//<sp/>result<sp/>will<sp/>be<sp/>8</highlight></codeline>
+</programlisting> </para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/dispatcher.hpp" line="539" column="6" bodyfile="include/dispatcher.hpp" bodystart="539" bodyend="552"/>
+      </memberdef>
+      <memberdef kind="function" id="dispatcher_8hpp_1a3d03a1b965028c6f13593746c66bfd76" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename FuncSignature</type>
+          </param>
+          <param>
+            <type>typename Network</type>
+            <defval>internal::Default</defval>
+          </param>
+          <param>
+            <type>typename Callable</type>
+          </param>
+        </templateparamlist>
+        <type>boost::signals2::connection</type>
+        <definition>boost::signals2::connection dispatcher::subscribe</definition>
+        <argsstring>(Callable &amp;&amp;callable)</argsstring>
+        <name>subscribe</name>
+        <param>
+          <type>Callable &amp;&amp;</type>
+          <declname>callable</declname>
+        </param>
+        <briefdescription>
+<para>Subscribe to an event with a callable. </para>
+        </briefdescription>
+        <detaileddescription>
+<para>This function allows you to subscribe to an event by providing a callable (e.g., a lambda, function, or functor). The callable will be invoked whenever the event is published.</para>
+<para><parameterlist kind="templateparam"><parameteritem>
+<parameternamelist>
+<parametername>FuncSignature</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The function signature of the event to subscribe to. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>Network</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The network type, aka which event loop will handle this (default is <computeroutput>internal::Default</computeroutput>). </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>Callable</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The type of the callable. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>callable</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The callable to invoke when the event is published. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>A <computeroutput>boost::signals2::connection</computeroutput> object representing the subscription.</para>
+</simplesect>
+Example: <programlisting><codeline><highlight class="normal">struct<sp/>MyEvent<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>using<sp/>args_t<sp/>=<sp/>std::tuple&lt;int,<sp/>std::string&gt;;</highlight></codeline>
+<codeline><highlight class="normal">};</highlight></codeline>
+<codeline></codeline>
+<codeline><highlight class="normal">dispatcher::subscribe&lt;MyEvent&gt;([](int<sp/>a,<sp/>const<sp/>std::string&amp;<sp/>b)<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>std::cout<sp/>&lt;&lt;<sp/>&quot;Received<sp/>event<sp/>with<sp/>values:<sp/>&quot;<sp/>&lt;&lt;<sp/>a<sp/>&lt;&lt;<sp/>&quot;,<sp/>&quot;<sp/>&lt;&lt;<sp/>b<sp/>&lt;&lt;<sp/>std::endl;</highlight></codeline>
+<codeline><highlight class="normal">});</highlight></codeline>
+</programlisting> </para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/dispatcher.hpp" line="578" column="29" bodyfile="include/dispatcher.hpp" bodystart="578" bodyend="581"/>
+      </memberdef>
+      <memberdef kind="function" id="dispatcher_8hpp_1a0b6be9188ebaf85aa63c58e9bc92d714" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename FuncSignature</type>
+          </param>
+          <param>
+            <type>typename Network</type>
+            <defval>internal::Default</defval>
+          </param>
+        </templateparamlist>
+        <type>boost::fibers::future&lt; std::nullptr_t &gt;</type>
+        <definition>boost::fibers::future&lt;std::nullptr_t&gt; dispatcher::expect</definition>
+        <argsstring>()</argsstring>
+        <name>expect</name>
+        <briefdescription>
+<para>Wait for an event to be published. </para>
+        </briefdescription>
+        <detaileddescription>
+<para>This function does not block the current fiber directly. Instead, it returns a future that will be fulfilled when the specified event is published. The caller can block on the returned future if needed to wait for the event.</para>
+<para><parameterlist kind="templateparam"><parameteritem>
+<parameternamelist>
+<parametername>FuncSignature</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The function signature of the event to wait for. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>Network</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The network type (default is <computeroutput>internal::Default</computeroutput>). </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>A <computeroutput>boost::fibers::future&lt;std::nullptr_t&gt;</computeroutput> that will be fulfilled when the event is published.</para>
+</simplesect>
+Example: <programlisting><codeline><highlight class="normal">struct<sp/>MyEvent<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>using<sp/>args_t<sp/>=<sp/>std::tuple&lt;&gt;;</highlight></codeline>
+<codeline><highlight class="normal">};</highlight></codeline>
+<codeline></codeline>
+<codeline><highlight class="normal">auto<sp/>future<sp/>=<sp/>dispatcher::expect&lt;MyEvent&gt;();</highlight></codeline>
+<codeline><highlight class="normal">future.wait();<sp/>//<sp/>Blocks<sp/>until<sp/>the<sp/>event<sp/>is<sp/>published</highlight></codeline>
+<codeline><highlight class="normal">std::cout<sp/>&lt;&lt;<sp/>&quot;Event<sp/>received!&quot;<sp/>&lt;&lt;<sp/>std::endl;</highlight></codeline>
+</programlisting> </para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/dispatcher.hpp" line="606" column="23" bodyfile="include/dispatcher.hpp" bodystart="606" bodyend="619"/>
+      </memberdef>
+      <memberdef kind="function" id="dispatcher_8hpp_1aa1ea1abaea85ccdedc2078393144ae74" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename FuncSignature</type>
+          </param>
+          <param>
+            <type>typename Network</type>
+            <defval>internal::Default</defval>
+          </param>
+          <param>
+            <type>typename Callable</type>
+          </param>
+        </templateparamlist>
+        <type>boost::fibers::future&lt; std::nullptr_t &gt;</type>
+        <definition>boost::fibers::future&lt;std::nullptr_t&gt; dispatcher::expect</definition>
+        <argsstring>(Callable &amp;&amp;callable)</argsstring>
+        <name>expect</name>
+        <param>
+          <type>Callable &amp;&amp;</type>
+          <declname>callable</declname>
+        </param>
+        <briefdescription>
+<para>Wait for an event to be published and invoke a callable. </para>
+        </briefdescription>
+        <detaileddescription>
+<para>This function does not block the current fiber directly. Instead, it returns a future that will be fulfilled when the specified event is published. Additionally, the provided callable is invoked with the event&apos;s arguments when the event is triggered.</para>
+<para><parameterlist kind="templateparam"><parameteritem>
+<parameternamelist>
+<parametername>FuncSignature</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The function signature of the event to wait for. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>Network</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The network type (default is <computeroutput>internal::Default</computeroutput>). </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>Callable</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The type of the callable. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>callable</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The callable to invoke when the event is published. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>A <computeroutput>boost::fibers::future&lt;std::nullptr_t&gt;</computeroutput> that will be fulfilled after the callable is executed.</para>
+</simplesect>
+Example: <programlisting><codeline><highlight class="normal">struct<sp/>MyEvent<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>using<sp/>args_t<sp/>=<sp/>std::tuple&lt;int,<sp/>std::string&gt;;</highlight></codeline>
+<codeline><highlight class="normal">};</highlight></codeline>
+<codeline></codeline>
+<codeline><highlight class="normal">auto<sp/>future<sp/>=<sp/>dispatcher::expect&lt;MyEvent&gt;([](int<sp/>a,<sp/>const<sp/>std::string&amp;<sp/>b)<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>std::cout<sp/>&lt;&lt;<sp/>&quot;Received<sp/>event<sp/>with<sp/>values:<sp/>&quot;<sp/>&lt;&lt;<sp/>a<sp/>&lt;&lt;<sp/>&quot;,<sp/>&quot;<sp/>&lt;&lt;<sp/>b<sp/>&lt;&lt;<sp/>std::endl;</highlight></codeline>
+<codeline><highlight class="normal">});</highlight></codeline>
+<codeline><highlight class="normal">future.wait();<sp/>//<sp/>Blocks<sp/>until<sp/>the<sp/>event<sp/>is<sp/>published</highlight></codeline>
+<codeline><highlight class="normal">std::cout<sp/>&lt;&lt;<sp/>&quot;Event<sp/>handling<sp/>completed!&quot;<sp/>&lt;&lt;<sp/>std::endl;</highlight></codeline>
+</programlisting> </para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/dispatcher.hpp" line="648" column="23" bodyfile="include/dispatcher.hpp" bodystart="648" bodyend="662"/>
+      </memberdef>
+      <memberdef kind="function" id="dispatcher_8hpp_1a4ef021d4b075b6d46a1217f0b3b1e6e9" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename FuncSignature</type>
+          </param>
+          <param>
+            <type>typename Network</type>
+            <defval>internal::Default</defval>
+          </param>
+          <param>
+            <type>typename...</type>
+            <declname>Args</declname>
+            <defname>Args</defname>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void dispatcher::publish</definition>
+        <argsstring>(Args &amp;&amp;...args)</argsstring>
+        <name>publish</name>
+        <param>
+          <type>Args &amp;&amp;...</type>
+          <declname>args</declname>
+        </param>
+        <briefdescription>
+<para>Publish an event with the specified arguments. </para>
+        </briefdescription>
+        <detaileddescription>
+<para>This function triggers an event by its function signature and passes the provided arguments to all subscribed callables. The event is handled asynchronously by the associated event loop.</para>
+<para><parameterlist kind="templateparam"><parameteritem>
+<parameternamelist>
+<parametername>FuncSignature</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The function signature of the event to publish. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>Network</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The network type (default is <computeroutput>internal::Default</computeroutput>). </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>Args</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The types of the arguments to pass to the event. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>args</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The arguments to pass to the event.</para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+Example <programlisting><codeline><highlight class="normal">struct<sp/>MyEvent<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>using<sp/>args_t<sp/>=<sp/>std::tuple&lt;int,<sp/>std::string&gt;;</highlight></codeline>
+<codeline><highlight class="normal">};</highlight></codeline>
+<codeline></codeline>
+<codeline><highlight class="normal">dispatcher::subscribe&lt;MyEvent&gt;([](int<sp/>a,<sp/>const<sp/>std::string&amp;<sp/>b)<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>std::cout<sp/>&lt;&lt;<sp/>&quot;Received<sp/>event<sp/>with<sp/>values:<sp/>&quot;<sp/>&lt;&lt;<sp/>a<sp/>&lt;&lt;<sp/>&quot;,<sp/>&quot;<sp/>&lt;&lt;<sp/>b<sp/>&lt;&lt;<sp/>std::endl;</highlight></codeline>
+<codeline><highlight class="normal">});</highlight></codeline>
+<codeline></codeline>
+<codeline><highlight class="normal">dispatcher::publish&lt;MyEvent&gt;(42,<sp/>&quot;Hello,<sp/>World!&quot;);</highlight></codeline>
+</programlisting> </para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/dispatcher.hpp" line="689" column="6" bodyfile="include/dispatcher.hpp" bodystart="689" bodyend="692"/>
+      </memberdef>
+      <memberdef kind="function" id="dispatcher_8hpp_1a6af1b5ecf3f925ab231888716f03209f" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename Network</type>
+            <defval>internal::Default</defval>
+          </param>
+          <param>
+            <type>typename T</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void dispatcher::post</definition>
+        <argsstring>(T &amp;&amp;task)</argsstring>
+        <name>post</name>
+        <param>
+          <type>T &amp;&amp;</type>
+          <declname>task</declname>
+        </param>
+        <briefdescription>
+<para>Post a task to the event loop for asynchronous execution. </para>
+        </briefdescription>
+        <detaileddescription>
+<para>This function schedules a task to be executed asynchronously by the event loop associated with the specified network.</para>
+<para><parameterlist kind="templateparam"><parameteritem>
+<parameternamelist>
+<parametername>Network</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The network type (default is <computeroutput>internal::Default</computeroutput>). </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>T</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The type of the task. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>task</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The task to execute asynchronously.</para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+Example: <programlisting><codeline><highlight class="normal">dispatcher::post([]<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>std::cout<sp/>&lt;&lt;<sp/>&quot;Task<sp/>executed<sp/>asynchronously!&quot;<sp/>&lt;&lt;<sp/>std::endl;</highlight></codeline>
+<codeline><highlight class="normal">});</highlight></codeline>
+</programlisting> </para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/dispatcher.hpp" line="712" column="6" bodyfile="include/dispatcher.hpp" bodystart="712" bodyend="715"/>
+      </memberdef>
+      <memberdef kind="function" id="dispatcher_8hpp_1aa3cd287b7e3600bdb3bb157ddf60f1dc" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename Network</type>
+            <defval>internal::Default</defval>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void dispatcher::set_worker_threads</definition>
+        <argsstring>(int thread_count)</argsstring>
+        <name>set_worker_threads</name>
+        <param>
+          <type>int</type>
+          <declname>thread_count</declname>
+        </param>
+        <briefdescription>
+<para>Set the number of worker threads for the event loop. </para>
+        </briefdescription>
+        <detaileddescription>
+<para>This function configures the number of worker threads in the event loop associated with the specified network. Worker threads are used to process tasks asynchronously. By default, the event loop runs with a single thread.</para>
+<para><parameterlist kind="templateparam"><parameteritem>
+<parameternamelist>
+<parametername>Network</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The network type (default is <computeroutput>internal::Default</computeroutput>). </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>thread_count</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The number of worker threads to set for the event loop.</para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="note"><para>The number of threads must be greater than or equal to 1. If the current number of threads is already greater than or equal to the specified thread count, no additional threads will be created, and the event loop configuration remains unchanged.</para>
+</simplesect>
+Example: <programlisting><codeline><highlight class="normal">dispatcher::set_worker_threads&lt;WorkNetwork&gt;(10);<sp/>//<sp/>Set<sp/>10<sp/>worker<sp/>threads<sp/>for<sp/>the<sp/>WorkNetwork<sp/>event<sp/>loop.</highlight></codeline>
+</programlisting> </para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/dispatcher.hpp" line="736" column="6" bodyfile="include/dispatcher.hpp" bodystart="736" bodyend="739"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="include/dispatcher.hpp" line="29" column="1"/>
+  </compounddef>
+</doxygen>

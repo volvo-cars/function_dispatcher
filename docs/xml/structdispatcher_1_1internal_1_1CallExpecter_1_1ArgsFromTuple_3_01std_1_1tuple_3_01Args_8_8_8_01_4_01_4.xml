@@ -1,0 +1,45 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.1" xml:lang="en-US">
+  <compounddef id="structdispatcher_1_1internal_1_1CallExpecter_1_1ArgsFromTuple_3_01std_1_1tuple_3_01Args_8_8_8_01_4_01_4" kind="struct" language="C++" prot="private">
+    <compoundname>dispatcher::internal::CallExpecter::ArgsFromTuple&lt; std::tuple&lt; Args... &gt; &gt;</compoundname>
+    <templateparamlist>
+      <param>
+        <type>typename...</type>
+        <declname>Args</declname>
+        <defname>Args</defname>
+      </param>
+    </templateparamlist>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="structdispatcher_1_1internal_1_1CallExpecter_1_1ArgsFromTuple_3_01std_1_1tuple_3_01Args_8_8_8_01_4_01_4_1aa41dc8df8e2b0574cac388566d478ded" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename Expecter</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void dispatcher::internal::CallExpecter&lt; FuncSignature &gt;::ArgsFromTuple&lt; std::tuple&lt; Args... &gt; &gt;::attach</definition>
+        <argsstring>(Expecter &amp;expecter)</argsstring>
+        <name>attach</name>
+        <param>
+          <type>Expecter &amp;</type>
+          <declname>expecter</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/dispatcher_test.hpp" line="268" column="14" bodyfile="include/dispatcher_test.hpp" bodystart="268" bodyend="271"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="include/dispatcher_test.hpp" line="266" column="5" bodyfile="include/dispatcher_test.hpp" bodystart="266" bodyend="272"/>
+    <listofallmembers>
+      <member refid="structdispatcher_1_1internal_1_1CallExpecter_1_1ArgsFromTuple_3_01std_1_1tuple_3_01Args_8_8_8_01_4_01_4_1aa41dc8df8e2b0574cac388566d478ded" prot="public" virt="non-virtual"><scope>dispatcher::internal::CallExpecter::ArgsFromTuple&lt; std::tuple&lt; Args... &gt; &gt;</scope><name>attach</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

@@ -1,0 +1,313 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.1" xml:lang="en-US">
+  <compounddef id="classdispatcher_1_1internal_1_1EventLoop" kind="class" language="C++" prot="public">
+    <compoundname>dispatcher::internal::EventLoop</compoundname>
+    <templateparamlist>
+      <param>
+        <type>typename Network</type>
+      </param>
+    </templateparamlist>
+      <sectiondef kind="private-attrib">
+      <memberdef kind="variable" id="classdispatcher_1_1internal_1_1EventLoop_1a7f06178b73658ed72e356d6f5b7ff2dd" prot="private" static="no" mutable="no">
+        <type>boost::asio::io_context</type>
+        <definition>boost::asio::io_context dispatcher::internal::EventLoop&lt; Network &gt;::io_context_</definition>
+        <argsstring></argsstring>
+        <name>io_context_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/dispatcher.hpp" line="297" column="29" bodyfile="include/dispatcher.hpp" bodystart="297" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classdispatcher_1_1internal_1_1EventLoop_1a663605d52a4e7db685d7801d3d13d049" prot="private" static="no" mutable="no">
+        <type>boost::asio::executor_work_guard&lt; decltype(io_context_.get_executor())&gt;</type>
+        <definition>boost::asio::executor_work_guard&lt;decltype(io_context_.get_executor())&gt; dispatcher::internal::EventLoop&lt; Network &gt;::work_guard_</definition>
+        <argsstring></argsstring>
+        <name>work_guard_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/dispatcher.hpp" line="298" column="38" bodyfile="include/dispatcher.hpp" bodystart="298" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classdispatcher_1_1internal_1_1EventLoop_1add4b0d7d5b702e3dbe42ef0bdcfbf261" prot="private" static="no" mutable="no">
+        <type>std::thread</type>
+        <definition>std::thread dispatcher::internal::EventLoop&lt; Network &gt;::work_thread_</definition>
+        <argsstring></argsstring>
+        <name>work_thread_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/dispatcher.hpp" line="299" column="17" bodyfile="include/dispatcher.hpp" bodystart="299" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classdispatcher_1_1internal_1_1EventLoop_1a5f55718f1a273faaac621fdab27668b9" prot="private" static="no" mutable="no">
+        <type>std::vector&lt; std::thread &gt;</type>
+        <definition>std::vector&lt;std::thread&gt; dispatcher::internal::EventLoop&lt; Network &gt;::additional_work_threads_</definition>
+        <argsstring></argsstring>
+        <name>additional_work_threads_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/dispatcher.hpp" line="300" column="17" bodyfile="include/dispatcher.hpp" bodystart="300" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classdispatcher_1_1internal_1_1EventLoop_1a3b37f33599b5e5df7ebb159a4decd181" prot="private" static="no" mutable="no">
+        <type>std::atomic&lt; bool &gt;</type>
+        <definition>std::atomic&lt;bool&gt; dispatcher::internal::EventLoop&lt; Network &gt;::stopped_</definition>
+        <argsstring></argsstring>
+        <name>stopped_</name>
+        <initializer>{false}</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/dispatcher.hpp" line="301" column="17" bodyfile="include/dispatcher.hpp" bodystart="301" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classdispatcher_1_1internal_1_1EventLoop_1aa11310df4867281385ad2dbcedd35326" prot="private" static="no" mutable="no">
+        <type>MemoryPool</type>
+        <definition>MemoryPool dispatcher::internal::EventLoop&lt; Network &gt;::memory_pool_</definition>
+        <argsstring></argsstring>
+        <name>memory_pool_</name>
+        <initializer>{30000}</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/dispatcher.hpp" line="302" column="16" bodyfile="include/dispatcher.hpp" bodystart="302" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="classdispatcher_1_1internal_1_1EventLoop_1abd21442c23743cad7d7d64f38b73a42e" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>dispatcher::internal::EventLoop&lt; Network &gt;::EventLoop</definition>
+        <argsstring>()</argsstring>
+        <name>EventLoop</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/dispatcher.hpp" line="220" column="5" bodyfile="include/dispatcher.hpp" bodystart="220" bodyend="228"/>
+      </memberdef>
+      <memberdef kind="function" id="classdispatcher_1_1internal_1_1EventLoop_1a8aaa76079c721e677eac1a52c02d02bd" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>dispatcher::internal::EventLoop&lt; Network &gt;::~EventLoop</definition>
+        <argsstring>()</argsstring>
+        <name>~EventLoop</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/dispatcher.hpp" line="229" column="5" bodyfile="include/dispatcher.hpp" bodystart="229" bodyend="232"/>
+      </memberdef>
+      <memberdef kind="function" id="classdispatcher_1_1internal_1_1EventLoop_1adf603e01db31fbcbf3433f6e1ea0f8d8" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>dispatcher::internal::EventLoop&lt; Network &gt;::EventLoop</definition>
+        <argsstring>(const EventLoop &amp;)=delete</argsstring>
+        <name>EventLoop</name>
+        <param>
+          <type>const EventLoop &amp;</type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/dispatcher.hpp" line="234" column="5"/>
+      </memberdef>
+      <memberdef kind="function" id="classdispatcher_1_1internal_1_1EventLoop_1a6e9bef6e5ef7a9aa5433f244dcf4d83d" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>dispatcher::internal::EventLoop&lt; Network &gt;::EventLoop</definition>
+        <argsstring>(EventLoop &amp;&amp;)=delete</argsstring>
+        <name>EventLoop</name>
+        <param>
+          <type>EventLoop &amp;&amp;</type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/dispatcher.hpp" line="235" column="5"/>
+      </memberdef>
+      <memberdef kind="function" id="classdispatcher_1_1internal_1_1EventLoop_1a9dbdee8b95d33456634edbcf7e574040" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>EventLoop &amp;</type>
+        <definition>EventLoop&amp; dispatcher::internal::EventLoop&lt; Network &gt;::operator=</definition>
+        <argsstring>(const EventLoop &amp;)=delete</argsstring>
+        <name>operator=</name>
+        <param>
+          <type>const EventLoop &amp;</type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/dispatcher.hpp" line="236" column="15"/>
+      </memberdef>
+      <memberdef kind="function" id="classdispatcher_1_1internal_1_1EventLoop_1a6578263226c6f39328f219f5c8b8eae8" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>EventLoop &amp;</type>
+        <definition>EventLoop&amp; dispatcher::internal::EventLoop&lt; Network &gt;::operator=</definition>
+        <argsstring>(EventLoop &amp;&amp;)=delete</argsstring>
+        <name>operator=</name>
+        <param>
+          <type>EventLoop &amp;&amp;</type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/dispatcher.hpp" line="237" column="15"/>
+      </memberdef>
+      <memberdef kind="function" id="classdispatcher_1_1internal_1_1EventLoop_1ab203f858ced43e6ea3bf67cb0b290e7a" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void dispatcher::internal::EventLoop&lt; Network &gt;::SetWorkerThreadsAmount</definition>
+        <argsstring>(int threads)</argsstring>
+        <name>SetWorkerThreadsAmount</name>
+        <param>
+          <type>int</type>
+          <declname>threads</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/dispatcher.hpp" line="239" column="10" bodyfile="include/dispatcher.hpp" bodystart="239" bodyend="249"/>
+      </memberdef>
+      <memberdef kind="function" id="classdispatcher_1_1internal_1_1EventLoop_1a55ba1d9a70210190bf283b6d1cbc18d4" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename T</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void dispatcher::internal::EventLoop&lt; Network &gt;::Post</definition>
+        <argsstring>(T &amp;&amp;task)</argsstring>
+        <name>Post</name>
+        <param>
+          <type>T &amp;&amp;</type>
+          <declname>task</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+<para>Call a function by its signature with the provided arguments.</para>
+<para>This function invokes the callable attached to the specified function signature with the given arguments. The arguments must match the types defined in the function signature.</para>
+<para><parameterlist kind="templateparam"><parameteritem>
+<parameternamelist>
+<parametername>FuncSignature</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The function signature to call. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>Args</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The types of the arguments to pass to the callable. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>args</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The arguments to pass to the callable. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>The return value of the callable.</para>
+</simplesect>
+<parameterlist kind="exception"><parameteritem>
+<parameternamelist>
+<parametername>NoHandler&lt;FuncSignature&gt;</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>If no callable is attached to the function signature.</para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>
+        </inbodydescription>
+        <location file="include/dispatcher.hpp" line="252" column="10" bodyfile="include/dispatcher.hpp" bodystart="252" bodyend="273"/>
+      </memberdef>
+      <memberdef kind="function" id="classdispatcher_1_1internal_1_1EventLoop_1a8afe27ca4f5a6dc1dd4673c9127cf90f" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void dispatcher::internal::EventLoop&lt; Network &gt;::Stop</definition>
+        <argsstring>()</argsstring>
+        <name>Stop</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/dispatcher.hpp" line="275" column="10" bodyfile="include/dispatcher.hpp" bodystart="275" bodyend="289"/>
+      </memberdef>
+      <memberdef kind="function" id="classdispatcher_1_1internal_1_1EventLoop_1a03c303e71ae789ac5ffd72fc5547cb61" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>boost::asio::io_context &amp;</type>
+        <definition>boost::asio::io_context&amp; dispatcher::internal::EventLoop&lt; Network &gt;::GetIOContext</definition>
+        <argsstring>()</argsstring>
+        <name>GetIOContext</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/dispatcher.hpp" line="291" column="29" bodyfile="include/dispatcher.hpp" bodystart="291" bodyend="294"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="include/dispatcher.hpp" line="218" column="1" bodyfile="include/dispatcher.hpp" bodystart="218" bodyend="303"/>
+    <listofallmembers>
+      <member refid="classdispatcher_1_1internal_1_1EventLoop_1a5f55718f1a273faaac621fdab27668b9" prot="private" virt="non-virtual"><scope>dispatcher::internal::EventLoop</scope><name>additional_work_threads_</name></member>
+      <member refid="classdispatcher_1_1internal_1_1EventLoop_1abd21442c23743cad7d7d64f38b73a42e" prot="public" virt="non-virtual"><scope>dispatcher::internal::EventLoop</scope><name>EventLoop</name></member>
+      <member refid="classdispatcher_1_1internal_1_1EventLoop_1adf603e01db31fbcbf3433f6e1ea0f8d8" prot="public" virt="non-virtual"><scope>dispatcher::internal::EventLoop</scope><name>EventLoop</name></member>
+      <member refid="classdispatcher_1_1internal_1_1EventLoop_1a6e9bef6e5ef7a9aa5433f244dcf4d83d" prot="public" virt="non-virtual"><scope>dispatcher::internal::EventLoop</scope><name>EventLoop</name></member>
+      <member refid="classdispatcher_1_1internal_1_1EventLoop_1a03c303e71ae789ac5ffd72fc5547cb61" prot="public" virt="non-virtual"><scope>dispatcher::internal::EventLoop</scope><name>GetIOContext</name></member>
+      <member refid="classdispatcher_1_1internal_1_1EventLoop_1a7f06178b73658ed72e356d6f5b7ff2dd" prot="private" virt="non-virtual"><scope>dispatcher::internal::EventLoop</scope><name>io_context_</name></member>
+      <member refid="classdispatcher_1_1internal_1_1EventLoop_1aa11310df4867281385ad2dbcedd35326" prot="private" virt="non-virtual"><scope>dispatcher::internal::EventLoop</scope><name>memory_pool_</name></member>
+      <member refid="classdispatcher_1_1internal_1_1EventLoop_1a9dbdee8b95d33456634edbcf7e574040" prot="public" virt="non-virtual"><scope>dispatcher::internal::EventLoop</scope><name>operator=</name></member>
+      <member refid="classdispatcher_1_1internal_1_1EventLoop_1a6578263226c6f39328f219f5c8b8eae8" prot="public" virt="non-virtual"><scope>dispatcher::internal::EventLoop</scope><name>operator=</name></member>
+      <member refid="classdispatcher_1_1internal_1_1EventLoop_1a55ba1d9a70210190bf283b6d1cbc18d4" prot="public" virt="non-virtual"><scope>dispatcher::internal::EventLoop</scope><name>Post</name></member>
+      <member refid="classdispatcher_1_1internal_1_1EventLoop_1ab203f858ced43e6ea3bf67cb0b290e7a" prot="public" virt="non-virtual"><scope>dispatcher::internal::EventLoop</scope><name>SetWorkerThreadsAmount</name></member>
+      <member refid="classdispatcher_1_1internal_1_1EventLoop_1a8afe27ca4f5a6dc1dd4673c9127cf90f" prot="public" virt="non-virtual"><scope>dispatcher::internal::EventLoop</scope><name>Stop</name></member>
+      <member refid="classdispatcher_1_1internal_1_1EventLoop_1a3b37f33599b5e5df7ebb159a4decd181" prot="private" virt="non-virtual"><scope>dispatcher::internal::EventLoop</scope><name>stopped_</name></member>
+      <member refid="classdispatcher_1_1internal_1_1EventLoop_1a663605d52a4e7db685d7801d3d13d049" prot="private" virt="non-virtual"><scope>dispatcher::internal::EventLoop</scope><name>work_guard_</name></member>
+      <member refid="classdispatcher_1_1internal_1_1EventLoop_1add4b0d7d5b702e3dbe42ef0bdcfbf261" prot="private" virt="non-virtual"><scope>dispatcher::internal::EventLoop</scope><name>work_thread_</name></member>
+      <member refid="classdispatcher_1_1internal_1_1EventLoop_1a8aaa76079c721e677eac1a52c02d02bd" prot="public" virt="non-virtual"><scope>dispatcher::internal::EventLoop</scope><name>~EventLoop</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

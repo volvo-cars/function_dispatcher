@@ -1,0 +1,31 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.1" xml:lang="en-US">
+  <compounddef id="classdispatcher_1_1internal_1_1ExpecterBase" kind="class" language="C++" prot="public">
+    <compoundname>dispatcher::internal::ExpecterBase</compoundname>
+    <derivedcompoundref refid="classdispatcher_1_1internal_1_1CallExpecter" prot="public" virt="non-virtual">dispatcher::internal::CallExpecter&lt; FuncSignature &gt;</derivedcompoundref>
+    <derivedcompoundref refid="classdispatcher_1_1internal_1_1EventExpecter" prot="public" virt="non-virtual">dispatcher::internal::EventExpecter&lt; FuncSignature &gt;</derivedcompoundref>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="classdispatcher_1_1internal_1_1ExpecterBase_1a646fee37689b250de70d76555c25ce10" prot="public" static="no" const="no" explicit="no" inline="no" virt="virtual">
+        <type></type>
+        <definition>virtual dispatcher::internal::ExpecterBase::~ExpecterBase</definition>
+        <argsstring>()=default</argsstring>
+        <name>~ExpecterBase</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/dispatcher_test.hpp" line="191" column="13"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="include/dispatcher_test.hpp" line="189" column="1" bodyfile="include/dispatcher_test.hpp" bodystart="189" bodyend="192"/>
+    <listofallmembers>
+      <member refid="classdispatcher_1_1internal_1_1ExpecterBase_1a646fee37689b250de70d76555c25ce10" prot="public" virt="virtual"><scope>dispatcher::internal::ExpecterBase</scope><name>~ExpecterBase</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

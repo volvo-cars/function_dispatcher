@@ -1,0 +1,217 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.1" xml:lang="en-US">
+  <compounddef id="structdispatcher_1_1internal_1_1MockableClock" kind="struct" language="C++" prot="public">
+    <compoundname>dispatcher::internal::MockableClock</compoundname>
+      <sectiondef kind="public-type">
+      <memberdef kind="typedef" id="structdispatcher_1_1internal_1_1MockableClock_1a4d04055dbb5e03e3fc4120716c4b3761" prot="public" static="no">
+        <type>boost::asio::deadline_timer::traits_type</type>
+        <definition>typedef boost::asio::deadline_timer::traits_type dispatcher::internal::MockableClock::source_traits</definition>
+        <argsstring></argsstring>
+        <name>source_traits</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/dispatcher.hpp" line="362" column="54" bodyfile="include/dispatcher.hpp" bodystart="362" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="structdispatcher_1_1internal_1_1MockableClock_1a96ff47160ef10589d41af1f5b82b3220" prot="public" static="no">
+        <type>source_traits::time_type</type>
+        <definition>typedef source_traits::time_type dispatcher::internal::MockableClock::time_type</definition>
+        <argsstring></argsstring>
+        <name>time_type</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/dispatcher.hpp" line="365" column="38" bodyfile="include/dispatcher.hpp" bodystart="365" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="structdispatcher_1_1internal_1_1MockableClock_1a31d21a77dd4d521aa24838fe03bfe213" prot="public" static="no">
+        <type>source_traits::duration_type</type>
+        <definition>typedef source_traits::duration_type dispatcher::internal::MockableClock::duration_type</definition>
+        <argsstring></argsstring>
+        <name>duration_type</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/dispatcher.hpp" line="366" column="42" bodyfile="include/dispatcher.hpp" bodystart="366" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-static-func">
+      <memberdef kind="function" id="structdispatcher_1_1internal_1_1MockableClock_1ada958b9d4b7a619cd41d09d862dd2269" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>time_type</type>
+        <definition>static time_type dispatcher::internal::MockableClock::now</definition>
+        <argsstring>()</argsstring>
+        <name>now</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/dispatcher.hpp" line="368" column="22" bodyfile="include/dispatcher.hpp" bodystart="368" bodyend="375"/>
+      </memberdef>
+      <memberdef kind="function" id="structdispatcher_1_1internal_1_1MockableClock_1a8167e923e9ce8564cd5f66ad30df2d82" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>static void dispatcher::internal::MockableClock::set_now</definition>
+        <argsstring>(time_type t=chrono_to_ptime(std::chrono::system_clock::now()))</argsstring>
+        <name>set_now</name>
+        <param>
+          <type>time_type</type>
+          <declname>t</declname>
+          <defval>chrono_to_ptime(std::chrono::system_clock::now())</defval>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/dispatcher.hpp" line="379" column="17" bodyfile="include/dispatcher.hpp" bodystart="379" bodyend="382"/>
+      </memberdef>
+      <memberdef kind="function" id="structdispatcher_1_1internal_1_1MockableClock_1a776dc4ea2129863b60a2b616b1a61e72" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename Duration</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>static void dispatcher::internal::MockableClock::advance_time</definition>
+        <argsstring>(Duration &amp;&amp;d)</argsstring>
+        <name>advance_time</name>
+        <param>
+          <type>Duration &amp;&amp;</type>
+          <declname>d</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/dispatcher.hpp" line="385" column="17" bodyfile="include/dispatcher.hpp" bodystart="385" bodyend="393"/>
+      </memberdef>
+      <memberdef kind="function" id="structdispatcher_1_1internal_1_1MockableClock_1a958bb3dfbca68bc3b81a97c6ee29733a" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>time_type</type>
+        <definition>static time_type dispatcher::internal::MockableClock::add</definition>
+        <argsstring>(time_type t, duration_type d)</argsstring>
+        <name>add</name>
+        <param>
+          <type>time_type</type>
+          <declname>t</declname>
+        </param>
+        <param>
+          <type>duration_type</type>
+          <declname>d</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/dispatcher.hpp" line="395" column="22" bodyfile="include/dispatcher.hpp" bodystart="395" bodyend="398"/>
+      </memberdef>
+      <memberdef kind="function" id="structdispatcher_1_1internal_1_1MockableClock_1a5e97d01ebd42865b32ce3654315fb295" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>duration_type</type>
+        <definition>static duration_type dispatcher::internal::MockableClock::subtract</definition>
+        <argsstring>(time_type t1, time_type t2)</argsstring>
+        <name>subtract</name>
+        <param>
+          <type>time_type</type>
+          <declname>t1</declname>
+        </param>
+        <param>
+          <type>time_type</type>
+          <declname>t2</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/dispatcher.hpp" line="399" column="26" bodyfile="include/dispatcher.hpp" bodystart="399" bodyend="402"/>
+      </memberdef>
+      <memberdef kind="function" id="structdispatcher_1_1internal_1_1MockableClock_1a6a51cda1a41ca93d988480c87ab45ee1" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>bool</type>
+        <definition>static bool dispatcher::internal::MockableClock::less_than</definition>
+        <argsstring>(time_type t1, time_type t2)</argsstring>
+        <name>less_than</name>
+        <param>
+          <type>time_type</type>
+          <declname>t1</declname>
+        </param>
+        <param>
+          <type>time_type</type>
+          <declname>t2</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/dispatcher.hpp" line="403" column="17" bodyfile="include/dispatcher.hpp" bodystart="403" bodyend="406"/>
+      </memberdef>
+      <memberdef kind="function" id="structdispatcher_1_1internal_1_1MockableClock_1a1e89272a3872c5acb57dae2aea576cbc" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>boost::posix_time::time_duration</type>
+        <definition>static boost::posix_time::time_duration dispatcher::internal::MockableClock::to_posix_duration</definition>
+        <argsstring>(duration_type d)</argsstring>
+        <name>to_posix_duration</name>
+        <param>
+          <type>duration_type</type>
+          <declname>d</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/dispatcher.hpp" line="408" column="45" bodyfile="include/dispatcher.hpp" bodystart="408" bodyend="414"/>
+      </memberdef>
+      <memberdef kind="function" id="structdispatcher_1_1internal_1_1MockableClock_1a500335bcb67d35cd20966c3d0528a46c" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>boost::posix_time::ptime</type>
+        <definition>static boost::posix_time::ptime dispatcher::internal::MockableClock::chrono_to_ptime</definition>
+        <argsstring>(const std::chrono::system_clock::time_point &amp;tp)</argsstring>
+        <name>chrono_to_ptime</name>
+        <param>
+          <type>const std::chrono::system_clock::time_point &amp;</type>
+          <declname>tp</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/dispatcher.hpp" line="416" column="37" bodyfile="include/dispatcher.hpp" bodystart="416" bodyend="422"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="include/dispatcher.hpp" line="361" column="1" bodyfile="include/dispatcher.hpp" bodystart="361" bodyend="423"/>
+    <listofallmembers>
+      <member refid="structdispatcher_1_1internal_1_1MockableClock_1a958bb3dfbca68bc3b81a97c6ee29733a" prot="public" virt="non-virtual"><scope>dispatcher::internal::MockableClock</scope><name>add</name></member>
+      <member refid="structdispatcher_1_1internal_1_1MockableClock_1a776dc4ea2129863b60a2b616b1a61e72" prot="public" virt="non-virtual"><scope>dispatcher::internal::MockableClock</scope><name>advance_time</name></member>
+      <member refid="structdispatcher_1_1internal_1_1MockableClock_1a500335bcb67d35cd20966c3d0528a46c" prot="public" virt="non-virtual"><scope>dispatcher::internal::MockableClock</scope><name>chrono_to_ptime</name></member>
+      <member refid="structdispatcher_1_1internal_1_1MockableClock_1a31d21a77dd4d521aa24838fe03bfe213" prot="public" virt="non-virtual"><scope>dispatcher::internal::MockableClock</scope><name>duration_type</name></member>
+      <member refid="structdispatcher_1_1internal_1_1MockableClock_1a6a51cda1a41ca93d988480c87ab45ee1" prot="public" virt="non-virtual"><scope>dispatcher::internal::MockableClock</scope><name>less_than</name></member>
+      <member refid="structdispatcher_1_1internal_1_1MockableClock_1ada958b9d4b7a619cd41d09d862dd2269" prot="public" virt="non-virtual"><scope>dispatcher::internal::MockableClock</scope><name>now</name></member>
+      <member refid="structdispatcher_1_1internal_1_1MockableClock_1a8167e923e9ce8564cd5f66ad30df2d82" prot="public" virt="non-virtual"><scope>dispatcher::internal::MockableClock</scope><name>set_now</name></member>
+      <member refid="structdispatcher_1_1internal_1_1MockableClock_1a4d04055dbb5e03e3fc4120716c4b3761" prot="public" virt="non-virtual"><scope>dispatcher::internal::MockableClock</scope><name>source_traits</name></member>
+      <member refid="structdispatcher_1_1internal_1_1MockableClock_1a5e97d01ebd42865b32ce3654315fb295" prot="public" virt="non-virtual"><scope>dispatcher::internal::MockableClock</scope><name>subtract</name></member>
+      <member refid="structdispatcher_1_1internal_1_1MockableClock_1a96ff47160ef10589d41af1f5b82b3220" prot="public" virt="non-virtual"><scope>dispatcher::internal::MockableClock</scope><name>time_type</name></member>
+      <member refid="structdispatcher_1_1internal_1_1MockableClock_1a1e89272a3872c5acb57dae2aea576cbc" prot="public" virt="non-virtual"><scope>dispatcher::internal::MockableClock</scope><name>to_posix_duration</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

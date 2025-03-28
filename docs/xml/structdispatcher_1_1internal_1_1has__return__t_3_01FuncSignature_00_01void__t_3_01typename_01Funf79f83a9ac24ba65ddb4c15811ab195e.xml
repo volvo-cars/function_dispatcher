@@ -1,0 +1,19 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.1" xml:lang="en-US">
+  <compounddef id="structdispatcher_1_1internal_1_1has__return__t_3_01FuncSignature_00_01void__t_3_01typename_01Funf79f83a9ac24ba65ddb4c15811ab195e" kind="struct" language="C++" prot="public">
+    <compoundname>dispatcher::internal::has_return_t&lt; FuncSignature, void_t&lt; typename FuncSignature::return_t &gt; &gt;</compoundname>
+    <basecompoundref prot="public" virt="non-virtual">std::true_type</basecompoundref>
+    <templateparamlist>
+      <param>
+        <type>typename FuncSignature</type>
+      </param>
+    </templateparamlist>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="include/dispatcher.hpp" line="63" column="1" bodyfile="include/dispatcher.hpp" bodystart="63" bodyend="63"/>
+    <listofallmembers>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

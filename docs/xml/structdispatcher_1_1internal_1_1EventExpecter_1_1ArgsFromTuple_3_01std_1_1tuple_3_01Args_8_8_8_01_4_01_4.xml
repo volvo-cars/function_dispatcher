@@ -1,0 +1,45 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.1" xml:lang="en-US">
+  <compounddef id="structdispatcher_1_1internal_1_1EventExpecter_1_1ArgsFromTuple_3_01std_1_1tuple_3_01Args_8_8_8_01_4_01_4" kind="struct" language="C++" prot="private">
+    <compoundname>dispatcher::internal::EventExpecter::ArgsFromTuple&lt; std::tuple&lt; Args... &gt; &gt;</compoundname>
+    <templateparamlist>
+      <param>
+        <type>typename...</type>
+        <declname>Args</declname>
+        <defname>Args</defname>
+      </param>
+    </templateparamlist>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="structdispatcher_1_1internal_1_1EventExpecter_1_1ArgsFromTuple_3_01std_1_1tuple_3_01Args_8_8_8_01_4_01_4_1ab3a462f757c6c661bba0ef850f2aa9f7" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename Expecter</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void dispatcher::internal::EventExpecter&lt; FuncSignature &gt;::ArgsFromTuple&lt; std::tuple&lt; Args... &gt; &gt;::subscribe</definition>
+        <argsstring>(Expecter &amp;expecter)</argsstring>
+        <name>subscribe</name>
+        <param>
+          <type>Expecter &amp;</type>
+          <declname>expecter</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/dispatcher_test.hpp" line="341" column="14" bodyfile="include/dispatcher_test.hpp" bodystart="341" bodyend="344"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="include/dispatcher_test.hpp" line="339" column="5" bodyfile="include/dispatcher_test.hpp" bodystart="339" bodyend="345"/>
+    <listofallmembers>
+      <member refid="structdispatcher_1_1internal_1_1EventExpecter_1_1ArgsFromTuple_3_01std_1_1tuple_3_01Args_8_8_8_01_4_01_4_1ab3a462f757c6c661bba0ef850f2aa9f7" prot="public" virt="non-virtual"><scope>dispatcher::internal::EventExpecter::ArgsFromTuple&lt; std::tuple&lt; Args... &gt; &gt;</scope><name>subscribe</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

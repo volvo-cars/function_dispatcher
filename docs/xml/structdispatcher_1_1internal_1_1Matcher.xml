@@ -1,0 +1,72 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.1" xml:lang="en-US">
+  <compounddef id="structdispatcher_1_1internal_1_1Matcher" kind="struct" language="C++" prot="public">
+    <compoundname>dispatcher::internal::Matcher</compoundname>
+    <templateparamlist>
+      <param>
+        <type>typename T</type>
+      </param>
+    </templateparamlist>
+      <sectiondef kind="public-attrib">
+      <memberdef kind="variable" id="structdispatcher_1_1internal_1_1Matcher_1a991690a6b72adf424bf9f907eeacb227" prot="public" static="no" mutable="no">
+        <type>std::function&lt; bool(const T &amp;)&gt;</type>
+        <definition>std::function&lt;bool(const T &amp;)&gt; dispatcher::internal::Matcher&lt; T &gt;::matcher</definition>
+        <argsstring></argsstring>
+        <name>matcher</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/dispatcher_test.hpp" line="53" column="19" bodyfile="include/dispatcher_test.hpp" bodystart="53" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="structdispatcher_1_1internal_1_1Matcher_1a6ebcf69815a3b83cec4f19581f6ebab7" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>dispatcher::internal::Matcher&lt; T &gt;::Matcher</definition>
+        <argsstring>(const T &amp;t)</argsstring>
+        <name>Matcher</name>
+        <param>
+          <type>const T &amp;</type>
+          <declname>t</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/dispatcher_test.hpp" line="46" column="5" bodyfile="include/dispatcher_test.hpp" bodystart="46" bodyend="48"/>
+      </memberdef>
+      <memberdef kind="function" id="structdispatcher_1_1internal_1_1Matcher_1a3e19984ad91a7000f54bd48cf951fa73" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>dispatcher::internal::Matcher&lt; T &gt;::Matcher</definition>
+        <argsstring>(std::function&lt; bool(const T &amp;)&gt; _matcher)</argsstring>
+        <name>Matcher</name>
+        <param>
+          <type>std::function&lt; bool(const T &amp;)&gt;</type>
+          <declname>_matcher</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/dispatcher_test.hpp" line="49" column="5" bodyfile="include/dispatcher_test.hpp" bodystart="49" bodyend="51"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="include/dispatcher_test.hpp" line="45" column="1" bodyfile="include/dispatcher_test.hpp" bodystart="45" bodyend="54"/>
+    <listofallmembers>
+      <member refid="structdispatcher_1_1internal_1_1Matcher_1a991690a6b72adf424bf9f907eeacb227" prot="public" virt="non-virtual"><scope>dispatcher::internal::Matcher</scope><name>matcher</name></member>
+      <member refid="structdispatcher_1_1internal_1_1Matcher_1a6ebcf69815a3b83cec4f19581f6ebab7" prot="public" virt="non-virtual"><scope>dispatcher::internal::Matcher</scope><name>Matcher</name></member>
+      <member refid="structdispatcher_1_1internal_1_1Matcher_1a3e19984ad91a7000f54bd48cf951fa73" prot="public" virt="non-virtual"><scope>dispatcher::internal::Matcher</scope><name>Matcher</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

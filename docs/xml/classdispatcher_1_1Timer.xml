@@ -1,0 +1,223 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.1" xml:lang="en-US">
+  <compounddef id="classdispatcher_1_1Timer" kind="class" language="C++" prot="public">
+    <compoundname>dispatcher::Timer</compoundname>
+    <includes refid="dispatcher_8hpp" local="no">dispatcher.hpp</includes>
+    <templateparamlist>
+      <param>
+        <type>typename Network</type>
+      </param>
+    </templateparamlist>
+      <sectiondef kind="private-attrib">
+      <memberdef kind="variable" id="classdispatcher_1_1Timer_1a9ebbbdde46f9ed905b631e0045746543" prot="private" static="no" mutable="no">
+        <type>boost::asio::basic_deadline_timer&lt; boost::posix_time::ptime, internal::MockableClock &gt;</type>
+        <definition>boost::asio::basic_deadline_timer&lt;boost::posix_time::ptime, internal::MockableClock&gt; dispatcher::Timer&lt; Network &gt;::timer_</definition>
+        <argsstring></argsstring>
+        <name>timer_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/dispatcher.hpp" line="836" column="39" bodyfile="include/dispatcher.hpp" bodystart="836" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="classdispatcher_1_1Timer_1a191563b89b2b5555ab9fc5c0bc6004b1" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>dispatcher::Timer&lt; Network &gt;::Timer</definition>
+        <argsstring>()</argsstring>
+        <name>Timer</name>
+        <briefdescription>
+<para>Construct a new <ref refid="classdispatcher_1_1Timer" kindref="compound">Timer</ref> object. </para>
+        </briefdescription>
+        <detaileddescription>
+<para>Initializes the timer using the IO context of the event loop associated with the specified network. </para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/dispatcher.hpp" line="758" column="5" bodyfile="include/dispatcher.hpp" bodystart="758" bodyend="760"/>
+      </memberdef>
+      <memberdef kind="function" id="classdispatcher_1_1Timer_1ace1836a5bfe91825fd55486189e33d63" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void dispatcher::Timer&lt; Network &gt;::Cancel</definition>
+        <argsstring>()</argsstring>
+        <name>Cancel</name>
+        <briefdescription>
+<para>Cancel the timer. </para>
+        </briefdescription>
+        <detaileddescription>
+<para>Cancels any pending tasks associated with the timer. If the timer is already expired or no tasks are pending, this function has no effect. </para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/dispatcher.hpp" line="768" column="10" bodyfile="include/dispatcher.hpp" bodystart="768" bodyend="771"/>
+      </memberdef>
+      <memberdef kind="function" id="classdispatcher_1_1Timer_1a7b925ba7fb07fdaa55ffb37e959fa429" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename Duration</type>
+          </param>
+          <param>
+            <type>typename Callback</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void dispatcher::Timer&lt; Network &gt;::DoIn</definition>
+        <argsstring>(Duration duration, Callback &amp;&amp;callback)</argsstring>
+        <name>DoIn</name>
+        <param>
+          <type>Duration</type>
+          <declname>duration</declname>
+        </param>
+        <param>
+          <type>Callback &amp;&amp;</type>
+          <declname>callback</declname>
+        </param>
+        <briefdescription>
+<para>Schedule a task to be executed after a specified duration. </para>
+        </briefdescription>
+        <detaileddescription>
+<para>This function schedules a task to be executed once after the specified duration has elapsed.</para>
+<para><parameterlist kind="templateparam"><parameteritem>
+<parameternamelist>
+<parametername>Duration</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The type of the duration (e.g., <computeroutput>std::chrono::milliseconds</computeroutput>). </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>Callback</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The type of the callback function. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>duration</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The duration to wait before executing the task. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>callback</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The callback function to execute after the duration.</para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+Example: <programlisting><codeline><highlight class="normal">dispatcher::Timer&lt;&gt;<sp/>timer;</highlight></codeline>
+<codeline><highlight class="normal">timer.DoIn(std::chrono::seconds(5),<sp/>[]<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>std::cout<sp/>&lt;&lt;<sp/>&quot;Task<sp/>executed<sp/>after<sp/>5<sp/>seconds!&quot;<sp/>&lt;&lt;<sp/>std::endl;</highlight></codeline>
+<codeline><highlight class="normal">});</highlight></codeline>
+</programlisting> </para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/dispatcher.hpp" line="792" column="10" bodyfile="include/dispatcher.hpp" bodystart="792" bodyend="801"/>
+      </memberdef>
+      <memberdef kind="function" id="classdispatcher_1_1Timer_1a84280a98bc5d843e4f11b88199a7bb43" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename Duration</type>
+          </param>
+          <param>
+            <type>typename Callback</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void dispatcher::Timer&lt; Network &gt;::DoEvery</definition>
+        <argsstring>(Duration duration, Callback &amp;&amp;callback)</argsstring>
+        <name>DoEvery</name>
+        <param>
+          <type>Duration</type>
+          <declname>duration</declname>
+        </param>
+        <param>
+          <type>Callback &amp;&amp;</type>
+          <declname>callback</declname>
+        </param>
+        <briefdescription>
+<para>Schedule a task to be executed repeatedly at regular intervals. </para>
+        </briefdescription>
+        <detaileddescription>
+<para>This function schedules a task to be executed repeatedly at the specified interval.</para>
+<para><parameterlist kind="templateparam"><parameteritem>
+<parameternamelist>
+<parametername>Duration</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The type of the duration (e.g., <computeroutput>std::chrono::milliseconds</computeroutput>). </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>Callback</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The type of the callback function. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>duration</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The interval at which to execute the task. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>callback</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The callback function to execute at each interval.</para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+Example: <programlisting><codeline><highlight class="normal">dispatcher::Timer&lt;&gt;<sp/>timer;</highlight></codeline>
+<codeline><highlight class="normal">timer.DoEvery(std::chrono::seconds(2),<sp/>[]<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>std::cout<sp/>&lt;&lt;<sp/>&quot;Task<sp/>executed<sp/>every<sp/>2<sp/>seconds!&quot;<sp/>&lt;&lt;<sp/>std::endl;</highlight></codeline>
+<codeline><highlight class="normal">});</highlight></codeline>
+</programlisting> </para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/dispatcher.hpp" line="822" column="10" bodyfile="include/dispatcher.hpp" bodystart="822" bodyend="833"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+<para>A timer utility for scheduling tasks in the event loop. </para>
+    </briefdescription>
+    <detaileddescription>
+<para>The <computeroutput><ref refid="classdispatcher_1_1Timer" kindref="compound">Timer</ref></computeroutput> class provides functionality to schedule tasks to be executed after a specified duration or repeatedly at regular intervals. It uses the event loop associated with the specified network to handle the execution of tasks asynchronously.</para>
+<para><parameterlist kind="templateparam"><parameteritem>
+<parameternamelist>
+<parametername>Network</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The network type (default is <computeroutput>internal::Default</computeroutput>). </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>
+    </detaileddescription>
+    <location file="include/dispatcher.hpp" line="751" column="1" bodyfile="include/dispatcher.hpp" bodystart="751" bodyend="837"/>
+    <listofallmembers>
+      <member refid="classdispatcher_1_1Timer_1ace1836a5bfe91825fd55486189e33d63" prot="public" virt="non-virtual"><scope>dispatcher::Timer</scope><name>Cancel</name></member>
+      <member refid="classdispatcher_1_1Timer_1a84280a98bc5d843e4f11b88199a7bb43" prot="public" virt="non-virtual"><scope>dispatcher::Timer</scope><name>DoEvery</name></member>
+      <member refid="classdispatcher_1_1Timer_1a7b925ba7fb07fdaa55ffb37e959fa429" prot="public" virt="non-virtual"><scope>dispatcher::Timer</scope><name>DoIn</name></member>
+      <member refid="classdispatcher_1_1Timer_1a191563b89b2b5555ab9fc5c0bc6004b1" prot="public" virt="non-virtual"><scope>dispatcher::Timer</scope><name>Timer</name></member>
+      <member refid="classdispatcher_1_1Timer_1a9ebbbdde46f9ed905b631e0045746543" prot="private" virt="non-virtual"><scope>dispatcher::Timer</scope><name>timer_</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

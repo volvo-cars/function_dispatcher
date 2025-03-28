@@ -1,0 +1,44 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.1" xml:lang="en-US">
+  <compounddef id="structdispatcher_1_1internal_1_1Sequence" kind="struct" language="C++" prot="public">
+    <compoundname>dispatcher::internal::Sequence</compoundname>
+      <sectiondef kind="public-attrib">
+      <memberdef kind="variable" id="structdispatcher_1_1internal_1_1Sequence_1a38a3c44fee9508d16ff0fc33a1f4921d" prot="public" static="no" mutable="no">
+        <type>int</type>
+        <definition>int dispatcher::internal::Sequence::next_expected_call</definition>
+        <argsstring></argsstring>
+        <name>next_expected_call</name>
+        <initializer>= 0</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/dispatcher_test.hpp" line="30" column="9" bodyfile="include/dispatcher_test.hpp" bodystart="30" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structdispatcher_1_1internal_1_1Sequence_1aa06705f016f7c5f0da8c9300b188701f" prot="public" static="no" mutable="no">
+        <type>std::atomic&lt; int &gt;</type>
+        <definition>std::atomic&lt;int&gt; dispatcher::internal::Sequence::current_call_to_expect</definition>
+        <argsstring></argsstring>
+        <name>current_call_to_expect</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/dispatcher_test.hpp" line="31" column="17" bodyfile="include/dispatcher_test.hpp" bodystart="31" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="include/dispatcher_test.hpp" line="29" column="1" bodyfile="include/dispatcher_test.hpp" bodystart="29" bodyend="32"/>
+    <listofallmembers>
+      <member refid="structdispatcher_1_1internal_1_1Sequence_1aa06705f016f7c5f0da8c9300b188701f" prot="public" virt="non-virtual"><scope>dispatcher::internal::Sequence</scope><name>current_call_to_expect</name></member>
+      <member refid="structdispatcher_1_1internal_1_1Sequence_1a38a3c44fee9508d16ff0fc33a1f4921d" prot="public" virt="non-virtual"><scope>dispatcher::internal::Sequence</scope><name>next_expected_call</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

@@ -202,7 +202,7 @@ class CustomStackAllocator {
         return sctx;
     }
 
-    void deallocate(boost::context::stack_context &sctx) BOOST_NOEXCEPT_OR_NOTHROW
+    void deallocate(boost::context::stack_context &sctx)
     {
         BOOST_ASSERT(sctx.sp);
 
@@ -439,13 +439,15 @@ struct MockableClock {
  * @note If the callable's return type does not match the function signature's return type, a static assertion will
  * fail.
  *
- * @example
+ * Example:
+ * @code
  * struct Addition {
  *     using args_t = std::tuple<int, int>;
  *     using return_t = int;
  * };
  *
  * dispatcher::attach<Addition>([](int a, int b) { return a + b; });
+ * @endcode
  */
 template <typename FuncSignature, typename Callable>
 void attach(Callable &&callable)
@@ -486,7 +488,8 @@ void detach()
  *
  * @throws NoHandler<FuncSignature> If no callable is attached to the function signature.
  *
- * @example
+ * Example:
+ * @code
  * struct Addition {
  *     using args_t = std::tuple<int, int>;
  *     using return_t = int;
@@ -494,6 +497,7 @@ void detach()
  *
  * dispatcher::attach<Addition>([](int a, int b) { return a + b; });
  * int result = dispatcher::call<Addition>(3, 5); // result will be 8
+ * @endcode
  */
 template <typename FuncSignature, typename... Args>
 auto call(Args &&...args)
@@ -519,7 +523,8 @@ auto call(Args &&...args)
  * @note This function does not block the calling thread. The callable is executed in the context
  * of the event loop associated with the specified network.
  *
- * @example
+ * Example
+ * @code
  * struct Addition {
  *     using args_t = std::tuple<int, int>;
  *     using return_t = int;
@@ -528,6 +533,7 @@ auto call(Args &&...args)
  * dispatcher::attach<Addition>([](int a, int b) { return a + b; });
  * auto future = dispatcher::async_call<Addition>(3, 5);
  * int result = future.get(); // result will be 8
+ * @endcode
  */
 template <typename FuncSignature, typename Network = internal::Default, typename... Args>
 auto async_call(Args &&...args)
@@ -557,7 +563,8 @@ auto async_call(Args &&...args)
  * @param callable The callable to invoke when the event is published.
  * @return A `boost::signals2::connection` object representing the subscription.
  *
- * @example
+ * Example:
+ * @code
  * struct MyEvent {
  *     using args_t = std::tuple<int, std::string>;
  * };
@@ -565,6 +572,7 @@ auto async_call(Args &&...args)
  * dispatcher::subscribe<MyEvent>([](int a, const std::string& b) {
  *     std::cout << "Received event with values: " << a << ", " << b << std::endl;
  * });
+ * @endcode
  */
 template <typename FuncSignature, typename Network = internal::Default, typename Callable>
 boost::signals2::connection subscribe(Callable &&callable)
@@ -583,7 +591,8 @@ boost::signals2::connection subscribe(Callable &&callable)
  * @tparam Network The network type (default is `internal::Default`).
  * @return A `boost::fibers::future<std::nullptr_t>` that will be fulfilled when the event is published.
  *
- * @example
+ * Example:
+ * @code
  * struct MyEvent {
  *     using args_t = std::tuple<>;
  * };
@@ -591,6 +600,7 @@ boost::signals2::connection subscribe(Callable &&callable)
  * auto future = dispatcher::expect<MyEvent>();
  * future.wait(); // Blocks until the event is published
  * std::cout << "Event received!" << std::endl;
+ * @endcode
  */
 template <typename FuncSignature, typename Network = internal::Default>
 boost::fibers::future<std::nullptr_t> expect()
@@ -621,7 +631,8 @@ boost::fibers::future<std::nullptr_t> expect()
  * @param callable The callable to invoke when the event is published.
  * @return A `boost::fibers::future<std::nullptr_t>` that will be fulfilled after the callable is executed.
  *
- * @example
+ * Example:
+ * @code
  * struct MyEvent {
  *     using args_t = std::tuple<int, std::string>;
  * };
@@ -631,6 +642,7 @@ boost::fibers::future<std::nullptr_t> expect()
  * });
  * future.wait(); // Blocks until the event is published
  * std::cout << "Event handling completed!" << std::endl;
+ * @endcode
  */
 template <typename FuncSignature, typename Network = internal::Default, typename Callable>
 boost::fibers::future<std::nullptr_t> expect(Callable &&callable)
@@ -660,7 +672,8 @@ boost::fibers::future<std::nullptr_t> expect(Callable &&callable)
  * @tparam Args The types of the arguments to pass to the event.
  * @param args The arguments to pass to the event.
  *
- * @example
+ * Example
+ * @code
  * struct MyEvent {
  *     using args_t = std::tuple<int, std::string>;
  * };
@@ -670,6 +683,7 @@ boost::fibers::future<std::nullptr_t> expect(Callable &&callable)
  * });
  *
  * dispatcher::publish<MyEvent>(42, "Hello, World!");
+ * @endcode
  */
 template <typename FuncSignature, typename Network = internal::Default, typename... Args>
 void publish(Args &&...args)
@@ -687,10 +701,12 @@ void publish(Args &&...args)
  * @tparam T The type of the task.
  * @param task The task to execute asynchronously.
  *
- * @example
+ * Example:
+ * @code
  * dispatcher::post([] {
  *     std::cout << "Task executed asynchronously!" << std::endl;
  * });
+ * @endcode
  */
 template <typename Network = internal::Default, typename T>
 void post(T &&task)
@@ -711,8 +727,10 @@ void post(T &&task)
  * than or equal to the specified thread count, no additional threads will be created, and the event loop configuration
  * remains unchanged.
  *
- * @example
+ * Example:
+ * @code
  * dispatcher::set_worker_threads<WorkNetwork>(10); // Set 10 worker threads for the WorkNetwork event loop.
+ * @endcode
  */
 template <typename Network = internal::Default>
 void set_worker_threads(int thread_count)
@@ -762,11 +780,13 @@ class Timer {
      * @param duration The duration to wait before executing the task.
      * @param callback The callback function to execute after the duration.
      *
-     * @example
+     * Example:
+     * @code
      * dispatcher::Timer<> timer;
      * timer.DoIn(std::chrono::seconds(5), [] {
      *     std::cout << "Task executed after 5 seconds!" << std::endl;
      * });
+     * @endcode
      */
     template <typename Duration, typename Callback>
     void DoIn(Duration duration, Callback &&callback)
@@ -790,11 +810,13 @@ class Timer {
      * @param duration The interval at which to execute the task.
      * @param callback The callback function to execute at each interval.
      *
-     * @example
+     * Example:
+     * @code
      * dispatcher::Timer<> timer;
      * timer.DoEvery(std::chrono::seconds(2), [] {
      *     std::cout << "Task executed every 2 seconds!" << std::endl;
      * });
+     * @endcode
      */
     template <typename Duration, typename Callback>
     void DoEvery(Duration duration, Callback &&callback)

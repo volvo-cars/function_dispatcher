@@ -1,0 +1,220 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.1" xml:lang="en-US">
+  <compounddef id="classdispatcher_1_1internal_1_1EventExpecter" kind="class" language="C++" prot="public">
+    <compoundname>dispatcher::internal::EventExpecter</compoundname>
+    <basecompoundref prot="public" virt="non-virtual">dispatcher::internal::ExpecterBase</basecompoundref>
+    <innerclass refid="structdispatcher_1_1internal_1_1EventExpecter_1_1ArgsFromTuple" prot="private">dispatcher::internal::EventExpecter::ArgsFromTuple</innerclass>
+    <innerclass refid="structdispatcher_1_1internal_1_1EventExpecter_1_1ArgsFromTuple_3_01std_1_1tuple_3_01Args_8_8_8_01_4_01_4" prot="private">dispatcher::internal::EventExpecter::ArgsFromTuple&lt; std::tuple&lt; Args... &gt; &gt;</innerclass>
+    <templateparamlist>
+      <param>
+        <type>typename FuncSignature</type>
+      </param>
+    </templateparamlist>
+      <sectiondef kind="private-attrib">
+      <memberdef kind="variable" id="classdispatcher_1_1internal_1_1EventExpecter_1a34c27566b975e240d9764552a13fcebe" prot="private" static="no" mutable="no">
+        <type>std::vector&lt; Expectation&lt; FuncSignature &gt; &gt;</type>
+        <definition>std::vector&lt;Expectation&lt;FuncSignature&gt; &gt; dispatcher::internal::EventExpecter&lt; FuncSignature &gt;::remaining_expectation_</definition>
+        <argsstring></argsstring>
+        <name>remaining_expectation_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/dispatcher_test.hpp" line="330" column="17" bodyfile="include/dispatcher_test.hpp" bodystart="330" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classdispatcher_1_1internal_1_1EventExpecter_1a88bc28ba45b5d5bfc5221b950f7c01d1" prot="private" static="no" mutable="no">
+        <type>std::vector&lt; std::tuple&lt; const char *, int, typename Expectation&lt; FuncSignature &gt;::matchers_tuple &gt; &gt;</type>
+        <definition>std::vector&lt;std::tuple&lt;const char *, int, typename Expectation&lt;FuncSignature&gt;::matchers_tuple&gt; &gt; dispatcher::internal::EventExpecter&lt; FuncSignature &gt;::should_not_be_published_</definition>
+        <argsstring></argsstring>
+        <name>should_not_be_published_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/dispatcher_test.hpp" line="332" column="9" bodyfile="include/dispatcher_test.hpp" bodystart="332" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="classdispatcher_1_1internal_1_1EventExpecter_1abd9483562fb7eb559bb60a40429e5d11" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>dispatcher::internal::EventExpecter&lt; FuncSignature &gt;::EventExpecter</definition>
+        <argsstring>()</argsstring>
+        <name>EventExpecter</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/dispatcher_test.hpp" line="282" column="5" bodyfile="include/dispatcher_test.hpp" bodystart="282" bodyend="285"/>
+      </memberdef>
+      <memberdef kind="function" id="classdispatcher_1_1internal_1_1EventExpecter_1a62f960a206d42557bab9560592d3bafd" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>dispatcher::internal::EventExpecter&lt; FuncSignature &gt;::EventExpecter</definition>
+        <argsstring>(const EventExpecter &amp;)=delete</argsstring>
+        <name>EventExpecter</name>
+        <param>
+          <type>const EventExpecter &amp;</type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/dispatcher_test.hpp" line="286" column="5"/>
+      </memberdef>
+      <memberdef kind="function" id="classdispatcher_1_1internal_1_1EventExpecter_1a0209ac32866a5be4e6311676267012b9" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>EventExpecter &amp;</type>
+        <definition>EventExpecter&amp; dispatcher::internal::EventExpecter&lt; FuncSignature &gt;::operator=</definition>
+        <argsstring>(const EventExpecter &amp;)=delete</argsstring>
+        <name>operator=</name>
+        <param>
+          <type>const EventExpecter &amp;</type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/dispatcher_test.hpp" line="287" column="19"/>
+      </memberdef>
+      <memberdef kind="function" id="classdispatcher_1_1internal_1_1EventExpecter_1a2008572d77675e7543b4ecf68e775e03" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>dispatcher::internal::EventExpecter&lt; FuncSignature &gt;::EventExpecter</definition>
+        <argsstring>(EventExpecter &amp;&amp;)=default</argsstring>
+        <name>EventExpecter</name>
+        <param>
+          <type>EventExpecter &amp;&amp;</type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/dispatcher_test.hpp" line="288" column="5"/>
+      </memberdef>
+      <memberdef kind="function" id="classdispatcher_1_1internal_1_1EventExpecter_1a6d8e0b49edcad3e65b83e47d9bd7f5ba" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>EventExpecter &amp;</type>
+        <definition>EventExpecter&amp; dispatcher::internal::EventExpecter&lt; FuncSignature &gt;::operator=</definition>
+        <argsstring>(EventExpecter &amp;&amp;)=default</argsstring>
+        <name>operator=</name>
+        <param>
+          <type>EventExpecter &amp;&amp;</type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/dispatcher_test.hpp" line="289" column="19"/>
+      </memberdef>
+      <memberdef kind="function" id="classdispatcher_1_1internal_1_1EventExpecter_1a534954651668b6a46901b88cbf8d63f7" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename...</type>
+            <declname>Args</declname>
+            <defname>Args</defname>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void dispatcher::internal::EventExpecter&lt; FuncSignature &gt;::subscribe</definition>
+        <argsstring>()</argsstring>
+        <name>subscribe</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/dispatcher_test.hpp" line="292" column="10" bodyfile="include/dispatcher_test.hpp" bodystart="292" bodyend="310"/>
+      </memberdef>
+      <memberdef kind="function" id="classdispatcher_1_1internal_1_1EventExpecter_1a5e319370d3573fe0186e996e4a7d8fa4" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void dispatcher::internal::EventExpecter&lt; FuncSignature &gt;::add_expectation</definition>
+        <argsstring>(Expectation&lt; FuncSignature &gt; expectation)</argsstring>
+        <name>add_expectation</name>
+        <param>
+          <type>Expectation&lt; FuncSignature &gt;</type>
+          <declname>expectation</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/dispatcher_test.hpp" line="312" column="10" bodyfile="include/dispatcher_test.hpp" bodystart="312" bodyend="315"/>
+      </memberdef>
+      <memberdef kind="function" id="classdispatcher_1_1internal_1_1EventExpecter_1a5071be136714ad88a249522afce5a75f" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename Matchers</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void dispatcher::internal::EventExpecter&lt; FuncSignature &gt;::add_should_not_call_matchers</definition>
+        <argsstring>(const char *file, int line, Matchers &amp;&amp;matchers)</argsstring>
+        <name>add_should_not_call_matchers</name>
+        <param>
+          <type>const char *</type>
+          <declname>file</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>line</declname>
+        </param>
+        <param>
+          <type>Matchers &amp;&amp;</type>
+          <declname>matchers</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/dispatcher_test.hpp" line="318" column="10" bodyfile="include/dispatcher_test.hpp" bodystart="318" bodyend="321"/>
+      </memberdef>
+      <memberdef kind="function" id="classdispatcher_1_1internal_1_1EventExpecter_1acd1f6ba360c8de349d7e02a9117c4464" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void dispatcher::internal::EventExpecter&lt; FuncSignature &gt;::clean_expectations</definition>
+        <argsstring>()</argsstring>
+        <name>clean_expectations</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/dispatcher_test.hpp" line="323" column="10" bodyfile="include/dispatcher_test.hpp" bodystart="323" bodyend="327"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="include/dispatcher_test.hpp" line="280" column="1" bodyfile="include/dispatcher_test.hpp" bodystart="280" bodyend="346"/>
+    <listofallmembers>
+      <member refid="classdispatcher_1_1internal_1_1EventExpecter_1a5e319370d3573fe0186e996e4a7d8fa4" prot="public" virt="non-virtual"><scope>dispatcher::internal::EventExpecter</scope><name>add_expectation</name></member>
+      <member refid="classdispatcher_1_1internal_1_1EventExpecter_1a5071be136714ad88a249522afce5a75f" prot="public" virt="non-virtual"><scope>dispatcher::internal::EventExpecter</scope><name>add_should_not_call_matchers</name></member>
+      <member refid="classdispatcher_1_1internal_1_1EventExpecter_1acd1f6ba360c8de349d7e02a9117c4464" prot="public" virt="non-virtual"><scope>dispatcher::internal::EventExpecter</scope><name>clean_expectations</name></member>
+      <member refid="classdispatcher_1_1internal_1_1EventExpecter_1abd9483562fb7eb559bb60a40429e5d11" prot="public" virt="non-virtual"><scope>dispatcher::internal::EventExpecter</scope><name>EventExpecter</name></member>
+      <member refid="classdispatcher_1_1internal_1_1EventExpecter_1a62f960a206d42557bab9560592d3bafd" prot="public" virt="non-virtual"><scope>dispatcher::internal::EventExpecter</scope><name>EventExpecter</name></member>
+      <member refid="classdispatcher_1_1internal_1_1EventExpecter_1a2008572d77675e7543b4ecf68e775e03" prot="public" virt="non-virtual"><scope>dispatcher::internal::EventExpecter</scope><name>EventExpecter</name></member>
+      <member refid="classdispatcher_1_1internal_1_1EventExpecter_1a0209ac32866a5be4e6311676267012b9" prot="public" virt="non-virtual"><scope>dispatcher::internal::EventExpecter</scope><name>operator=</name></member>
+      <member refid="classdispatcher_1_1internal_1_1EventExpecter_1a6d8e0b49edcad3e65b83e47d9bd7f5ba" prot="public" virt="non-virtual"><scope>dispatcher::internal::EventExpecter</scope><name>operator=</name></member>
+      <member refid="classdispatcher_1_1internal_1_1EventExpecter_1a34c27566b975e240d9764552a13fcebe" prot="private" virt="non-virtual"><scope>dispatcher::internal::EventExpecter</scope><name>remaining_expectation_</name></member>
+      <member refid="classdispatcher_1_1internal_1_1EventExpecter_1a88bc28ba45b5d5bfc5221b950f7c01d1" prot="private" virt="non-virtual"><scope>dispatcher::internal::EventExpecter</scope><name>should_not_be_published_</name></member>
+      <member refid="classdispatcher_1_1internal_1_1EventExpecter_1a534954651668b6a46901b88cbf8d63f7" prot="public" virt="non-virtual"><scope>dispatcher::internal::EventExpecter</scope><name>subscribe</name></member>
+      <member refid="classdispatcher_1_1internal_1_1ExpecterBase_1a646fee37689b250de70d76555c25ce10" prot="public" virt="virtual"><scope>dispatcher::internal::EventExpecter</scope><name>~ExpecterBase</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

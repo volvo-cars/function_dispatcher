@@ -1,0 +1,36 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.1" xml:lang="en-US">
+  <compounddef id="structdispatcher_1_1internal_1_1ToMatcher_3_01std_1_1tuple_3_01Args_8_8_8_01_4_01_4" kind="struct" language="C++" prot="public">
+    <compoundname>dispatcher::internal::ToMatcher&lt; std::tuple&lt; Args... &gt; &gt;</compoundname>
+    <templateparamlist>
+      <param>
+        <type>typename...</type>
+        <declname>Args</declname>
+        <defname>Args</defname>
+      </param>
+    </templateparamlist>
+      <sectiondef kind="public-type">
+      <memberdef kind="typedef" id="structdispatcher_1_1internal_1_1ToMatcher_3_01std_1_1tuple_3_01Args_8_8_8_01_4_01_4_1a4ce97c16c15108027a1b1587e3ec85e0" prot="public" static="no">
+        <type>std::tuple&lt; Matcher&lt; Args &gt;... &gt;</type>
+        <definition>using dispatcher::internal::ToMatcher&lt; std::tuple&lt; Args... &gt; &gt;::type =  std::tuple&lt;Matcher&lt;Args&gt;...&gt;</definition>
+        <argsstring></argsstring>
+        <name>type</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/dispatcher_test.hpp" line="63" column="5" bodyfile="include/dispatcher_test.hpp" bodystart="63" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="include/dispatcher_test.hpp" line="62" column="1" bodyfile="include/dispatcher_test.hpp" bodystart="62" bodyend="64"/>
+    <listofallmembers>
+      <member refid="structdispatcher_1_1internal_1_1ToMatcher_3_01std_1_1tuple_3_01Args_8_8_8_01_4_01_4_1a4ce97c16c15108027a1b1587e3ec85e0" prot="public" virt="non-virtual"><scope>dispatcher::internal::ToMatcher&lt; std::tuple&lt; Args... &gt; &gt;</scope><name>type</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>
