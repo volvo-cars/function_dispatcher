@@ -27,6 +27,7 @@
 #include <vector>
 
 namespace dispatcher {
+namespace internal {
 
 template <typename ReturnType, typename Tuple>
 struct FunctionFromTuple;
@@ -90,7 +91,7 @@ struct args_t_or_default<FuncSignature, true> {
 // Default network
 struct Default {};
 
-// ========================================= Function dispatcher ========================================= //
+}  // namespace internal
 
 template <typename FuncSignature>
 class NoHandler : public std::exception {
@@ -100,6 +101,8 @@ class NoHandler : public std::exception {
         return "Function was called but no handler was attached";
     }
 };
+
+namespace internal {
 
 template <typename FuncSignature, typename func_type>
 func_type &GetFunction()
@@ -135,31 +138,6 @@ struct FunctionDispatcher {
 
     using func_type = typename FunctionFromTuple<return_t, args_t>::type;
 };
-
-template <typename FuncSignature, typename Callable>
-void attach(Callable &&callable)
-{
-    static_assert(
-        std::is_same<
-            typename FunctionDispatcher<FuncSignature>::return_t,
-            typename ReturnTypeFromCallable<Callable, typename FunctionDispatcher<FuncSignature>::args_t>::type>::value,
-        "The return values of the callable is not matching the function signature");
-    FunctionDispatcher<FuncSignature>::template attach<Callable>(std::forward<Callable>(callable));
-}
-
-template <typename FuncSignature>
-void detach()
-{
-    FunctionDispatcher<FuncSignature>::detach();
-}
-
-template <typename FuncSignature, typename... Args>
-auto call(Args &&...args)
-{
-    return FunctionDispatcher<FuncSignature>::call(std::forward<Args>(args)...);
-}
-
-// ========================================= Event loop ========================================= //
 
 class MemoryPool {
   public:
@@ -274,8 +252,22 @@ class EventLoop {
     void Post(T &&task)
     {
         boost::asio::post(io_context_, [this, task = std::forward<T>(task)]() mutable {
-            boost::fibers::fiber(boost::fibers::launch::dispatch, std::allocator_arg,
-                                 CustomStackAllocator{&memory_pool_}, std::forward<T>(task))
+            boost::fibers::fiber(
+                boost::fibers::launch::dispatch, std::allocator_arg,
+                /**
+                 * @brief Call a function by its signature with the provided arguments.
+                 *
+                 * This function invokes the callable attached to the specified function signature with the given
+                 * arguments. The arguments must match the types defined in the function signature.
+                 *
+                 * @tparam FuncSignature The function signature to call.
+                 * @tparam Args The types of the arguments to pass to the callable.
+                 * @param args The arguments to pass to the callable.
+                 * @return The return value of the callable.
+                 *
+                 * @throws NoHandler<FuncSignature> If no callable is attached to the function signature.
+                 */
+                CustomStackAllocator{&memory_pool_}, std::forward<T>(task))
                 .detach();
         });
     }
@@ -310,8 +302,6 @@ class EventLoop {
     MemoryPool memory_pool_{30000};
 };
 
-// ========================================= Event dispatcher ========================================= //
-
 template <typename Network = Default>
 EventLoop<Network> &getEventLoop()
 {
@@ -339,22 +329,7 @@ signal_type &GetSignal()
     return signal;
 }
 
-template <typename FuncSignature, typename Network = Default, typename... Args>
-auto async_call(Args &&...args)
-{
-    boost::fibers::promise<typename FunctionDispatcher<FuncSignature>::return_t> promise;
-    auto future = promise.get_future();
-
-    using func_type = typename FunctionDispatcher<FuncSignature>::func_type;
-
-    auto argsTuple = std::make_tuple(std::forward<Args>(args)...);
-    getEventLoop<Network>().Post([promise = std::move(promise), argsTuple = std::move(argsTuple)]() mutable {
-        promise.set_value(call_with_tuple(GetFunction<FuncSignature, func_type>(), std::move(argsTuple)));
-    });
-    return future;
-}
-
-template <typename FuncSignature, typename Network = Default>
+template <typename FuncSignature, typename Network = internal::Default>
 struct EventDispatcher {
     template <typename Callable>
     static boost::signals2::connection subscribe(Callable &&callable)
@@ -375,36 +350,6 @@ struct EventDispatcher {
 
     using signal_type = typename SignalFromTuple<args_t>::type;
 };
-
-template <typename FuncSignature, typename Network = Default, typename Callable>
-boost::signals2::connection subscribe(Callable &&callable)
-{
-    return EventDispatcher<FuncSignature, Network>::template subscribe(std::forward<Callable>(callable));
-}
-
-template <typename FuncSignature, typename Network = Default, typename Callable>
-boost::fibers::future<std::nullptr_t> expect(/*Callable &&callable*/)
-{
-    boost::fibers::promise<std::nullptr_t> promise;
-    auto future = promise.get_future();
-    EventDispatcher<FuncSignature, Network>::template subscribe(
-        [promise = std::move(promise)](auto &&...) mutable { promise.set_value({}); });
-    return future;
-}
-
-template <typename FuncSignature, typename Network = Default, typename... Args>
-void publish(Args &&...args)
-{
-    EventDispatcher<FuncSignature, Network>::publish(std::forward<Args>(args)...);
-}
-
-template <typename Network = Default, typename T>
-void post(T &&task)
-{
-    getEventLoop<Network>().Post(std::forward<T>(task));
-}
-
-// ========================================= Timer ========================================= //
 
 inline boost::optional<boost::asio::deadline_timer::traits_type::time_type> &Now()
 {
@@ -477,17 +422,352 @@ struct MockableClock {
     }
 };
 
-template <typename Network = Default>
+}  // namespace internal
+
+// ========================================= API ========================================= //
+
+/**
+ * @brief Attach a callable to a function signature.
+ *
+ * This function binds a callable (e.g., a lambda, function, or functor) to a specific function signature.
+ * The callable must match the return type and argument types defined by the function signature.
+ *
+ * @tparam FuncSignature The function signature to attach the callable to.
+ * @tparam Callable The type of the callable.
+ * @param callable The callable to attach.
+ *
+ * @note If the callable's return type does not match the function signature's return type, a static assertion will
+ * fail.
+ *
+ * @example
+ * struct Addition {
+ *     using args_t = std::tuple<int, int>;
+ *     using return_t = int;
+ * };
+ *
+ * dispatcher::attach<Addition>([](int a, int b) { return a + b; });
+ */
+template <typename FuncSignature, typename Callable>
+void attach(Callable &&callable)
+{
+    static_assert(
+        std::is_same<typename internal::FunctionDispatcher<FuncSignature>::return_t,
+                     typename internal::ReturnTypeFromCallable<
+                         Callable, typename internal::FunctionDispatcher<FuncSignature>::args_t>::type>::value,
+        "The return values of the callable is not matching the function signature");
+    internal::FunctionDispatcher<FuncSignature>::template attach<Callable>(std::forward<Callable>(callable));
+}
+
+/**
+ * @brief Detach the callable from a function signature.
+ *
+ * This function removes the callable that was previously attached to the specified function signature.
+ * After detaching, any calls to the function signature will throw an exception.
+ *
+ * @tparam FuncSignature The function signature to detach the callable from.
+ */
+template <typename FuncSignature>
+void detach()
+{
+    internal::FunctionDispatcher<FuncSignature>::detach();
+}
+
+/**
+ * @brief Call a function by its signature with the provided arguments.
+ *
+ * This function invokes the callable previously attached to the specified function signature with the given arguments.
+ * The arguments must match the types defined in the function signature.
+ * This function is blocking
+ *
+ * @tparam FuncSignature The function signature to call.
+ * @tparam Args The types of the arguments to pass to the callable.
+ * @param args The arguments to pass to the callable.
+ * @return The return value of the callable.
+ *
+ * @throws NoHandler<FuncSignature> If no callable is attached to the function signature.
+ *
+ * @example
+ * struct Addition {
+ *     using args_t = std::tuple<int, int>;
+ *     using return_t = int;
+ * };
+ *
+ * dispatcher::attach<Addition>([](int a, int b) { return a + b; });
+ * int result = dispatcher::call<Addition>(3, 5); // result will be 8
+ */
+template <typename FuncSignature, typename... Args>
+auto call(Args &&...args)
+{
+    return internal::FunctionDispatcher<FuncSignature>::call(std::forward<Args>(args)...);
+}
+
+/**
+ * @brief Perform an asynchronous function call by its signature with the provided arguments.
+ *
+ * This function invokes the callable attached to the specified function signature asynchronously.
+ * The arguments must match the types defined in the function signature. The function returns a
+ * `boost::fibers::future` that can be used to retrieve the result of the callable once it completes.
+ *
+ * @tparam FuncSignature The function signature to call.
+ * @tparam Network The network type, aka wich EventLoop will handle this (default is `internal::Default`).
+ * @tparam Args The types of the arguments to pass to the callable.
+ * @param args The arguments to pass to the callable.
+ * @return A `boost::fibers::future` containing the return value of the callable.
+ *
+ * @throws NoHandler<FuncSignature> If no callable is attached to the function signature.
+ *
+ * @note This function does not block the calling thread. The callable is executed in the context
+ * of the event loop associated with the specified network.
+ *
+ * @example
+ * struct Addition {
+ *     using args_t = std::tuple<int, int>;
+ *     using return_t = int;
+ * };
+ *
+ * dispatcher::attach<Addition>([](int a, int b) { return a + b; });
+ * auto future = dispatcher::async_call<Addition>(3, 5);
+ * int result = future.get(); // result will be 8
+ */
+template <typename FuncSignature, typename Network = internal::Default, typename... Args>
+auto async_call(Args &&...args)
+{
+    boost::fibers::promise<typename internal::FunctionDispatcher<FuncSignature>::return_t> promise;
+    auto future = promise.get_future();
+
+    using func_type = typename internal::FunctionDispatcher<FuncSignature>::func_type;
+
+    auto argsTuple = std::make_tuple(std::forward<Args>(args)...);
+    internal::getEventLoop<Network>().Post([promise = std::move(promise), argsTuple = std::move(argsTuple)]() mutable {
+        promise.set_value(
+            internal::call_with_tuple(internal::GetFunction<FuncSignature, func_type>(), std::move(argsTuple)));
+    });
+    return future;
+}
+
+/**
+ * @brief Subscribe to an event with a callable.
+ *
+ * This function allows you to subscribe to an event by providing a callable (e.g., a lambda, function, or functor).
+ * The callable will be invoked whenever the event is published.
+ *
+ * @tparam FuncSignature The function signature of the event to subscribe to.
+ * @tparam Network The network type, aka which event loop will handle this (default is `internal::Default`).
+ * @tparam Callable The type of the callable.
+ * @param callable The callable to invoke when the event is published.
+ * @return A `boost::signals2::connection` object representing the subscription.
+ *
+ * @example
+ * struct MyEvent {
+ *     using args_t = std::tuple<int, std::string>;
+ * };
+ *
+ * dispatcher::subscribe<MyEvent>([](int a, const std::string& b) {
+ *     std::cout << "Received event with values: " << a << ", " << b << std::endl;
+ * });
+ */
+template <typename FuncSignature, typename Network = internal::Default, typename Callable>
+boost::signals2::connection subscribe(Callable &&callable)
+{
+    return internal::EventDispatcher<FuncSignature, Network>::template subscribe(std::forward<Callable>(callable));
+}
+
+/**
+ * @brief Wait for an event to be published.
+ *
+ * This function does not block the current fiber directly. Instead, it returns a future
+ * that will be fulfilled when the specified event is published. The caller can block on
+ * the returned future if needed to wait for the event.
+ *
+ * @tparam FuncSignature The function signature of the event to wait for.
+ * @tparam Network The network type (default is `internal::Default`).
+ * @return A `boost::fibers::future<std::nullptr_t>` that will be fulfilled when the event is published.
+ *
+ * @example
+ * struct MyEvent {
+ *     using args_t = std::tuple<>;
+ * };
+ *
+ * auto future = dispatcher::expect<MyEvent>();
+ * future.wait(); // Blocks until the event is published
+ * std::cout << "Event received!" << std::endl;
+ */
+template <typename FuncSignature, typename Network = internal::Default>
+boost::fibers::future<std::nullptr_t> expect()
+{
+    auto promise = std::make_shared<boost::fibers::promise<std::nullptr_t>>();
+    auto future = promise->get_future();
+
+    auto connection = std::make_shared<boost::signals2::connection>();
+    *connection = internal::EventDispatcher<FuncSignature, Network>::template subscribe(
+        [promise, connection](auto &&...args) mutable {
+            connection->disconnect();
+            promise->set_value({});
+        });
+
+    return future;
+}
+
+/**
+ * @brief Wait for an event to be published and invoke a callable.
+ *
+ * This function does not block the current fiber directly. Instead, it returns a future
+ * that will be fulfilled when the specified event is published. Additionally, the provided
+ * callable is invoked with the event's arguments when the event is triggered.
+ *
+ * @tparam FuncSignature The function signature of the event to wait for.
+ * @tparam Network The network type (default is `internal::Default`).
+ * @tparam Callable The type of the callable.
+ * @param callable The callable to invoke when the event is published.
+ * @return A `boost::fibers::future<std::nullptr_t>` that will be fulfilled after the callable is executed.
+ *
+ * @example
+ * struct MyEvent {
+ *     using args_t = std::tuple<int, std::string>;
+ * };
+ *
+ * auto future = dispatcher::expect<MyEvent>([](int a, const std::string& b) {
+ *     std::cout << "Received event with values: " << a << ", " << b << std::endl;
+ * });
+ * future.wait(); // Blocks until the event is published
+ * std::cout << "Event handling completed!" << std::endl;
+ */
+template <typename FuncSignature, typename Network = internal::Default, typename Callable>
+boost::fibers::future<std::nullptr_t> expect(Callable &&callable)
+{
+    auto promise = std::make_shared<boost::fibers::promise<std::nullptr_t>>();
+    auto future = promise->get_future();
+
+    auto connection = std::make_shared<boost::signals2::connection>();
+    *connection = internal::EventDispatcher<FuncSignature, Network>::template subscribe(
+        [promise, callable = std::forward<Callable>(callable), connection](auto &&...args) mutable {
+            connection->disconnect();
+            callable(std::forward<decltype(args)>(args)...);
+            promise->set_value({});
+        });
+
+    return future;
+}
+
+/**
+ * @brief Publish an event with the specified arguments.
+ *
+ * This function triggers an event by its function signature and passes the provided arguments
+ * to all subscribed callables. The event is handled asynchronously by the associated event loop.
+ *
+ * @tparam FuncSignature The function signature of the event to publish.
+ * @tparam Network The network type (default is `internal::Default`).
+ * @tparam Args The types of the arguments to pass to the event.
+ * @param args The arguments to pass to the event.
+ *
+ * @example
+ * struct MyEvent {
+ *     using args_t = std::tuple<int, std::string>;
+ * };
+ *
+ * dispatcher::subscribe<MyEvent>([](int a, const std::string& b) {
+ *     std::cout << "Received event with values: " << a << ", " << b << std::endl;
+ * });
+ *
+ * dispatcher::publish<MyEvent>(42, "Hello, World!");
+ */
+template <typename FuncSignature, typename Network = internal::Default, typename... Args>
+void publish(Args &&...args)
+{
+    internal::EventDispatcher<FuncSignature, Network>::publish(std::forward<Args>(args)...);
+}
+
+/**
+ * @brief Post a task to the event loop for asynchronous execution.
+ *
+ * This function schedules a task to be executed asynchronously by the event loop associated
+ * with the specified network.
+ *
+ * @tparam Network The network type (default is `internal::Default`).
+ * @tparam T The type of the task.
+ * @param task The task to execute asynchronously.
+ *
+ * @example
+ * dispatcher::post([] {
+ *     std::cout << "Task executed asynchronously!" << std::endl;
+ * });
+ */
+template <typename Network = internal::Default, typename T>
+void post(T &&task)
+{
+    internal::getEventLoop<Network>().Post(std::forward<T>(task));
+}
+
+/**
+ * @brief Set the number of worker threads for the event loop.
+ *
+ * This function configures the number of worker threads in the event loop associated with the specified network.
+ * Worker threads are used to process tasks asynchronously. By default, the event loop runs with a single thread.
+ *
+ * @tparam Network The network type (default is `internal::Default`).
+ * @param thread_count The number of worker threads to set for the event loop.
+ *
+ * @note The number of threads must be greater than or equal to 1. If the current number of threads is already greater
+ * than or equal to the specified thread count, no additional threads will be created, and the event loop configuration
+ * remains unchanged.
+ *
+ * @example
+ * dispatcher::set_worker_threads<WorkNetwork>(10); // Set 10 worker threads for the WorkNetwork event loop.
+ */
+template <typename Network = internal::Default>
+void set_worker_threads(int thread_count)
+{
+    internal::getEventLoop<Network>().SetWorkerThreadsAmount(thread_count);
+}
+
+/**
+ * @brief A timer utility for scheduling tasks in the event loop.
+ *
+ * The `Timer` class provides functionality to schedule tasks to be executed after a specified duration
+ * or repeatedly at regular intervals. It uses the event loop associated with the specified network
+ * to handle the execution of tasks asynchronously.
+ *
+ * @tparam Network The network type (default is `internal::Default`).
+ */
+template <typename Network>
 class Timer {
   public:
-    Timer() : timer_(getEventLoop<Network>().GetIOContext())
+    /**
+     * @brief Construct a new Timer object.
+     *
+     * Initializes the timer using the IO context of the event loop associated with the specified network.
+     */
+    Timer() : timer_(internal::getEventLoop<Network>().GetIOContext())
     {
     }
+
+    /**
+     * @brief Cancel the timer.
+     *
+     * Cancels any pending tasks associated with the timer. If the timer is already expired or no tasks
+     * are pending, this function has no effect.
+     */
     void Cancel()
     {
         timer_.cancel();
     }
 
+    /**
+     * @brief Schedule a task to be executed after a specified duration.
+     *
+     * This function schedules a task to be executed once after the specified duration has elapsed.
+     *
+     * @tparam Duration The type of the duration (e.g., `std::chrono::milliseconds`).
+     * @tparam Callback The type of the callback function.
+     * @param duration The duration to wait before executing the task.
+     * @param callback The callback function to execute after the duration.
+     *
+     * @example
+     * dispatcher::Timer<> timer;
+     * timer.DoIn(std::chrono::seconds(5), [] {
+     *     std::cout << "Task executed after 5 seconds!" << std::endl;
+     * });
+     */
     template <typename Duration, typename Callback>
     void DoIn(Duration duration, Callback &&callback)
     {
@@ -495,11 +775,27 @@ class Timer {
             boost::posix_time::milliseconds(std::chrono::duration_cast<std::chrono::milliseconds>(duration).count()));
         timer_.async_wait([callback = std::forward<Callback>(callback)](const boost::system::error_code &ec) mutable {
             if (ec != boost::asio::error::operation_aborted) {
-                getEventLoop<Network>().Post(std::forward<Callback>(callback));
+                internal::getEventLoop<Network>().Post(std::forward<Callback>(callback));
             }
         });
     }
 
+    /**
+     * @brief Schedule a task to be executed repeatedly at regular intervals.
+     *
+     * This function schedules a task to be executed repeatedly at the specified interval.
+     *
+     * @tparam Duration The type of the duration (e.g., `std::chrono::milliseconds`).
+     * @tparam Callback The type of the callback function.
+     * @param duration The interval at which to execute the task.
+     * @param callback The callback function to execute at each interval.
+     *
+     * @example
+     * dispatcher::Timer<> timer;
+     * timer.DoEvery(std::chrono::seconds(2), [] {
+     *     std::cout << "Task executed every 2 seconds!" << std::endl;
+     * });
+     */
     template <typename Duration, typename Callback>
     void DoEvery(Duration duration, Callback &&callback)
     {
@@ -508,16 +804,16 @@ class Timer {
         timer_.async_wait(
             [this, callback = std::forward<Callback>(callback), duration](const boost::system::error_code &ec) mutable {
                 if (ec != boost::asio::error::operation_aborted) {
-                    getEventLoop<Network>().Post(callback);
+                    internal::getEventLoop<Network>().Post(callback);
                     DoEvery(duration, std::forward<Callback>(callback));
                 }
             });
     }
 
   private:
-    boost::asio::basic_deadline_timer<boost::posix_time::ptime, MockableClock> timer_;
+    boost::asio::basic_deadline_timer<boost::posix_time::ptime, internal::MockableClock> timer_;
 };
 
-using DefaultTimer = Timer<Default>;
+using DefaultTimer = Timer<internal::Default>;
 
 }  // namespace dispatcher

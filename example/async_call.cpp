@@ -22,7 +22,7 @@ struct WorkNetwork {};
 
 int main()
 {
-    dispatcher::getEventLoop<WorkNetwork>().SetWorkerThreadsAmount(10);
+    dispatcher::set_worker_threads<WorkNetwork>(10);
     dispatcher::attach<Addition>([](int a, int b) {
         // Let's pretend this takes work
         std::this_thread::sleep_for(std::chrono::milliseconds(100));

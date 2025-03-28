@@ -26,7 +26,8 @@ int main()
     dispatcher::detach<HelloWorld>();
     try {
         dispatcher::call<HelloWorld>();
-    } catch (const dispatcher::NoHandler<HelloWorld> &) {
+    } catch (const dispatcher::NoHandler<HelloWorld> &e) {
         std::cout << "The function has been detached" << std::endl;
+        std::cout << e.what() << std::endl;
     }
 }

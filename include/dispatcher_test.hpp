@@ -1,6 +1,5 @@
 #pragma once
 
-// Copyright 2025 Volvo Car Corporation
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
@@ -545,7 +544,7 @@ class Test : public testing::Test {
     {
         // TODO (wait for all events to be processed, then stop the event loop. Need probably a cv
         std::this_thread::sleep_for(std::chrono::milliseconds(10));
-        dispatcher::getEventLoop<dispatcher::Default>().Stop();
+        dispatcher::internal::getEventLoop<dispatcher::internal::Default>().Stop();
     }
     std::unique_ptr<internal::ExpecterContainer> expecter_container_ = std::make_unique<internal::ExpecterContainer>();
 };
@@ -556,8 +555,8 @@ class Test : public testing::Test {
         expecter_container_.get(), __FILE__, __LINE__, args      \
     }
 
-#define DISPATCHER_ENABLE_MANUAL_TIME() dispatcher::MockableClock::set_now()
-#define DISPATCHER_ADVANCE_TIME(duration) dispatcher::MockableClock::advance_time(duration)
+#define DISPATCHER_ENABLE_MANUAL_TIME() dispatcher::internal::MockableClock::set_now()
+#define DISPATCHER_ADVANCE_TIME(duration) dispatcher::internal::MockableClock::advance_time(duration)
 
 #define DISPATCHER_EXPECT_CALL(FuncSignature, args...)          \
     dispatcher::internal::CallExpectationBuilder<FuncSignature> \
