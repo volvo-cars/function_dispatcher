@@ -42,3 +42,4 @@ jobs:
           ./safety
           ./same_signature
           ./timer
+          ./expect
