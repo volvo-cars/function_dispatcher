@@ -50,13 +50,13 @@ jobs:
           python getSBOMfromBD.py --url="https://apus-blackduck.volvocars.biz" --token=${{secrets.BLACKDUCK_API_TOKEN}} --project=$BLACKDUCK_PROJECT_NAME --version=$BLACKDUCK_PROJECT_VERSION
           python getNOTICE.py --url="https://apus-blackduck.volvocars.biz"  --token=${{secrets.BLACKDUCK_API_TOKEN}} --project=$BLACKDUCK_PROJECT_NAME --version=$BLACKDUCK_PROJECT_VERSION
       - name: Store Artifact 
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: SBOM
           path: OSS_SBOM_* 
           retention-days: 3
       - name: Store Artifact 
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: NOTICE
           path: OSS_NOTICE_*
