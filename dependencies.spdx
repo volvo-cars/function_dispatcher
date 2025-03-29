@@ -1,0 +1,13 @@
+SPDXVersion: SPDX-2.2
+DataLicense: CC0-1.0
+DocumentName: function-dispatcher-dependencies
+DocumentNamespace: http://spdx.org/spdxdocs/function-dispatcher-dependencies-1.0
+Creator: Tool: BlackDuck
+Created: 2025-03-28T12:00:00Z
+
+##### Packages #####
+PackageName: Boost
+SPDXID: SPDXRef-Package-Boost
+PackageVersion: 1.83.0
+PackageDownloadLocation: https://boostorg.jfrog.io/artifactory/main/release/1.82.0/source/boost_1_83_0.tar.gz
+PackageLicenseDeclared: BSL-1.0
