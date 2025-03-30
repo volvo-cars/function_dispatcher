@@ -501,6 +501,14 @@ Example: <div class="highlight-default notranslate"><div class="highlight"><pre>
 <dd></dd></dl>
 
 </div>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-variables">Variables</p>
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N10dispatcher8internal11memory_poolE">
+<span id="_CPPv3N10dispatcher8internal11memory_poolE"></span><span id="_CPPv2N10dispatcher8internal11memory_poolE"></span><span id="dispatcher::internal::memory_pool__MemoryPool"></span><span class="target" id="dispatcher_8hpp_1ae6f72ffa3081538aedc5aea346991908"></span><span class="k"><span class="pre">thread_local</span></span><span class="w"> </span><a class="reference internal" href="#_CPPv4N10dispatcher8internal10MemoryPoolE" title="dispatcher::internal::MemoryPool"><span class="n"><span class="pre">MemoryPool</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">memory_pool</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="p"><span class="pre">{</span></span><span class="m"><span class="pre">30000</span></span><span class="p"><span class="pre">}</span></span><a class="headerlink" href="#_CPPv4N10dispatcher8internal11memory_poolE" title="Link to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+</div>
 <dl class="cpp struct">
 <dt class="sig sig-object cpp" id="_CPPv4I0_bEN10dispatcher8internal17args_t_or_defaultE">
 <span id="_CPPv3I0_bEN10dispatcher8internal17args_t_or_defaultE"></span><span id="_CPPv2I0_bEN10dispatcher8internal17args_t_or_defaultE"></span><span class="k"><span class="pre">template</span></span><span class="p"><span class="pre">&lt;</span></span><span class="k"><span class="pre">typename</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">FuncSignature</span></span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">HasReturnT</span></span></span><span class="p"><span class="pre">&gt;</span></span><br /><span class="target" id="structdispatcher_1_1internal_1_1args__t__or__default"></span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">args_t_or_default</span></span></span><a class="headerlink" href="#_CPPv4I0_bEN10dispatcher8internal17args_t_or_defaultE" title="Link to this definition">¶</a><br /></dt>
@@ -533,8 +541,8 @@ Example: <div class="highlight-default notranslate"><div class="highlight"><pre>
 <dd><div class="breathe-sectiondef docutils container">
 <p class="breathe-sectiondef-title rubric" id="breathe-section-title-public-functions">Public Functions</p>
 <dl class="cpp function">
-<dt class="sig sig-object cpp" id="_CPPv4N10dispatcher8internal20CustomStackAllocator20CustomStackAllocatorEP10MemoryPool">
-<span id="_CPPv3N10dispatcher8internal20CustomStackAllocator20CustomStackAllocatorEP10MemoryPool"></span><span id="_CPPv2N10dispatcher8internal20CustomStackAllocator20CustomStackAllocatorEP10MemoryPool"></span><span id="dispatcher::internal::CustomStackAllocator::CustomStackAllocator__MemoryPoolP"></span><span class="target" id="classdispatcher_1_1internal_1_1CustomStackAllocator_1ab5e7513a5e3d201324d1c2e53bfbeaa2"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">CustomStackAllocator</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv4N10dispatcher8internal10MemoryPoolE" title="dispatcher::internal::MemoryPool"><span class="n"><span class="pre">MemoryPool</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">memory_pool</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N10dispatcher8internal20CustomStackAllocator20CustomStackAllocatorEP10MemoryPool" title="Link to this definition">¶</a><br /></dt>
+<dt class="sig sig-object cpp" id="_CPPv4N10dispatcher8internal20CustomStackAllocator20CustomStackAllocatorEv">
+<span id="_CPPv3N10dispatcher8internal20CustomStackAllocator20CustomStackAllocatorEv"></span><span id="_CPPv2N10dispatcher8internal20CustomStackAllocator20CustomStackAllocatorEv"></span><span id="dispatcher::internal::CustomStackAllocator::CustomStackAllocator"></span><span class="target" id="classdispatcher_1_1internal_1_1CustomStackAllocator_1a0aa6be75eed9647ad2839d62ec0ec620"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">CustomStackAllocator</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N10dispatcher8internal20CustomStackAllocator20CustomStackAllocatorEv" title="Link to this definition">¶</a><br /></dt>
 <dd></dd></dl>
 
 <dl class="cpp function">
@@ -545,14 +553,6 @@ Example: <div class="highlight-default notranslate"><div class="highlight"><pre>
 <dl class="cpp function">
 <dt class="sig sig-object cpp" id="_CPPv4N10dispatcher8internal20CustomStackAllocator10deallocateERN5boost7context13stack_contextE">
 <span id="_CPPv3N10dispatcher8internal20CustomStackAllocator10deallocateERN5boost7context13stack_contextE"></span><span id="_CPPv2N10dispatcher8internal20CustomStackAllocator10deallocateERN5boost7context13stack_contextE"></span><span id="dispatcher::internal::CustomStackAllocator::deallocate__boost::context::stack_contextR"></span><span class="target" id="classdispatcher_1_1internal_1_1CustomStackAllocator_1a6a9836034258ddd3e7b213ed5ce24f9b"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">deallocate</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">boost</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">context</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">stack_context</span></span><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="n sig-param"><span class="pre">sctx</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N10dispatcher8internal20CustomStackAllocator10deallocateERN5boost7context13stack_contextE" title="Link to this definition">¶</a><br /></dt>
-<dd></dd></dl>
-
-</div>
-<div class="breathe-sectiondef docutils container">
-<p class="breathe-sectiondef-title rubric" id="breathe-section-title-private-members">Private Members</p>
-<dl class="cpp var">
-<dt class="sig sig-object cpp" id="_CPPv4N10dispatcher8internal20CustomStackAllocator12memory_pool_E">
-<span id="_CPPv3N10dispatcher8internal20CustomStackAllocator12memory_pool_E"></span><span id="_CPPv2N10dispatcher8internal20CustomStackAllocator12memory_pool_E"></span><span id="dispatcher::internal::CustomStackAllocator::memory_pool___MemoryPoolP"></span><span class="target" id="classdispatcher_1_1internal_1_1CustomStackAllocator_1a11142b9b9e2ddb8fb08998f51207cf4b"></span><a class="reference internal" href="#_CPPv4N10dispatcher8internal10MemoryPoolE" title="dispatcher::internal::MemoryPool"><span class="n"><span class="pre">MemoryPool</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">memory_pool_</span></span></span><a class="headerlink" href="#_CPPv4N10dispatcher8internal20CustomStackAllocator12memory_pool_E" title="Link to this definition">¶</a><br /></dt>
 <dd></dd></dl>
 
 </div>
@@ -820,11 +820,6 @@ Example: <div class="highlight-default notranslate"><div class="highlight"><pre>
 <dl class="cpp var">
 <dt class="sig sig-object cpp" id="_CPPv4N10dispatcher8internal10MemoryPool17allocated_blocks_E">
 <span id="_CPPv3N10dispatcher8internal10MemoryPool17allocated_blocks_E"></span><span id="_CPPv2N10dispatcher8internal10MemoryPool17allocated_blocks_E"></span><span id="dispatcher::internal::MemoryPool::allocated_blocks___std::queue:voidP:"></span><span class="target" id="classdispatcher_1_1internal_1_1MemoryPool_1a097cb290ca92dca08c32d57d5f8584ad"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">queue</span></span><span class="p"><span class="pre">&lt;</span></span><span class="kt"><span class="pre">void</span></span><span class="p"><span class="pre">*</span></span><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">allocated_blocks_</span></span></span><a class="headerlink" href="#_CPPv4N10dispatcher8internal10MemoryPool17allocated_blocks_E" title="Link to this definition">¶</a><br /></dt>
-<dd></dd></dl>
-
-<dl class="cpp var">
-<dt class="sig sig-object cpp" id="_CPPv4N10dispatcher8internal10MemoryPool2m_E">
-<span id="_CPPv3N10dispatcher8internal10MemoryPool2m_E"></span><span id="_CPPv2N10dispatcher8internal10MemoryPool2m_E"></span><span id="dispatcher::internal::MemoryPool::m___std::mutex"></span><span class="target" id="classdispatcher_1_1internal_1_1MemoryPool_1a39289719144d51fdf972e6da92544e5b"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">mutex</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_</span></span></span><a class="headerlink" href="#_CPPv4N10dispatcher8internal10MemoryPool2m_E" title="Link to this definition">¶</a><br /></dt>
 <dd></dd></dl>
 
 </div>
