@@ -93,8 +93,10 @@ struct Default {};
 
 }  // namespace internal
 
+struct DispatcherException : std::exception {};
+
 template <typename FuncSignature>
-class NoHandler : public std::exception {
+class NoHandler : public DispatcherException {
   public:
     const char *what() const noexcept override
     {
@@ -129,10 +131,11 @@ struct FunctionDispatcher {
     template <typename... Args>
     static auto call(Args &&...args)
     {
-        if (GetFunction<FuncSignature, func_type>() == nullptr) {
+        try {
+            return GetFunction<FuncSignature, func_type>()(std::forward<Args>(args)...);
+        } catch (const std::bad_exception &e) {
             throw NoHandler<FuncSignature>{};
         }
-        return GetFunction<FuncSignature, func_type>()(std::forward<Args>(args)...);
     }
 
     using return_t = typename return_t_or_default<FuncSignature, has_return_t<FuncSignature>::value>::type;
