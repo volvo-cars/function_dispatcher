@@ -29,16 +29,26 @@ namespace internal {
 
 struct Sequence {
     int next_expected_call = 0;
-    std::atomic<int> current_call_to_expect;
+    int current_call_to_expect = 0;
+    bool sequence_initialized = false;
 };
 
-thread_local std::shared_ptr<internal::Sequence> thread_local_sequence = nullptr;
+inline internal::Sequence &GetSequence()
+{
+    thread_local internal::Sequence thread_local_sequence;
+    return thread_local_sequence;
+}
 
 struct AnythingMatcher {
     template <typename T>
     operator std::function<bool(const T &)>() const
     {
         return [](const T &) -> bool { return true; };
+    }
+    template <typename T>
+    operator std::function<bool(T &)>() const
+    {
+        return [](T &) -> bool { return true; };
     }
 };
 
@@ -56,17 +66,17 @@ struct Matcher {
 
 template <typename T>
 struct ToMatcher {
-    using type = Matcher<T>;
+    using type = Matcher<const T &>;
 };
 
 template <typename... Args>
 struct ToMatcher<std::tuple<Args...>> {
-    using type = std::tuple<Matcher<Args>...>;
+    using type = std::tuple<Matcher<const Args &>...>;
 };
 
 // Helper to invoke tuple elements with corresponding arguments
 template <typename Tuple, typename... Args, std::size_t... Is>
-bool call_tuple(const Tuple &tuple, std::index_sequence<Is...>, const Args &...args)
+bool call_tuple(const Tuple &tuple, std::index_sequence<Is...>, Args &...args)
 {
     bool results[] = {std::get<Is>(tuple).matcher(args)...};
     for (bool result : results) {
@@ -81,24 +91,22 @@ struct Expectation {
     template <typename ReturnFunction, typename Matcher>
     Expectation(const char *_file, int _line, ReturnFunction &&_return_function, Matcher &&_matcher,
                 int _expected_calls_left)
-        : sequence_(thread_local_sequence),
-          file(_file),
+        : file(_file),
           line(_line),
           return_function(std::forward<ReturnFunction>(_return_function)),
           matchers(std::forward<Matcher>(_matcher)),
           expected_calls_left(_expected_calls_left)
     {
-        if (sequence_ != nullptr) {
-            rank_in_sequence = sequence_->next_expected_call;
-            sequence_->next_expected_call += expected_calls_left;
+        if (GetSequence().sequence_initialized) {
+            rank_in_sequence = GetSequence().next_expected_call;
+            GetSequence().next_expected_call += expected_calls_left;
         }
     }
     Expectation(const Expectation &) = delete;
     Expectation &operator=(const Expectation &) = delete;
 
     Expectation(Expectation &&other) noexcept
-        : sequence_(std::move(other.sequence_)),
-          file(other.file),
+        : file(other.file),
           line(other.line),
           return_function(std::move(other.return_function)),
           matchers(std::move(other.matchers)),
@@ -114,7 +122,6 @@ struct Expectation {
     Expectation &operator=(Expectation &&other) noexcept
     {
         if (this != &other) {
-            sequence_ = std::move(other.sequence_);
             file = other.file;
             line = other.line;
             return_function = std::move(other.return_function);
@@ -139,7 +146,7 @@ struct Expectation {
     }
 
     template <typename... Args>
-    bool validate(const Args &...args)
+    bool validate(Args &...args)
     {
         if (expected_calls_left == 0) {
             return false;
@@ -148,14 +155,14 @@ struct Expectation {
         if (!call_tuple(matchers, std::make_index_sequence<tuple_size>{}, args...)) {
             return false;
         }
-        if (rank_in_sequence != -1 && sequence_ != nullptr) {
-            if (rank_in_sequence != sequence_->current_call_to_expect) {
+        if (rank_in_sequence != -1 && GetSequence().sequence_initialized) {
+            if (rank_in_sequence != GetSequence().current_call_to_expect) {
                 std::cout << "Expectation constructed at " << file << ":" << line
                           << " expected call out of sequence. Rank in sequence : " << rank_in_sequence
-                          << " while current call to expect is : " << sequence_->current_call_to_expect << std::endl;
+                          << " while current call to expect is : " << GetSequence().current_call_to_expect << std::endl;
                 return false;
             }
-            sequence_->current_call_to_expect++;
+            GetSequence().current_call_to_expect++;
         }
         return true;
     }
@@ -181,7 +188,6 @@ struct Expectation {
     static constexpr auto tuple_size = std::tuple_size<std::decay_t<matchers_tuple>>::value;
     int expected_calls_left;
     int rank_in_sequence = -1;
-    std::shared_ptr<internal::Sequence> sequence_;
     const char *file;
     int line;
     typename FunctionDispatcher<FuncSignature>::func_type return_function;
@@ -529,11 +535,11 @@ class InSequence {
   public:
     InSequence()
     {
-        internal::thread_local_sequence = std::make_shared<internal::Sequence>();
+        internal::GetSequence().sequence_initialized = true;
     }
     ~InSequence()
     {
-        internal::thread_local_sequence.reset();
+        internal::GetSequence().sequence_initialized = false;
     }
 };
 
