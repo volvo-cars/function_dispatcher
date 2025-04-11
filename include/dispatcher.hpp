@@ -93,13 +93,15 @@ struct Default {};
 
 }  // namespace internal
 
+struct DispatcherException : std::exception {};
+
 template <typename FuncSignature>
-class NoHandler : public std::exception {
+class NoHandler : public DispatcherException {
   public:
     const char *what() const noexcept override
     {
         static std::string message =
-            "No handler was attached for FuncSignature: " + std::string(typeid(FuncSignature).name());
+            "No handler were found for FuncSignature: " + std::string(typeid(FuncSignature).name());
         return message.c_str();
     }
 };
@@ -129,10 +131,11 @@ struct FunctionDispatcher {
     template <typename... Args>
     static auto call(Args &&...args)
     {
-        if (GetFunction<FuncSignature, func_type>() == nullptr) {
+        try {
+            return GetFunction<FuncSignature, func_type>()(std::forward<Args>(args)...);
+        } catch (const std::bad_function_call &) {
             throw NoHandler<FuncSignature>{};
         }
-        return GetFunction<FuncSignature, func_type>()(std::forward<Args>(args)...);
     }
 
     using return_t = typename return_t_or_default<FuncSignature, has_return_t<FuncSignature>::value>::type;
@@ -187,7 +190,11 @@ class MemoryPool {
     std::queue<void *> allocated_blocks_;
 };
 
-thread_local MemoryPool memory_pool{30000};
+inline MemoryPool &GetMemoryPool()
+{
+    thread_local MemoryPool memory_pool{30000};
+    return memory_pool;
+}
 
 class CustomStackAllocator {
   public:
@@ -198,8 +205,8 @@ class CustomStackAllocator {
     boost::context::stack_context allocate()
     {
         boost::context::stack_context sctx;
-        sctx.size = memory_pool.get_size();
-        sctx.sp = static_cast<char *>(memory_pool.allocate()) + sctx.size;
+        sctx.size = GetMemoryPool().get_size();
+        sctx.sp = static_cast<char *>(GetMemoryPool().allocate()) + sctx.size;
         return sctx;
     }
 
@@ -208,7 +215,7 @@ class CustomStackAllocator {
         BOOST_ASSERT(sctx.sp);
 
         void *vp = static_cast<char *>(sctx.sp) - sctx.size;
-        memory_pool.free(vp);
+        GetMemoryPool().free(vp);
     }
 };
 

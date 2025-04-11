@@ -29,6 +29,14 @@ int main()
     } catch (const dispatcher::NoHandler<Addition> &e) {
         std::cout << e.what() << std::endl;
     }
+
+    // You can also catch all no handler exception
+    try {
+        dispatcher::call<Addition>(4.0f, 3.5f);
+    } catch (const dispatcher::DispatcherException &e) {
+        std::cout << e.what() << std::endl;
+    }
+
     // Will not compile due when the Attach function signature does not correspond
     // dispatcher::attach<Addition>([](float a, float b) -> std::string
     //                                   { return std::string{"Hello world"}; });

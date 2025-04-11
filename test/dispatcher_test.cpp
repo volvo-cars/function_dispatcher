@@ -136,3 +136,21 @@ TEST_F(ExampleTest, RecurrentTimerTest)
     DISPATCHER_ADVANCE_TIME(std::chrono::seconds{1});
     DISPATCHER_ADVANCE_TIME(std::chrono::seconds{1});
 }
+
+struct CallWithReferences {
+    using args_t = std::tuple<std::string&>;
+    using return_t = bool;
+};
+
+TEST_F(ExampleTest, OnCallWithReferences)
+{
+    DISPATCHER_ON_CALL(CallWithReferences).WillByDefault([](auto...) { return true; });
+    DISPATCHER_EXPECT_CALL(CallWithReferences, [](const auto& message) { return true; }).WillOnce([](auto...) {
+        return true;
+    });
+    DISPATCHER_EXPECT_CALL(CallWithReferences, dispatcher::_).WillOnce([](auto...) { return true; });
+    std::string a_string{"Hello"};
+    dispatcher::call<CallWithReferences>(a_string);
+    dispatcher::call<CallWithReferences>(a_string);
+    dispatcher::call<CallWithReferences>(a_string);
+}
