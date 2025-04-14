@@ -80,9 +80,9 @@
 </li>
       <li><a href="index.html#_CPPv4I00EN10dispatcher8internal15EventDispatcherE">dispatcher::internal::EventDispatcher (C++ struct)</a>
 </li>
-      <li><a href="index.html#_CPPv4N10dispatcher8internal15EventDispatcher6args_tE">dispatcher::internal::EventDispatcher::args_t (C++ type)</a>
+      <li><a href="index.html#_CPPv4N10dispatcher8internal15EventDispatcher12parameters_tE">dispatcher::internal::EventDispatcher::parameters_t (C++ type)</a>
 </li>
-      <li><a href="index.html#_CPPv4IDpEN10dispatcher8internal15EventDispatcher7publishEvDpRR4Args">dispatcher::internal::EventDispatcher::publish (C++ function)</a>
+      <li><a href="index.html#_CPPv4IDpEN10dispatcher8internal15EventDispatcher7publishEvDpRR10Parameters">dispatcher::internal::EventDispatcher::publish (C++ function)</a>
 </li>
       <li><a href="index.html#_CPPv4N10dispatcher8internal15EventDispatcher11signal_typeE">dispatcher::internal::EventDispatcher::signal_type (C++ type)</a>
 </li>
@@ -138,15 +138,19 @@
 </li>
       <li><a href="index.html#_CPPv4I00EN10dispatcher8internal11GetFunctionER9func_typev">dispatcher::internal::GetFunction (C++ function)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="index.html#_CPPv4N10dispatcher8internal13GetMemoryPoolEv">dispatcher::internal::GetMemoryPool (C++ function)</a>
 </li>
       <li><a href="index.html#_CPPv4I000EN10dispatcher8internal9GetSignalER11signal_typev">dispatcher::internal::GetSignal (C++ function)</a>
 </li>
       <li><a href="index.html#_CPPv4I00EN10dispatcher8internal10has_args_tE">dispatcher::internal::has_args_t (C++ struct)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="index.html#_CPPv4I0EN10dispatcher8internal10has_args_tI13FuncSignature6void_tIN13FuncSignature6args_tEEEE">dispatcher::internal::has_args_t&lt;FuncSignature, void_t&lt;typename FuncSignature::args_t&gt;&gt; (C++ struct)</a>
+</li>
+      <li><a href="index.html#_CPPv4I00EN10dispatcher8internal16has_parameters_tE">dispatcher::internal::has_parameters_t (C++ struct)</a>
+</li>
+      <li><a href="index.html#_CPPv4I0EN10dispatcher8internal16has_parameters_tI14EventSignature6void_tIN14EventSignature12parameters_tEEEE">dispatcher::internal::has_parameters_t&lt;EventSignature, void_t&lt;typename EventSignature::parameters_t&gt;&gt; (C++ struct)</a>
 </li>
       <li><a href="index.html#_CPPv4I00EN10dispatcher8internal12has_return_tE">dispatcher::internal::has_return_t (C++ struct)</a>
 </li>
@@ -196,6 +200,14 @@
 </li>
       <li><a href="index.html#_CPPv4N10dispatcher8internal3NowEv">dispatcher::internal::Now (C++ function)</a>
 </li>
+      <li><a href="index.html#_CPPv4I0_bEN10dispatcher8internal23parameters_t_or_defaultE">dispatcher::internal::parameters_t_or_default (C++ struct)</a>
+</li>
+      <li><a href="index.html#_CPPv4N10dispatcher8internal23parameters_t_or_default4typeE">dispatcher::internal::parameters_t_or_default::type (C++ type)</a>
+</li>
+      <li><a href="index.html#_CPPv4I0EN10dispatcher8internal23parameters_t_or_defaultI14EventSignatureXL1EEEE">dispatcher::internal::parameters_t_or_default&lt;EventSignature, true&gt; (C++ struct)</a>
+</li>
+      <li><a href="index.html#_CPPv4N10dispatcher8internal23parameters_t_or_defaultI14EventSignatureXL1EEE4typeE">dispatcher::internal::parameters_t_or_default&lt;EventSignature, true&gt;::type (C++ type)</a>
+</li>
       <li><a href="index.html#_CPPv4I0_bEN10dispatcher8internal19return_t_or_defaultE">dispatcher::internal::return_t_or_default (C++ struct)</a>
 </li>
       <li><a href="index.html#_CPPv4N10dispatcher8internal19return_t_or_default4typeE">dispatcher::internal::return_t_or_default::type (C++ type)</a>
@@ -208,9 +220,9 @@
 </li>
       <li><a href="index.html#_CPPv4N10dispatcher8internal22ReturnTypeFromCallableI8CallableNSt5tupleIDp4ArgsEEE4typeE">dispatcher::internal::ReturnTypeFromCallable&lt;Callable, std::tuple&lt;Args...&gt;&gt;::type (C++ type)</a>
 </li>
-      <li><a href="index.html#_CPPv4IDpEN10dispatcher8internal15SignalFromTupleINSt5tupleIDp4ArgsEEEE">dispatcher::internal::SignalFromTuple&lt;std::tuple&lt;Args...&gt;&gt; (C++ struct)</a>
+      <li><a href="index.html#_CPPv4IDpEN10dispatcher8internal15SignalFromTupleINSt5tupleIDp10ParametersEEEE">dispatcher::internal::SignalFromTuple&lt;std::tuple&lt;Parameters...&gt;&gt; (C++ struct)</a>
 </li>
-      <li><a href="index.html#_CPPv4N10dispatcher8internal15SignalFromTupleINSt5tupleIDp4ArgsEEE4typeE">dispatcher::internal::SignalFromTuple&lt;std::tuple&lt;Args...&gt;&gt;::type (C++ type)</a>
+      <li><a href="index.html#_CPPv4N10dispatcher8internal15SignalFromTupleINSt5tupleIDp10ParametersEEE4typeE">dispatcher::internal::SignalFromTuple&lt;std::tuple&lt;Parameters...&gt;&gt;::type (C++ type)</a>
 </li>
       <li><a href="index.html#_CPPv4IDpEN10dispatcher8internal6void_tE">dispatcher::internal::void_t (C++ type)</a>
 </li>
@@ -220,7 +232,7 @@
 </li>
       <li><a href="index.html#_CPPv4I00EN10dispatcher4postEvRR1T">dispatcher::post (C++ function)</a>
 </li>
-      <li><a href="index.html#_CPPv4I00DpEN10dispatcher7publishEvDpRR4Args">dispatcher::publish (C++ function)</a>
+      <li><a href="index.html#_CPPv4I00DpEN10dispatcher7publishEvDpRR10Parameters">dispatcher::publish (C++ function)</a>
 </li>
       <li><a href="index.html#_CPPv4I0EN10dispatcher18set_worker_threadsEvi">dispatcher::set_worker_threads (C++ function)</a>
 </li>
