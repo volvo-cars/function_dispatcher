@@ -48,9 +48,9 @@ struct ReturnTypeFromCallable<Callable, std::tuple<Args...>> {
 template <typename Tuple>
 struct SignalFromTuple;
 
-template <typename... Args>
-struct SignalFromTuple<std::tuple<Args...>> {
-    using type = boost::signals2::signal<void(Args...)>;
+template <typename... Parameters>
+struct SignalFromTuple<std::tuple<Parameters...>> {
+    using type = boost::signals2::signal<void(Parameters...)>;
 };
 
 template <typename...>
@@ -86,6 +86,22 @@ struct args_t_or_default {
 template <typename FuncSignature>
 struct args_t_or_default<FuncSignature, true> {
     using type = typename FuncSignature::args_t;
+};
+
+template <typename EventSignature, typename = void>
+struct has_parameters_t : std::false_type {};
+
+template <typename EventSignature>
+struct has_parameters_t<EventSignature, void_t<typename EventSignature::parameters_t>> : std::true_type {};
+
+template <typename EventSignature, bool HasReturnT>
+struct parameters_t_or_default {
+    using type = std::tuple<>;
+};
+
+template <typename EventSignature>
+struct parameters_t_or_default<EventSignature, true> {
+    using type = typename EventSignature::parameters_t;
 };
 
 // Default network
@@ -313,33 +329,33 @@ auto call_with_tuple(F &&f, Tuple &&t)
     return call_with_tuple(std::forward<F>(f), std::forward<Tuple>(t), std::make_index_sequence<size>{});
 }
 
-template <typename FuncSignature, typename Network, typename signal_type>
+template <typename EventSignature, typename Network, typename signal_type>
 signal_type &GetSignal()
 {
     static signal_type signal;
     return signal;
 }
 
-template <typename FuncSignature, typename Network = internal::Default>
+template <typename EventSignature, typename Network = internal::Default>
 struct EventDispatcher {
     template <typename Callable>
     static boost::signals2::connection subscribe(Callable &&callable)
     {
-        return GetSignal<FuncSignature, Network, signal_type>().connect(std::forward<Callable>(callable));
+        return GetSignal<EventSignature, Network, signal_type>().connect(std::forward<Callable>(callable));
     }
 
-    template <typename... Args>
-    static void publish(Args &&...args)
+    template <typename... Parameters>
+    static void publish(Parameters &&...parameters)
     {
-        auto argsTuple = std::make_tuple(std::forward<Args>(args)...);
-        getEventLoop<Network>().Post([argsTuple = std::move(argsTuple)]() mutable {
-            call_with_tuple(GetSignal<FuncSignature, Network, signal_type>(), std::move(argsTuple));
+        auto parametersTuple = std::make_tuple(std::forward<Parameters>(parameters)...);
+        getEventLoop<Network>().Post([parametersTuple = std::move(parametersTuple)]() mutable {
+            call_with_tuple(GetSignal<EventSignature, Network, signal_type>(), std::move(parametersTuple));
         });
     }
 
-    using args_t = typename args_t_or_default<FuncSignature, has_args_t<FuncSignature>::value>::type;
+    using parameters_t = typename parameters_t_or_default<EventSignature, has_parameters_t<EventSignature>::value>::type;
 
-    using signal_type = typename SignalFromTuple<args_t>::type;
+    using signal_type = typename SignalFromTuple<parameters_t>::type;
 };
 
 inline boost::optional<boost::asio::deadline_timer::traits_type::time_type> &Now()
@@ -548,7 +564,7 @@ auto async_call(Args &&...args)
  * This function allows you to subscribe to an event by providing a callable (e.g., a lambda, function, or functor).
  * The callable will be invoked whenever the event is published.
  *
- * @tparam FuncSignature The function signature of the event to subscribe to.
+ * @tparam EventSignature The event signature of the event to subscribe to.
  * @tparam Network The network type, aka which event loop will handle this (default is `internal::Default`).
  * @tparam Callable The type of the callable.
  * @param callable The callable to invoke when the event is published.
@@ -557,7 +573,7 @@ auto async_call(Args &&...args)
  * Example:
  * @code
  * struct MyEvent {
- *     using args_t = std::tuple<int, std::string>;
+ *     using parameters_t= std::tuple<int, std::string>;
  * };
  *
  * dispatcher::subscribe<MyEvent>([](int a, const std::string& b) {
@@ -565,10 +581,10 @@ auto async_call(Args &&...args)
  * });
  * @endcode
  */
-template <typename FuncSignature, typename Network = internal::Default, typename Callable>
+template <typename EventSignature, typename Network = internal::Default, typename Callable>
 boost::signals2::connection subscribe(Callable &&callable)
 {
-    return internal::EventDispatcher<FuncSignature, Network>::subscribe(std::forward<Callable>(callable));
+    return internal::EventDispatcher<EventSignature, Network>::subscribe(std::forward<Callable>(callable));
 }
 
 /**
@@ -578,14 +594,14 @@ boost::signals2::connection subscribe(Callable &&callable)
  * that will be fulfilled when the specified event is published. The caller can block on
  * the returned future if needed to wait for the event.
  *
- * @tparam FuncSignature The function signature of the event to wait for.
+ * @tparam EventSignature The event signature of the event to wait for.
  * @tparam Network The network type (default is `internal::Default`).
  * @return A `boost::fibers::future<std::nullptr_t>` that will be fulfilled when the event is published.
  *
  * Example:
  * @code
  * struct MyEvent {
- *     using args_t = std::tuple<>;
+ *     using parameters_t = std::tuple<>;
  * };
  *
  * auto future = dispatcher::expect<MyEvent>();
@@ -593,7 +609,7 @@ boost::signals2::connection subscribe(Callable &&callable)
  * std::cout << "Event received!" << std::endl;
  * @endcode
  */
-template <typename FuncSignature, typename Network = internal::Default>
+template <typename EventSignature, typename Network = internal::Default>
 boost::fibers::future<std::nullptr_t> expect()
 {
     auto promise = std::make_shared<boost::fibers::promise<std::nullptr_t>>();
@@ -601,7 +617,7 @@ boost::fibers::future<std::nullptr_t> expect()
 
     auto connection = std::make_shared<boost::signals2::connection>();
     *connection =
-        internal::EventDispatcher<FuncSignature, Network>::subscribe([promise, connection](auto &&...args) mutable {
+        internal::EventDispatcher<EventSignature, Network>::subscribe([promise, connection](auto) mutable {
             connection->disconnect();
             promise->set_value({});
         });
@@ -616,7 +632,7 @@ boost::fibers::future<std::nullptr_t> expect()
  * that will be fulfilled when the specified event is published. Additionally, the provided
  * callable is invoked with the event's arguments when the event is triggered.
  *
- * @tparam FuncSignature The function signature of the event to wait for.
+ * @tparam EventSignature The event signature of the event to wait for.
  * @tparam Network The network type (default is `internal::Default`).
  * @tparam Callable The type of the callable.
  * @param callable The callable to invoke when the event is published.
@@ -625,7 +641,7 @@ boost::fibers::future<std::nullptr_t> expect()
  * Example:
  * @code
  * struct MyEvent {
- *     using args_t = std::tuple<int, std::string>;
+ *     using parameters_t = std::tuple<int, std::string>;
  * };
  *
  * auto future = dispatcher::expect<MyEvent>([](int a, const std::string& b) {
@@ -635,17 +651,17 @@ boost::fibers::future<std::nullptr_t> expect()
  * std::cout << "Event handling completed!" << std::endl;
  * @endcode
  */
-template <typename FuncSignature, typename Network = internal::Default, typename Callable>
+template <typename EventSignature, typename Network = internal::Default, typename Callable>
 boost::fibers::future<std::nullptr_t> expect(Callable &&callable)
 {
     auto promise = std::make_shared<boost::fibers::promise<std::nullptr_t>>();
     auto future = promise->get_future();
 
     auto connection = std::make_shared<boost::signals2::connection>();
-    *connection = internal::EventDispatcher<FuncSignature, Network>::subscribe(
-        [promise, callable = std::forward<Callable>(callable), connection](auto &&...args) mutable {
+    *connection = internal::EventDispatcher<EventSignature, Network>::subscribe(
+        [promise, callable = std::forward<Callable>(callable), connection](auto &&...parameters) mutable {
             connection->disconnect();
-            callable(std::forward<decltype(args)>(args)...);
+            callable(std::forward<decltype(parameters)>(parameters)...);
             promise->set_value({});
         });
 
@@ -658,15 +674,15 @@ boost::fibers::future<std::nullptr_t> expect(Callable &&callable)
  * This function triggers an event by its function signature and passes the provided arguments
  * to all subscribed callables. The event is handled asynchronously by the associated event loop.
  *
- * @tparam FuncSignature The function signature of the event to publish.
+ * @tparam EventDispatcher The function signature of the event to publish.
  * @tparam Network The network type (default is `internal::Default`).
- * @tparam Args The types of the arguments to pass to the event.
- * @param args The arguments to pass to the event.
+ * @tparam Parameters The types of the parameters to pass to the event.
+ * @param parameters The parameters to pass to the event.
  *
  * Example
  * @code
  * struct MyEvent {
- *     using args_t = std::tuple<int, std::string>;
+ *     using parameters_t = std::tuple<int, std::string>;
  * };
  *
  * dispatcher::subscribe<MyEvent>([](int a, const std::string& b) {
@@ -676,10 +692,10 @@ boost::fibers::future<std::nullptr_t> expect(Callable &&callable)
  * dispatcher::publish<MyEvent>(42, "Hello, World!");
  * @endcode
  */
-template <typename FuncSignature, typename Network = internal::Default, typename... Args>
-void publish(Args &&...args)
+template <typename EventSignature, typename Network = internal::Default, typename... Parameters>
+void publish(Parameters &&...parameters)
 {
-    internal::EventDispatcher<FuncSignature, Network>::publish(std::forward<Args>(args)...);
+    internal::EventDispatcher<EventSignature, Network>::publish(std::forward<Parameters>(parameters)...);
 }
 
 /**
