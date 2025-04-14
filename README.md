@@ -1,30 +1,27 @@
 # Table of Contents <!-- omit from toc -->
 
 - [Introduction](#introduction)
+  - [Key Features:](#key-features)
 - [Simple examples](#simple-examples)
   - [Blocking call](#blocking-call)
   - [Event dispatching](#event-dispatching)
 - [Installation](#installation)
 - [Motivation](#motivation)
-- [Performances](#performances)
-  - [Blocking calls benchmark](#blocking-calls-benchmark)
-  - [Async calls benchmark](#async-calls-benchmark)
 - [Safety](#safety)
   - [Compile time](#compile-time)
   - [Runtime](#runtime)
 
 # Introduction
 
-This C++ library aims at providing async capabilities, with an API that allows complete decoupling between software components.
+This C++ library provides asynchronous capabilities with an API designed to enable complete decoupling between software components.
 
-It provides the following features:
-
-- Blocking function calling by only using function signature
-- Async function calling returning `boost::future`, by only using function signature
-- Easily sending work packages to worker threads and waiting for the result
-- Event dispatching
-- Timer
-- Test framework with similar capabilities/syntax as Google Test/Mock, to integrate the dispatcher in unit tests
+## Key Features:
+- **Blocking Function Calls**: Call functions using only their signature, without requiring direct references to objects.
+- **Asynchronous Function Calls**: Execute functions asynchronously and retrieve results using `boost::future`, all by leveraging function signatures.
+- **Thread-Safe Work Distribution**: Easily send work packages to worker threads and wait for their results in a thread-safe manner.
+- **Event Dispatching**: Publish events that are received asynchronously by all subscribers.
+- **Timers**: Simplify time-based operations with built-in timer support.
+- **Integrated Test Framework**: Includes a test framework with capabilities and syntax similar to Google Test/Mock, making it easy to integrate the dispatcher into unit tests.
 
 # Simple examples
 
@@ -83,76 +80,15 @@ This C++ 14 library requires boost::asio and boost::signals2. You can either add
 
 # Motivation
 
-You can design your codebase as a set of independant code islands. This prevents the code to land in the traditional OOP pitfalls (Coupling between objects, layering, boilerplate ...).
+This library enables asynchronous development using Boost libraries in a more user-friendly and intuitive way. By decoupling your codebase into independent, self-contained "code islands," you can achieve several key benefits:
 
-Each code island only needs to know about its domain specific requirement, not about the rest of the program. 
+- **Reduced Coupling**: Components are isolated and do not depend on each other, making the codebase easier to maintain, extend, and refactor.
+- **Improved Modularity**: Each component focuses solely on its domain-specific requirements, enhancing clarity, reusability, and separation of concerns.
+- **Simplified Testing**: Decoupled components are easier to test in isolation, leading to more robust and reliable software.
+- **Avoidance of Common OOP Pitfalls**: Issues such as tight coupling, excessive layering, and boilerplate code are minimized, resulting in cleaner and more maintainable code.
+- **Thread-Safe Asynchronous Programming**: The library simplifies the implementation of thread-safe asynchronous programming, enabling efficient work distribution across threads.
 
-It is also really easy to accomplish async programming in a thread safe manner, or to move work packages from one thread to another.
-
-# Performances 
-
-Blocking function calls (dispatcher::call) are just a std::function in a trenchcoat, should be relatively easy on performances. This may confuse the compiler and remove optimizations though.
-Event calls are much more expensive, since you may need to wake up a thread, and is using boost::signals2.
-Async calls have similar performances as event calls.
-
-## Blocking calls benchmark
-
-A quick benchmark can be found in benchmark/benchmark.cpp. Here are the results:
-
-```
-Running ./function-dispatcher_benchmark
-Run on (14 X 400 MHz CPU s)
-CPU Caches:
-  L1 Data 48 KiB (x7)
-  L1 Instruction 64 KiB (x7)
-  L2 Unified 2048 KiB (x7)
-  L3 Unified 12288 KiB (x1)
-Load Average: 0.35, 0.36, 0.50
------------------------------------------------------------------------------------------
-Benchmark                                               Time             CPU   Iterations
------------------------------------------------------------------------------------------
-CallAdditionDirectly                                0.503 ns        0.503 ns   1312037441
-CallAdditionVirtual                                 0.985 ns        0.985 ns    712798714
-CallAdditionFunctionDispatcher                      0.943 ns        0.943 ns    692453805
-CallManipulateStringDirectly                         31.4 ns         31.4 ns     25463989
-CallManipulateStringVirtual                          30.6 ns         30.6 ns     21954286
-CallManipulateStringFunctionDispatcher               30.0 ns         30.0 ns     23685180
-CallManipulateStringRefDirectly                     0.344 ns        0.344 ns   2039205455
-CallManipulateStringRefVirtual                      0.882 ns        0.882 ns    803946975
-CallManipulateStringRefFunctionDispatcher           0.883 ns        0.883 ns    786699368
-CallManipulateStringRefFunctionDispatcherEvent        306 ns          302 ns      2273141
-``` 
-
-This is only a micro benchmark, results are indicative at best. 
-
-## Async calls benchmark
-
-Another benchmark can be found in benchmark/custom_benchmark 
-
-```
-./custom_benchmark            
-//First run of event posting, need to allocate all the stack                                         
-finished posting
-everything started
-everything finished
-Time to post all tasks: 8 ms
-Time to start all tasks: 216 ms
-Time to finish all tasks: 94 ms
-Total time: 320 ms
-Number of finished posts per seconds : 625000
- 
-// Second time, we have not freed the fiber stack, so it is faster
-finished posting
-everything started
-everything finished
-Time to post all tasks: 15 ms
-Time to start all tasks: 68 ms
-Time to finish all tasks: 104 ms
-Total time: 188 ms
-Number of finished posts per seconds : 1.06383e+06
-```
-
-This roughly means we can reach 1 million finished task every second, for a single threaded event loop. The event loop is slower at the beginning as we are recycling memory stacks of completed posts
+By adopting this approach, you can design a clean, modular architecture that improves the overall quality, maintainability, and scalability of your software.
 
 # Safety 
 
@@ -174,7 +110,7 @@ struct Addition
 
 int main() {
     //Wrong return value
-    dispatcher::attach<Addition>([](float, float) -> std::string {return std::string{"Hello world"};});
+    dispatcher::attach<Addition>([](float, float) -> std::string { return std::string{"Hello world"}; });
 }
 ``` 
 
@@ -192,7 +128,7 @@ struct Addition
 };
 
 int main() {
-    dispatcher::attach<Addition>([](float a, float b) -> float {return a + b;});
+    dispatcher::attach<Addition>([](float a, float b) -> float { return a + b; });
     // Wrong arguments
     dispatcher::call<Addition>(std::string{"Hello"}, 4.0f);
 }
@@ -200,7 +136,8 @@ int main() {
 
 ## Runtime 
 
-Checking if a callback corresponds to a specific call will only be done at runtime, and will throw a std::bad_function_call exception if that is not the case
+Checking if a callback corresponds to a specific call will only be done at runtime, and will throw a NoHandler<FuncSignature> exception if that is not the case.
+It is deriving from DispatcherException, which can be used to catch any NoHandler<T> exception
 
 ```c++
 #include "dispatcher.hpp"
@@ -217,7 +154,7 @@ int main()
     {
         dispatcher::call<Addition>(4.0f, 3.5f);
     }
-    catch (const std::bad_function_call &e)
+    catch (const dispatcher::NoHandler<Addition> &e)
     {
         std::cout << e.what() << std::endl;
     }

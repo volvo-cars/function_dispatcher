@@ -353,7 +353,8 @@ struct EventDispatcher {
         });
     }
 
-    using parameters_t = typename parameters_t_or_default<EventSignature, has_parameters_t<EventSignature>::value>::type;
+    using parameters_t =
+        typename parameters_t_or_default<EventSignature, has_parameters_t<EventSignature>::value>::type;
 
     using signal_type = typename SignalFromTuple<parameters_t>::type;
 };
@@ -616,11 +617,10 @@ boost::fibers::future<std::nullptr_t> expect()
     auto future = promise->get_future();
 
     auto connection = std::make_shared<boost::signals2::connection>();
-    *connection =
-        internal::EventDispatcher<EventSignature, Network>::subscribe([promise, connection](auto) mutable {
-            connection->disconnect();
-            promise->set_value({});
-        });
+    *connection = internal::EventDispatcher<EventSignature, Network>::subscribe([promise, connection](auto...) mutable {
+        connection->disconnect();
+        promise->set_value({});
+    });
 
     return future;
 }
