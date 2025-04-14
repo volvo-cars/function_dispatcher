@@ -31,11 +31,11 @@ struct Multiplication {
 };
 
 struct SomeEvent {
-    using args_t = std::tuple<bool, const std::string&>;
+    using parameters_t = std::tuple<bool, const std::string&>;
 };
 
 struct AnotherEvent {
-    using args_t = std::tuple<>;
+    using parameters_t = std::tuple<>;
 };
 
 class ExampleTest : public dispatcher::Test {};

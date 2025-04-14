@@ -64,7 +64,7 @@ It is possible to publish events that will be received by every subscriber. The 
 #include <string>
 
 struct AnEvent {
-    using args_t = std::tuple<const std::string&>;
+    using parameters_t = std::tuple<const std::string&>;
 };
 
 

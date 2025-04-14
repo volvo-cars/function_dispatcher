@@ -87,10 +87,10 @@ bool call_tuple(const Tuple &tuple, std::index_sequence<Is...>, Args &...args)
 }
 
 template <typename FuncSignature>
-struct Expectation {
+struct CallExpectation {
     template <typename ReturnFunction, typename Matcher>
-    Expectation(const char *_file, int _line, ReturnFunction &&_return_function, Matcher &&_matcher,
-                int _expected_calls_left)
+    CallExpectation(const char *_file, int _line, ReturnFunction &&_return_function, Matcher &&_matcher,
+                    int _expected_calls_left)
         : file(_file),
           line(_line),
           return_function(std::forward<ReturnFunction>(_return_function)),
@@ -102,10 +102,10 @@ struct Expectation {
             GetSequence().next_expected_call += expected_calls_left;
         }
     }
-    Expectation(const Expectation &) = delete;
-    Expectation &operator=(const Expectation &) = delete;
+    CallExpectation(const CallExpectation &) = delete;
+    CallExpectation &operator=(const CallExpectation &) = delete;
 
-    Expectation(Expectation &&other) noexcept
+    CallExpectation(CallExpectation &&other) noexcept
         : file(other.file),
           line(other.line),
           return_function(std::move(other.return_function)),
@@ -119,7 +119,7 @@ struct Expectation {
         other.rank_in_sequence = -1;
     }
 
-    Expectation &operator=(Expectation &&other) noexcept
+    CallExpectation &operator=(CallExpectation &&other) noexcept
     {
         if (this != &other) {
             file = other.file;
@@ -136,7 +136,7 @@ struct Expectation {
         }
         return *this;
     }
-    ~Expectation()
+    ~CallExpectation()
     {
         if (expected_calls_left != 0) {
             std::ostringstream oss;
@@ -163,15 +163,15 @@ struct Expectation {
                 return false;
             }
             GetSequence().current_call_to_expect++;
+            rank_in_sequence++;
         }
+        expected_calls_left--;
         return true;
     }
 
     template <typename... Args>
     typename FunctionDispatcher<FuncSignature>::return_t get_return_value(Args &&...args)
     {
-        expected_calls_left--;
-        rank_in_sequence++;
         return return_function(std::forward<Args>(args)...);
     }
 
@@ -191,6 +191,116 @@ struct Expectation {
     const char *file;
     int line;
     typename FunctionDispatcher<FuncSignature>::func_type return_function;
+};
+
+template <typename EventSignature>
+struct EventExpectation {
+    template <typename OnEventFunction, typename Matcher>
+    EventExpectation(const char *_file, int _line, OnEventFunction &&_on_event_function, Matcher &&_matcher,
+                     int _expected_calls_left)
+        : file(_file),
+          line(_line),
+          on_event_function(std::forward<OnEventFunction>(_on_event_function)),
+          matchers(std::forward<Matcher>(_matcher)),
+          expected_calls_left(_expected_calls_left)
+    {
+        if (GetSequence().sequence_initialized)
+        {
+            rank_in_sequence = GetSequence().next_expected_call;
+            GetSequence().next_expected_call += expected_calls_left;
+        }
+    }
+    EventExpectation(const EventExpectation &) = delete;
+    EventExpectation &operator=(const EventExpectation &) = delete;
+
+    EventExpectation(EventExpectation &&other) noexcept
+        : file(other.file),
+          line(other.line),
+          on_event_function(std::move(other.on_event_function)),
+          matchers(std::move(other.matchers)),
+          expected_calls_left(other.expected_calls_left),
+          rank_in_sequence(other.rank_in_sequence)
+    {
+        other.file = nullptr;
+        other.line = 0;
+        other.expected_calls_left = 0;
+        other.rank_in_sequence = -1;
+    }
+
+    EventExpectation &operator=(EventExpectation &&other) noexcept
+    {
+        if (this != &other) {
+            file = other.file;
+            line = other.line;
+            on_event_function = std::move(on_event_function);
+            matchers = std::move(other.matchers);
+            expected_calls_left = other.expected_calls_left;
+            rank_in_sequence = other.rank_in_sequence;
+
+            other.file = nullptr;
+            other.line = 0;
+            other.expected_calls_left = 0;
+            other.rank_in_sequence = -1;
+        }
+        return *this;
+    }
+    ~EventExpectation()
+    {
+        if (expected_calls_left != 0) {
+            std::ostringstream oss;
+            oss << "Still expecting " << expected_calls_left << " calls";
+            GTEST_MESSAGE_AT_(file, line, oss.str().c_str(), ::testing::TestPartResult::kNonFatalFailure);
+        }
+    }
+
+    template <typename... Parameters>
+    bool validate(Parameters &...parameters)
+    {
+        if (expected_calls_left == 0) {
+            return false;
+        }
+
+        if (!call_tuple(matchers, std::make_index_sequence<tuple_size>{}, parameters...)) {
+            return false;
+        }
+        if (rank_in_sequence != -1 && GetSequence().sequence_initialized) {
+            if (rank_in_sequence != GetSequence().current_call_to_expect) {
+                std::cout << "Expectation constructed at " << file << ":" << line
+                          << " expected call out of sequence. Rank in sequence : " << rank_in_sequence
+                          << " while current call to expect is : " << GetSequence().current_call_to_expect << std::endl;
+                return false;
+            }
+            GetSequence().current_call_to_expect++;
+            rank_in_sequence++;
+        }
+        expected_calls_left--;
+        return true;
+    }
+
+    template <typename... Parameters>
+    void on_event(Parameters &&...parameters)
+    {
+        on_event_function(std::forward<Parameters>(parameters)...);
+    }
+
+    bool expected_more_calls() const
+    {
+        if (expected_calls_left != 0) {
+            return true;
+        }
+        return false;
+    }
+
+    using matchers_tuple = typename ToMatcher<typename EventDispatcher<EventSignature>::parameters_t>::type;
+    matchers_tuple matchers;
+    static constexpr auto tuple_size = std::tuple_size<std::decay_t<matchers_tuple>>::value;
+    int expected_calls_left;
+    int rank_in_sequence = -1;
+    const char *file;
+    int line;
+    using on_event_func_type =
+        typename FunctionFromTuple<void, typename EventDispatcher<EventSignature>::parameters_t>::type;
+    on_event_func_type on_event_function;
 };
 
 class ExpecterBase {
@@ -216,7 +326,7 @@ class CallExpecter : public ExpecterBase {
         dispatcher::attach<FuncSignature>([this](Args &&...args) {
             for (const auto &should_not_be_called : should_not_be_called_) {
                 if (call_tuple(std::get<2>(should_not_be_called),
-                               std::make_index_sequence<Expectation<FuncSignature>::tuple_size>{}, args...)) {
+                               std::make_index_sequence<CallExpectation<FuncSignature>::tuple_size>{}, args...)) {
                     GTEST_MESSAGE_AT_(std::get<0>(should_not_be_called), std::get<1>(should_not_be_called),
                                       "Unexpected call", ::testing::TestPartResult::kNonFatalFailure);
                 }
@@ -236,7 +346,7 @@ class CallExpecter : public ExpecterBase {
         });
     }
 
-    void add_expectation(Expectation<FuncSignature> expectation)
+    void add_expectation(CallExpectation<FuncSignature> expectation)
     {
         remaining_expectation_.push_back(std::move(expectation));
     }
@@ -260,9 +370,9 @@ class CallExpecter : public ExpecterBase {
     }
 
   private:
-    std::vector<Expectation<FuncSignature>> remaining_expectation_;
+    std::vector<CallExpectation<FuncSignature>> remaining_expectation_;
     boost::optional<typename FunctionDispatcher<FuncSignature>::func_type> default_behavior;
-    std::vector<std::tuple<const char *, int, typename Expectation<FuncSignature>::matchers_tuple>>
+    std::vector<std::tuple<const char *, int, typename CallExpectation<FuncSignature>::matchers_tuple>>
         should_not_be_called_;
 
     // Internal helper class to get Args... from the tuple
@@ -283,40 +393,41 @@ class CallExpecter : public ExpecterBase {
     dynamic_cast<dispatcher::internal::CallExpecter<FuncSignature> *>( \
         expecter_container_->expecters_[typeid(FuncSignature)].get())
 
-template <typename FuncSignature>
+template <typename EventSignature>
 class EventExpecter : public ExpecterBase {
   public:
     EventExpecter()
     {
-        ArgsFromTuple<typename EventDispatcher<FuncSignature>::args_t>{}.subscribe(*this);
+        ParametersFromTuple<typename EventDispatcher<EventSignature>::parameters_t>{}.subscribe(*this);
     }
     EventExpecter(const EventExpecter &) = delete;
     EventExpecter &operator=(const EventExpecter &) = delete;
     EventExpecter(EventExpecter &&) = default;
     EventExpecter &operator=(EventExpecter &&) = default;
 
-    template <typename... Args>
+    template <typename... Parameters>
     void subscribe()
     {
-        dispatcher::subscribe<FuncSignature>([this](Args &&...args) {
+        dispatcher::subscribe<EventSignature>([this](Parameters &&...parameters) {
             for (const auto &should_not_be_published : should_not_be_published_) {
                 if (call_tuple(std::get<2>(should_not_be_published),
-                               std::make_index_sequence<Expectation<FuncSignature>::tuple_size>{}, args...)) {
+                               std::make_index_sequence<EventExpectation<EventSignature>::tuple_size>{},
+                               parameters...)) {
                     GTEST_MESSAGE_AT_(std::get<0>(should_not_be_published), std::get<1>(should_not_be_published),
                                       "Event was not expected", ::testing::TestPartResult::kNonFatalFailure);
                 }
             }
 
             for (auto &expectation : remaining_expectation_) {
-                if (expectation.validate(args...)) {
-                    expectation.get_return_value(std::forward<Args>(args)...);
+                if (expectation.validate(parameters...)) {
+                    expectation.on_event(std::forward<Parameters>(parameters)...);
                     break;
                 }
             }
         });
     }
 
-    void add_expectation(Expectation<FuncSignature> expectation)
+    void add_expectation(EventExpectation<EventSignature> expectation)
     {
         remaining_expectation_.push_back(std::move(expectation));
     }
@@ -334,27 +445,27 @@ class EventExpecter : public ExpecterBase {
     }
 
   private:
-    std::vector<Expectation<FuncSignature>> remaining_expectation_;
-    std::vector<std::tuple<const char *, int, typename Expectation<FuncSignature>::matchers_tuple>>
+    std::vector<EventExpectation<EventSignature>> remaining_expectation_;
+    std::vector<std::tuple<const char *, int, typename EventExpectation<EventSignature>::matchers_tuple>>
         should_not_be_published_;
 
-    // Internal helper class to get Args... from the tuple
-    template <typename... Args>
-    struct ArgsFromTuple;
+    // Internal helper class to get Parameters... from the tuple
+    template <typename... Parameters>
+    struct ParametersFromTuple;
 
-    template <typename... Args>
-    struct ArgsFromTuple<std::tuple<Args...>> {
+    template <typename... Parameters>
+    struct ParametersFromTuple<std::tuple<Parameters...>> {
         template <typename Expecter>
         void subscribe(Expecter &expecter)
         {
-            expecter.template subscribe<Args...>();
+            expecter.template subscribe<Parameters...>();
         }
     };
 };
 
-#define GET_EVENT_EXPECTER(FuncSignature)                               \
-    dynamic_cast<dispatcher::internal::EventExpecter<FuncSignature> *>( \
-        expecter_container_->expecters_[typeid(FuncSignature)].get())
+#define GET_EVENT_EXPECTER(EventSignature)                               \
+    dynamic_cast<dispatcher::internal::EventExpecter<EventSignature> *>( \
+        expecter_container_->expecters_[typeid(EventSignature)].get())
 
 struct ExpecterContainer {
     std::map<std::type_index, std::unique_ptr<ExpecterBase>> expecters_;
@@ -409,7 +520,7 @@ class CallExpectationBuilder {
     {
         if (times_to_match_ > 0) {
             GET_CALL_EXPECTER(FuncSignature)
-                ->add_expectation(Expectation<FuncSignature>{
+                ->add_expectation(CallExpectation<FuncSignature>{
                     file_, line_, [](auto...) { return return_value<FuncSignature>(); }, matchers_, times_to_match_});
         }
     }
@@ -427,7 +538,8 @@ class CallExpectationBuilder {
     CallExpectationBuilder &WillOnce(Callback &&callback)
     {
         GET_CALL_EXPECTER(FuncSignature)
-            ->add_expectation(Expectation<FuncSignature>{file_, line_, std::forward<Callback>(callback), matchers_, 1});
+            ->add_expectation(
+                CallExpectation<FuncSignature>{file_, line_, std::forward<Callback>(callback), matchers_, 1});
         times_to_match_ = 0;
         return *this;
     }
@@ -436,14 +548,14 @@ class CallExpectationBuilder {
     CallExpectationBuilder &WillRepeatedly(Callback &&callback)
     {
         GET_CALL_EXPECTER(FuncSignature)
-            ->add_expectation(
-                Expectation<FuncSignature>{file_, line_, std::forward<Callback>(callback), matchers_, times_to_match_});
+            ->add_expectation(CallExpectation<FuncSignature>{file_, line_, std::forward<Callback>(callback), matchers_,
+                                                             times_to_match_});
         times_to_match_ = 0;
         return *this;
     }
 
   private:
-    typename Expectation<FuncSignature>::matchers_tuple matchers_;
+    typename CallExpectation<FuncSignature>::matchers_tuple matchers_;
     int times_to_match_ = 1;
     ExpecterContainer *expecter_container_;
     const char *file_;
@@ -466,7 +578,7 @@ struct DefaultExpectationBuilder {
     ExpecterContainer *expecter_container_;
 };
 
-template <typename FuncSignature>
+template <typename EventSignature>
 class EventExpectationBuilder {
   public:
     template <typename... Matcher>
@@ -476,8 +588,8 @@ class EventExpectationBuilder {
           line_(line),
           matchers_{std::forward<Matcher>(matcher)...}
     {
-        if (expecter_container_->expecters_.find(typeid(FuncSignature)) == expecter_container_->expecters_.end()) {
-            expecter_container_->expecters_[typeid(FuncSignature)] = std::make_unique<EventExpecter<FuncSignature>>();
+        if (expecter_container_->expecters_.find(typeid(EventSignature)) == expecter_container_->expecters_.end()) {
+            expecter_container_->expecters_[typeid(EventSignature)] = std::make_unique<EventExpecter<EventSignature>>();
         }
     }
     EventExpectationBuilder(const EventExpectationBuilder &) = delete;
@@ -487,16 +599,16 @@ class EventExpectationBuilder {
     ~EventExpectationBuilder()
     {
         if (times_to_match_ > 0) {
-            GET_EVENT_EXPECTER(FuncSignature)
+            GET_EVENT_EXPECTER(EventSignature)
                 ->add_expectation(
-                    Expectation<FuncSignature>{file_, line_, [](auto...) { return; }, matchers_, times_to_match_});
+                    EventExpectation<EventSignature>{file_, line_, [](auto...) {}, matchers_, times_to_match_});
         }
     }
 
     EventExpectationBuilder &Times(int times_to_match)
     {
         if (times_to_match == 0) {
-            GET_EVENT_EXPECTER(FuncSignature)->add_should_not_call_matchers(file_, line_, matchers_);
+            GET_EVENT_EXPECTER(EventSignature)->add_should_not_call_matchers(file_, line_, matchers_);
         }
         times_to_match_ = times_to_match;
         return *this;
@@ -505,8 +617,9 @@ class EventExpectationBuilder {
     template <typename Callback>
     EventExpectationBuilder &WillOnce(Callback &&callback)
     {
-        GET_EVENT_EXPECTER(FuncSignature)
-            ->add_expectation(Expectation<FuncSignature>{file_, line_, std::forward<Callback>(callback), matchers_, 1});
+        GET_EVENT_EXPECTER(EventSignature)
+            ->add_expectation(
+                EventExpectation<EventSignature>{file_, line_, std::forward<Callback>(callback), matchers_, 1});
         times_to_match_ = 0;
         return *this;
     }
@@ -514,15 +627,15 @@ class EventExpectationBuilder {
     template <typename Callback>
     EventExpectationBuilder &WillRepeatedly(Callback &&callback)
     {
-        GET_EVENT_EXPECTER(FuncSignature)
-            ->add_expectation(
-                Expectation<FuncSignature>{file_, line_, std::forward<Callback>(callback), matchers_, times_to_match_});
+        GET_EVENT_EXPECTER(EventSignature)
+            ->add_expectation(EventExpectation<EventSignature>{file_, line_, std::forward<Callback>(callback),
+                                                               matchers_, times_to_match_});
         times_to_match_ = 0;
         return *this;
     }
 
   private:
-    typename Expectation<FuncSignature>::matchers_tuple matchers_;
+    typename EventExpectation<EventSignature>::matchers_tuple matchers_;
     int times_to_match_ = 1;
     ExpecterContainer *expecter_container_;
     const char *file_;
@@ -556,10 +669,10 @@ class Test : public testing::Test {
     std::unique_ptr<internal::ExpecterContainer> expecter_container_ = std::make_unique<internal::ExpecterContainer>();
 };
 
-#define DISPATCHER_EXPECT_EVENT(FuncSignature, args...)          \
-    dispatcher::internal::EventExpectationBuilder<FuncSignature> \
-    {                                                            \
-        expecter_container_.get(), __FILE__, __LINE__, args      \
+#define DISPATCHER_EXPECT_EVENT(EventSignature, parameters...)    \
+    dispatcher::internal::EventExpectationBuilder<EventSignature> \
+    {                                                             \
+        expecter_container_.get(), __FILE__, __LINE__, parameters \
     }
 
 #define DISPATCHER_ENABLE_MANUAL_TIME() dispatcher::internal::MockableClock::set_now()

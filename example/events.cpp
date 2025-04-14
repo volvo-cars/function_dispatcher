@@ -18,7 +18,7 @@
 // You can have multiple networks, each one with their own event loop
 
 struct AnEvent {
-    using args_t = std::tuple<int, int>;
+    using parameters_t = std::tuple<int, int>;
 };
 
 struct OtherNetwork {};

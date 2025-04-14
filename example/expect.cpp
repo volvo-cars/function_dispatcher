@@ -14,7 +14,7 @@
 #include "dispatcher.hpp"
 
 struct AnEvent {
-    using args_t = std::tuple<std::string>;
+    using parameters_t = std::tuple<std::string>;
 };
 
 int main()
