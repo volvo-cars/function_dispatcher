@@ -254,13 +254,13 @@ struct EventExpectation {
     }
 
     template <typename... Parameters>
-    bool validate(Parameters &...args)
+    bool validate(Parameters &...parameters)
     {
         if (expected_calls_left == 0) {
             return false;
         }
 
-        if (!call_tuple(matchers, std::make_index_sequence<tuple_size>{}, args...)) {
+        if (!call_tuple(matchers, std::make_index_sequence<tuple_size>{}, parameters...)) {
             return false;
         }
         if (rank_in_sequence != -1 && GetSequence().sequence_initialized) {
