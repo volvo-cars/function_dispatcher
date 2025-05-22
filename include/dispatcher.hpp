@@ -239,12 +239,14 @@ template <typename Network>
 class EventLoop {
   public:
     EventLoop()
-        : work_guard_{boost::asio::make_work_guard(io_context_)}, work_thread_{[this] {
+        : work_guard_{boost::asio::make_work_guard(io_context_)},
+          work_thread_{[this] {
               while (!stopped_) {
-                  io_context_.poll_one();
+                  io_context_.run_one();
                   boost::this_fiber::yield();
               }
-          }}
+          }},
+          wake_up_timer_{io_context_}
     {
     }
     ~EventLoop()
@@ -252,22 +254,20 @@ class EventLoop {
         Stop();
     }
 
+    void SetWakeUpTimer()
+    {
+        wake_up_timer_.expires_from_now(boost::posix_time::milliseconds{10});
+        wake_up_timer_.async_wait([this](const boost::system::error_code &ec) {
+            if (ec != boost::asio::error::operation_aborted) {
+                SetWakeUpTimer();
+            }
+        });
+    }
+
     EventLoop(const EventLoop &) = delete;
     EventLoop(EventLoop &&) = delete;
     EventLoop &operator=(const EventLoop &) = delete;
     EventLoop &operator=(EventLoop &&) = delete;
-
-    void SetWorkerThreadsAmount(int threads)
-    {
-        while (additional_work_threads_.size() < threads - 1) {
-            additional_work_threads_.emplace_back([this] {
-                while (!stopped_) {
-                    io_context_.poll_one();
-                    boost::this_fiber::yield();
-                }
-            });
-        }
-    }
 
     template <typename T>
     void Post(T &&task)
@@ -307,6 +307,7 @@ class EventLoop {
     std::vector<std::thread> additional_work_threads_;
     std::atomic<bool> stopped_{false};
     MemoryPool memory_pool_{30000};
+    boost::asio::deadline_timer wake_up_timer_;
 };
 
 template <typename Network = Default>

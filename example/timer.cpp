@@ -49,5 +49,5 @@ int main(int argc, char** argv)
     dispatcher::DefaultTimer timer;
     int i = 0;
     timer.DoEvery(std::chrono::milliseconds(500), [&] { bool b = TestWait(i++); });
-    std::this_thread::sleep_for(std::chrono::seconds{6});
+    std::this_thread::sleep_for(std::chrono::seconds{6000});
 }
